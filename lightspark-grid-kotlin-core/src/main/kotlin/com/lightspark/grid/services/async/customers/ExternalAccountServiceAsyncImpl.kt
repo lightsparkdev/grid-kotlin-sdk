@@ -19,12 +19,15 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountChallengeParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountDeleteParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListPageAsync
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountRetrieveParams
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountVerifyParams
+import com.lightspark.grid.models.customers.externalaccounts.OwnershipChallenge
 
 /** External account management endpoints for creating and managing external bank accounts */
 class ExternalAccountServiceAsyncImpl
@@ -69,6 +72,20 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
         // delete /customers/external-accounts/{externalAccountId}
         withRawResponse().delete(params, requestOptions)
     }
+
+    override suspend fun challenge(
+        params: ExternalAccountChallengeParams,
+        requestOptions: RequestOptions,
+    ): OwnershipChallenge =
+        // post /customers/external-accounts/{externalAccountId}/challenge
+        withRawResponse().challenge(params, requestOptions).parse()
+
+    override suspend fun verify(
+        params: ExternalAccountVerifyParams,
+        requestOptions: RequestOptions,
+    ): ExternalAccount =
+        // post /customers/external-accounts/{externalAccountId}/verify
+        withRawResponse().verify(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ExternalAccountServiceAsync.WithRawResponse {
@@ -212,6 +229,86 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response.use { deleteHandler.handle(it) }
+            }
+        }
+
+        private val challengeHandler: Handler<OwnershipChallenge> =
+            jsonHandler<OwnershipChallenge>(clientOptions.jsonMapper)
+
+        override suspend fun challenge(
+            params: ExternalAccountChallengeParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<OwnershipChallenge> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("externalAccountId", params.externalAccountId())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "customers",
+                        "external-accounts",
+                        params._pathParam(0),
+                        "challenge",
+                    )
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { challengeHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val verifyHandler: Handler<ExternalAccount> =
+            jsonHandler<ExternalAccount>(clientOptions.jsonMapper)
+
+        override suspend fun verify(
+            params: ExternalAccountVerifyParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ExternalAccount> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("externalAccountId", params.externalAccountId())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "customers",
+                        "external-accounts",
+                        params._pathParam(0),
+                        "verify",
+                    )
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { verifyHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
             }
         }
     }

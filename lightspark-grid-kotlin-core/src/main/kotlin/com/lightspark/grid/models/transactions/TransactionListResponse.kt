@@ -14,6 +14,7 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.transferin.Transaction
 import java.util.Collections
 import java.util.Objects
@@ -172,6 +173,9 @@ private constructor(
 
         /** Alias for calling [addData] with `Transaction.ofOutgoing(outgoing)`. */
         fun addData(outgoing: OutgoingTransaction) = addData(Transaction.ofOutgoing(outgoing))
+
+        /** Alias for calling [addData] with `Transaction.ofCard(card)`. */
+        fun addData(card: CardTransaction) = addData(Transaction.ofCard(card))
 
         /** Indicates if more results are available beyond this page */
         fun hasMore(hasMore: Boolean) = hasMore(JsonField.of(hasMore))

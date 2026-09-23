@@ -16,7 +16,7 @@ internal class EgpExternalAccountInfoTest {
             EgpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("EGP_ACCOUNT"))
                 .putAdditionalProperty("iban", JsonValue.from("EG380019000500000000263180002"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("BANQUE MISR"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
     }
@@ -28,7 +28,7 @@ internal class EgpExternalAccountInfoTest {
             EgpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("EGP_ACCOUNT"))
                 .putAdditionalProperty("iban", JsonValue.from("EG380019000500000000263180002"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("BANQUE MISR"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
 

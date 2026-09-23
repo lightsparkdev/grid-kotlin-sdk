@@ -12,26 +12,28 @@ import java.util.Objects
 /**
  * Re-issue the challenge for an existing authentication credential.
  *
- * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on file
- * and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP attempt
- * against. After the user receives the new OTP, build the `encryptedOtpBundle` under the new target
- * bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP login flow.
+ * For `EMAIL_OTP` and `SMS_OTP` credentials, this triggers a new one-time password to the contact
+ * on file and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP
+ * attempt against. After the user receives the new OTP, build the `encryptedOtpBundle` under the
+ * new target bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP login
+ * flow.
  *
  * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
  * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
  * `clientPublicKey`.
  *
  * For `PASSKEY` credentials, this issues a fresh Grid reauthentication challenge. The request body
- * must carry the client's ephemeral `clientPublicKey` so Grid can bake it into the Turnkey
- * session-creation payload the returned challenge is computed from — this seals the resulting
- * session signing key to the client. The response is a `PasskeyAuthChallenge` — the passkey auth
- * method fields plus the WebAuthn `credentialId`, new `challenge`, `requestId`, and `expiresAt`.
- * The `challenge` value is the lowercase hex-encoded SHA-256 digest of the canonical Turnkey
- * session-creation body, not a base64url string. The client base64url-decodes `credentialId` for
- * `allowCredentials[].id` and UTF-8 encodes `challenge` (for example, `new
- * TextEncoder().encode(challenge)`) as the WebAuthn challenge in `navigator.credentials.get()`,
- * then submits the resulting assertion to `POST /auth/credentials/{id}/verify` with `Request-Id:
- * <requestId>` to receive a session.
+ * must carry the client's ephemeral `clientPublicKey` so Grid can bake it into the session-creation
+ * payload the returned challenge is computed from — send a compressed key for the recommended
+ * client-held-key model, where the client retains the matching private key as the resulting session
+ * signing key, or an uncompressed key for the deprecated legacy flow. The response is a
+ * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`, new
+ * `challenge`, `requestId`, and `expiresAt`. The `challenge` value is the lowercase hex-encoded
+ * SHA-256 digest of the canonical session-creation body, not a base64url string. The client
+ * base64url-decodes `credentialId` for `allowCredentials[].id` and UTF-8 encodes `challenge` (for
+ * example, `new TextEncoder().encode(challenge)`) as the WebAuthn challenge in
+ * `navigator.credentials.get()`, then submits the resulting assertion to `POST
+ * /auth/credentials/{id}/verify` with `Request-Id: <requestId>` to receive a session.
  */
 class CredentialChallengeParams
 private constructor(
@@ -45,11 +47,11 @@ private constructor(
 
     /**
      * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
-     * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the Turnkey
-     * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP`,
-     * where the credential type alone is sufficient because the OTP is delivered out-of-band. OAuth
-     * credentials do not use this endpoint; authenticate or reauthenticate them with `POST
-     * /auth/credentials/{id}/verify`.
+     * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the
+     * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP` and
+     * `SMS_OTP`, where the credential type alone is sufficient because the OTP is delivered
+     * out-of-band. OAuth credentials do not use this endpoint; authenticate or reauthenticate them
+     * with `POST /auth/credentials/{id}/verify`.
      */
     fun authCredentialChallengeRequest(): AuthCredentialChallengeRequest? =
         authCredentialChallengeRequest
@@ -95,9 +97,9 @@ private constructor(
 
         /**
          * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
-         * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the Turnkey
-         * session-creation payload the returned challenge is computed from. Ignored for
-         * `EMAIL_OTP`, where the credential type alone is sufficient because the OTP is delivered
+         * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the
+         * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP`
+         * and `SMS_OTP`, where the credential type alone is sufficient because the OTP is delivered
          * out-of-band. OAuth credentials do not use this endpoint; authenticate or reauthenticate
          * them with `POST /auth/credentials/{id}/verify`.
          */

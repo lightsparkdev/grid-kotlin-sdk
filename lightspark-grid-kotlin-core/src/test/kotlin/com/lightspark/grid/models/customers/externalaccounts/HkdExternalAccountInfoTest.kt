@@ -15,7 +15,7 @@ internal class HkdExternalAccountInfoTest {
         val hkdExternalAccountInfo =
             HkdExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("HKD_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("HSBC Hong Kong"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("123456789012"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("HSBCHKHHHKH"))
                 .build()
@@ -27,7 +27,7 @@ internal class HkdExternalAccountInfoTest {
         val hkdExternalAccountInfo =
             HkdExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("HKD_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("HSBC Hong Kong"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("123456789012"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("HSBCHKHHHKH"))
                 .build()

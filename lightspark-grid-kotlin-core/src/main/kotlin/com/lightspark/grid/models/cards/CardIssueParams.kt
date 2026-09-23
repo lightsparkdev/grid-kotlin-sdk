@@ -10,20 +10,43 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Issue a new card for a cardholder. Every card must be bound to at least one funding source at
- * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
+ * Issue a new card for a cardholder. Every card is bound to one internal account, `fundingSource`,
+ * at create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
  * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
  *
- * New cards start in `state: "PENDING_ISSUE"` while the card issuer provisions the card. The
- * `card.state_change` webhook fires on the transition to `ACTIVE` (or to `CLOSED` with
- * `stateReason: "ISSUER_REJECTED"` if provisioning fails).
+ * Card issuance is fee-bearing and cannot be reversed, so an `Idempotency-Key` header is required.
+ * Retries must carry the same key.
+ *
+ * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set the
+ * card-specific caps on one transaction, on spend during one UTC calendar day, and on the number of
+ * transactions during one UTC calendar day. Check the funding-source internal account's
+ * `cardCapabilities.supportsSpendLimitsAtIssuance` before supplying either spend limit, and
+ * `cardCapabilities.supportsTransactionCountLimit` before supplying the transaction count limit. If
+ * the platform config sets the corresponding `cardConfigs` value, Grid enforces the lower of the
+ * card and platform caps. Amounts use the smallest unit of the card's currency.
+ *
+ * If the funding source is an Embedded Wallet internal account, the cardholder must authorize Grid
+ * to sign Spark token transactions for that card funding source by completing the delegated-key
+ * creation flow with `POST /auth/delegated-keys`. Until an active delegated key exists for that
+ * funding source, Authorization Decisioning cannot use it to fund card transactions.
+ *
+ * A platform may be limited to a maximum number of live cards. Once that limit is reached, further
+ * issuance is rejected with `CARD_LIMIT_REACHED` until a card is closed or Lightspark raises the
+ * limit. Cards in `CLOSED` status do not count toward the limit.
+ *
+ * New cards start in `status: "PROCESSING"` while the card issuer provisions the card. The
+ * `card.status_change` webhook fires on each status transition, including the transition to
+ * `ACTIVE` (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
  */
 class CardIssueParams
 private constructor(
+    private val idempotencyKey: String,
     private val cardCreateRequest: CardCreateRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    fun idempotencyKey(): String = idempotencyKey
 
     fun cardCreateRequest(): CardCreateRequest = cardCreateRequest
 
@@ -45,6 +68,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .idempotencyKey()
          * .cardCreateRequest()
          * ```
          */
@@ -54,15 +78,19 @@ private constructor(
     /** A builder for [CardIssueParams]. */
     class Builder internal constructor() {
 
+        private var idempotencyKey: String? = null
         private var cardCreateRequest: CardCreateRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(cardIssueParams: CardIssueParams) = apply {
+            idempotencyKey = cardIssueParams.idempotencyKey
             cardCreateRequest = cardIssueParams.cardCreateRequest
             additionalHeaders = cardIssueParams.additionalHeaders.toBuilder()
             additionalQueryParams = cardIssueParams.additionalQueryParams.toBuilder()
         }
+
+        fun idempotencyKey(idempotencyKey: String) = apply { this.idempotencyKey = idempotencyKey }
 
         fun cardCreateRequest(cardCreateRequest: CardCreateRequest) = apply {
             this.cardCreateRequest = cardCreateRequest
@@ -173,6 +201,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .idempotencyKey()
          * .cardCreateRequest()
          * ```
          *
@@ -180,6 +209,7 @@ private constructor(
          */
         fun build(): CardIssueParams =
             CardIssueParams(
+                checkRequired("idempotencyKey", idempotencyKey),
                 checkRequired("cardCreateRequest", cardCreateRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -188,7 +218,13 @@ private constructor(
 
     fun _body(): CardCreateRequest = cardCreateRequest
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                put("Idempotency-Key", idempotencyKey)
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -198,14 +234,15 @@ private constructor(
         }
 
         return other is CardIssueParams &&
+            idempotencyKey == other.idempotencyKey &&
             cardCreateRequest == other.cardCreateRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(cardCreateRequest, additionalHeaders, additionalQueryParams)
+        Objects.hash(idempotencyKey, cardCreateRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CardIssueParams{cardCreateRequest=$cardCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CardIssueParams{idempotencyKey=$idempotencyKey, cardCreateRequest=$cardCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -6,10 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnResponse
 
 /** Endpoints to trigger test cases in sandbox */
 interface SimulateService {
@@ -34,11 +36,16 @@ interface SimulateService {
      *
      * The decisioning outcome is controlled by the last three characters of `merchant.descriptor`:
      *
-     * | Suffix | Outcome | | ------ | ------- | | `002` | Decline — `INSUFFICIENT_FUNDS` (the pull
-     * on the funding source fails) | | `003` | Decline — `CARD_PAUSED` (intended to verify a frozen
-     * card refuses auths) | | `005` | Delayed pull (~30s) — exercises the `PENDING → CONFIRMED`
-     * path | | `006` | Pull succeeds but the confirmation event reports `FAILED` — exercises the
-     * high-urgency `EXCEPTION` alert | | any other | Approved |
+     * | Suffix | Outcome | | ------ | ------- | | `002` | Declined, `cardDeclinedReason:
+     * INSUFFICIENT_FUNDS`. Sandbox only: production approves an underfunded authorization and
+     * resolves it as `EXCEPTION` when the pull fails | | `003` | Declined, `cardDeclinedReason:
+     * CARD_NOT_ACTIVE`. Use against a `FROZEN` card to verify it refuses authorizations | | `005` |
+     * Delayed pull (~30s) — exercises the `PENDING → CONFIRMED` path | | `006` | Pull succeeds but
+     * the confirmation event reports `FAILED` — exercises the high-urgency `EXCEPTION` alert | |
+     * any other | Approved |
+     *
+     * `merchant.descriptor` must be 1–25 characters — the width of the card network's acceptor-name
+     * field. A longer one is rejected with `400` `INVALID_INPUT`.
      *
      * Production returns `404` on this path.
      */
@@ -46,13 +53,14 @@ interface SimulateService {
         id: String,
         params: SimulateAuthorizationParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction = authorization(params.toBuilder().id(id).build(), requestOptions)
+    ): SimulateAuthorizationResponse =
+        authorization(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see authorization */
     fun authorization(
         params: SimulateAuthorizationParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction
+    ): SimulateAuthorizationResponse
 
     /**
      * Simulate a clearing (settlement) event against an existing `CardTransaction` in the sandbox
@@ -71,19 +79,19 @@ interface SimulateService {
         id: String,
         params: SimulateClearingParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction = clearing(params.toBuilder().id(id).build(), requestOptions)
+    ): SimulateClearingResponse = clearing(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see clearing */
     fun clearing(
         params: SimulateClearingParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction
+    ): SimulateClearingResponse
 
     /**
      * Simulate a merchant-initiated `RETURN` against an existing settled card transaction in the
-     * sandbox environment. Creates a `CardRefund` on the parent and either flips the parent to
-     * `REFUNDED` (full refund) or keeps it `SETTLED` with a non-zero `refundedAmount` (partial
-     * refund).
+     * sandbox environment. Creates a `CardRefund` and posts the return as its own dated `CREDIT`
+     * `CardTransaction` linked to the purchase via `originalTransactionId`; the purchase keeps its
+     * `SETTLED` status, whether the return is full or partial.
      *
      * Production returns `404` on this path.
      */
@@ -91,13 +99,13 @@ interface SimulateService {
         id: String,
         params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction = return_(params.toBuilder().id(id).build(), requestOptions)
+    ): SimulateReturnResponse = return_(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see return_ */
     fun return_(
         params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction
+    ): SimulateReturnResponse
 
     /** A view of [SimulateService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -118,7 +126,7 @@ interface SimulateService {
             id: String,
             params: SimulateAuthorizationParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardTransaction> =
+        ): HttpResponseFor<SimulateAuthorizationResponse> =
             authorization(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see authorization */
@@ -126,7 +134,7 @@ interface SimulateService {
         fun authorization(
             params: SimulateAuthorizationParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardTransaction>
+        ): HttpResponseFor<SimulateAuthorizationResponse>
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/clearing`, but is
@@ -137,7 +145,7 @@ interface SimulateService {
             id: String,
             params: SimulateClearingParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardTransaction> =
+        ): HttpResponseFor<SimulateClearingResponse> =
             clearing(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see clearing */
@@ -145,7 +153,7 @@ interface SimulateService {
         fun clearing(
             params: SimulateClearingParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardTransaction>
+        ): HttpResponseFor<SimulateClearingResponse>
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/return`, but is
@@ -156,7 +164,7 @@ interface SimulateService {
             id: String,
             params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardTransaction> =
+        ): HttpResponseFor<SimulateReturnResponse> =
             return_(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see return_ */
@@ -164,6 +172,6 @@ interface SimulateService {
         fun return_(
             params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardTransaction>
+        ): HttpResponseFor<SimulateReturnResponse>
     }
 }

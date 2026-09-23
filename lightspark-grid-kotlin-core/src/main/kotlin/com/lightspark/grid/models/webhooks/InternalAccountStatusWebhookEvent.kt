@@ -291,6 +291,9 @@ private constructor(
 
             val INTERNAL_ACCOUNT_STATUS_UPDATED = of("INTERNAL_ACCOUNT.STATUS_UPDATED")
 
+            val INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED =
+                of("INTERNAL_ACCOUNT.FUNDING_INSTRUCTIONS_UPDATED")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -298,6 +301,7 @@ private constructor(
         enum class Known {
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INTERNAL_ACCOUNT_STATUS_UPDATED,
+            INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED,
         }
 
         /**
@@ -312,6 +316,7 @@ private constructor(
         enum class Value {
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INTERNAL_ACCOUNT_STATUS_UPDATED,
+            INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -327,6 +332,8 @@ private constructor(
             when (this) {
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INTERNAL_ACCOUNT_STATUS_UPDATED -> Value.INTERNAL_ACCOUNT_STATUS_UPDATED
+                INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED ->
+                    Value.INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED
                 else -> Value._UNKNOWN
             }
 
@@ -343,6 +350,8 @@ private constructor(
             when (this) {
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INTERNAL_ACCOUNT_STATUS_UPDATED -> Known.INTERNAL_ACCOUNT_STATUS_UPDATED
+                INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED ->
+                    Known.INTERNAL_ACCOUNT_FUNDING_INSTRUCTIONS_UPDATED
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 

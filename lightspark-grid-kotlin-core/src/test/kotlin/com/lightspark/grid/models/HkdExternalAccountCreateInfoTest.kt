@@ -17,7 +17,6 @@ internal class HkdExternalAccountCreateInfoTest {
             HkdExternalAccountCreateInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdExternalAccountCreateInfo.AccountType.HKD_ACCOUNT)
-                .bankName("Example Bank")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -40,12 +39,12 @@ internal class HkdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .swiftCode("HSBCHKHHHKH")
+                .bankName("HSBC Hong Kong")
                 .build()
 
         assertThat(hkdExternalAccountCreateInfo.accountNumber()).isEqualTo("123456789012")
         assertThat(hkdExternalAccountCreateInfo.accountType())
             .isEqualTo(HkdExternalAccountCreateInfo.AccountType.HKD_ACCOUNT)
-        assertThat(hkdExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(hkdExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 HkdExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -71,6 +70,7 @@ internal class HkdExternalAccountCreateInfoTest {
                 )
             )
         assertThat(hkdExternalAccountCreateInfo.swiftCode()).isEqualTo("HSBCHKHHHKH")
+        assertThat(hkdExternalAccountCreateInfo.bankName()).isEqualTo("HSBC Hong Kong")
     }
 
     @Test
@@ -80,7 +80,6 @@ internal class HkdExternalAccountCreateInfoTest {
             HkdExternalAccountCreateInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdExternalAccountCreateInfo.AccountType.HKD_ACCOUNT)
-                .bankName("Example Bank")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -103,6 +102,7 @@ internal class HkdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .swiftCode("HSBCHKHHHKH")
+                .bankName("HSBC Hong Kong")
                 .build()
 
         val roundtrippedHkdExternalAccountCreateInfo =

@@ -6,14 +6,22 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.SlvBeneficiary
 import com.lightspark.grid.models.VerificationError
 import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.cards.Card
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsent
+import com.lightspark.grid.models.customers.AgreementType
+import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryVerifiedData
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.quotes.Currency
@@ -23,10 +31,10 @@ import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
+import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.models.sandbox.webhooks.TestWebhookRequest
-import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
@@ -158,6 +166,7 @@ internal class UnwrapWebhookEventTest {
                                         .isPlatformAccount(true)
                                         .build()
                                 )
+                                .platformFeesIncluded(5L)
                                 .rateDetails(
                                     OutgoingRateDetails.builder()
                                         .counterpartyFixedFee(10L)
@@ -166,6 +175,23 @@ internal class UnwrapWebhookEventTest {
                                         .gridApiMultiplier(0.925)
                                         .gridApiVariableFeeAmount(30L)
                                         .gridApiVariableFeeRate(0.003)
+                                        .build()
+                                )
+                                .scaChallenge(
+                                    Quote.ScaChallenge.builder()
+                                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                                        .addAvailableFactor(
+                                            Quote.ScaChallenge.AvailableFactor.SMS_OTP
+                                        )
+                                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                                        .addPasskeyAllowedOrigin("https://app.example.com")
+                                        .passkeyAssertionOptions(
+                                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .purpose("PAYOUT")
                                         .build()
                                 )
                                 .build()
@@ -178,7 +204,31 @@ internal class UnwrapWebhookEventTest {
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .destination(JsonValue.from(mapOf<String, Any>()))
+                                .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
+                                .status(TransactionStatus.CREATED)
+                                .type(IncomingTransaction.Type.INCOMING)
+                                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                                .counterpartyInformation(
+                                    IncomingTransaction.CounterpartyInformation.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
+                                )
+                                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                                .description("Payment for invoice #1234")
+                                .exchangeRate(1.08)
+                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                                .fees(10L)
+                                .pendingReason(
+                                    IncomingTransaction.PendingReason
+                                        .COUNTERPARTY_DECLARATION_REQUIRED
+                                )
+                                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                                .receiptDeliveryConfirmedAt(
+                                    OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                                )
                                 .receivedAmount(
                                     CurrencyAmount.builder()
                                         .amount(12550L)
@@ -192,31 +242,6 @@ internal class UnwrapWebhookEventTest {
                                         )
                                         .build()
                                 )
-                                .status(TransactionStatus.CREATED)
-                                .type(IncomingTransaction.Type.INCOMING)
-                                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                                .counterpartyInformation(
-                                    IncomingTransaction.CounterpartyInformation.builder()
-                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                        .build()
-                                )
-                                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                                .description("Payment for invoice #1234")
-                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                                .fees(10L)
-                                .rateDetails(
-                                    IncomingRateDetails.builder()
-                                        .gridApiFixedFee(10L)
-                                        .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
-                                        .gridApiVariableFeeRate(0.003)
-                                        .build()
-                                )
-                                .receiptDeliveryConfirmedAt(
-                                    OffsetDateTime.parse("2025-08-15T14:31:00Z")
-                                )
                                 .reconciliationInstructions(
                                     ReconciliationInstructions.builder()
                                         .reference("UMA-Q12345-REF")
@@ -225,21 +250,31 @@ internal class UnwrapWebhookEventTest {
                                         )
                                         .build()
                                 )
+                                .refund(
+                                    Refund.builder()
+                                        .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                                        .reference("UMA-Q12345-REFUND")
+                                        .status(Refund.Status.COMPLETED)
+                                        .reason(Refund.Reason.TRANSACTION_FAILED)
+                                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                        .build()
+                                )
+                                .sentAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .source(TransactionSourceOneOf.builder().build())
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .build()
-                        )
-                        .transferDetails(
-                            AgentTransferDetails.builder()
-                                .amount(50000L)
-                                .currency("USD")
-                                .destinationAccountId(
-                                    "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                )
-                                .sourceAccountId(
-                                    "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                )
                                 .build()
                         )
                         .build()
@@ -260,9 +295,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -393,6 +430,7 @@ internal class UnwrapWebhookEventTest {
                                             .isPlatformAccount(true)
                                             .build()
                                     )
+                                    .platformFeesIncluded(5L)
                                     .rateDetails(
                                         OutgoingRateDetails.builder()
                                             .counterpartyFixedFee(10L)
@@ -401,6 +439,26 @@ internal class UnwrapWebhookEventTest {
                                             .gridApiMultiplier(0.925)
                                             .gridApiVariableFeeAmount(30L)
                                             .gridApiVariableFeeRate(0.003)
+                                            .build()
+                                    )
+                                    .scaChallenge(
+                                        Quote.ScaChallenge.builder()
+                                            .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                                            .addAvailableFactor(
+                                                Quote.ScaChallenge.AvailableFactor.SMS_OTP
+                                            )
+                                            .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                                            .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                                            .addPasskeyAllowedOrigin("https://app.example.com")
+                                            .passkeyAssertionOptions(
+                                                Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                                    .putAdditionalProperty(
+                                                        "foo",
+                                                        JsonValue.from("bar"),
+                                                    )
+                                                    .build()
+                                            )
+                                            .purpose("PAYOUT")
                                             .build()
                                     )
                                     .build()
@@ -413,20 +471,8 @@ internal class UnwrapWebhookEventTest {
                                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                     .destination(JsonValue.from(mapOf<String, Any>()))
+                                    .direction(IncomingTransaction.Direction.CREDIT)
                                     .platformCustomerId("18d3e5f7b4a9c2")
-                                    .receivedAmount(
-                                        CurrencyAmount.builder()
-                                            .amount(12550L)
-                                            .currency(
-                                                Currency.builder()
-                                                    .code("USD")
-                                                    .decimals(2L)
-                                                    .name("United States Dollar")
-                                                    .symbol("\$")
-                                                    .build()
-                                            )
-                                            .build()
-                                    )
                                     .status(TransactionStatus.CREATED)
                                     .type(IncomingTransaction.Type.INCOMING)
                                     .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -448,18 +494,29 @@ internal class UnwrapWebhookEventTest {
                                     )
                                     .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                                     .description("Payment for invoice #1234")
+                                    .exchangeRate(1.08)
                                     .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                                     .fees(10L)
-                                    .rateDetails(
-                                        IncomingRateDetails.builder()
-                                            .gridApiFixedFee(10L)
-                                            .gridApiMultiplier(0.925)
-                                            .gridApiVariableFeeAmount(30L)
-                                            .gridApiVariableFeeRate(0.003)
-                                            .build()
+                                    .pendingReason(
+                                        IncomingTransaction.PendingReason
+                                            .COUNTERPARTY_DECLARATION_REQUIRED
                                     )
+                                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                     .receiptDeliveryConfirmedAt(
                                         OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                                    )
+                                    .receivedAmount(
+                                        CurrencyAmount.builder()
+                                            .amount(12550L)
+                                            .currency(
+                                                Currency.builder()
+                                                    .code("USD")
+                                                    .decimals(2L)
+                                                    .name("United States Dollar")
+                                                    .symbol("\$")
+                                                    .build()
+                                            )
+                                            .build()
                                     )
                                     .reconciliationInstructions(
                                         ReconciliationInstructions.builder()
@@ -469,21 +526,33 @@ internal class UnwrapWebhookEventTest {
                                             )
                                             .build()
                                     )
+                                    .refund(
+                                        Refund.builder()
+                                            .initiatedAt(
+                                                OffsetDateTime.parse("2025-08-15T14:30:00Z")
+                                            )
+                                            .reference("UMA-Q12345-REFUND")
+                                            .status(Refund.Status.COMPLETED)
+                                            .reason(Refund.Reason.TRANSACTION_FAILED)
+                                            .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                            .build()
+                                    )
+                                    .sentAmount(
+                                        CurrencyAmount.builder()
+                                            .amount(12550L)
+                                            .currency(
+                                                Currency.builder()
+                                                    .code("USD")
+                                                    .decimals(2L)
+                                                    .name("United States Dollar")
+                                                    .symbol("\$")
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                     .source(TransactionSourceOneOf.builder().build())
                                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                    .build()
-                            )
-                            .transferDetails(
-                                AgentTransferDetails.builder()
-                                    .amount(50000L)
-                                    .currency("USD")
-                                    .destinationAccountId(
-                                        "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    )
-                                    .sourceAccountId(
-                                        "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    )
                                     .build()
                             )
                             .build()
@@ -512,7 +581,28 @@ internal class UnwrapWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
+                        .status(TransactionStatus.CREATED)
+                        .type(IncomingTransaction.Type.INCOMING)
+                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                        .counterpartyInformation(
+                            IncomingTransaction.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                        .description("Payment for invoice #1234")
+                        .exchangeRate(1.08)
+                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                        .fees(10L)
+                        .pendingReason(
+                            IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
+                        .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                        .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                         .receivedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -526,34 +616,33 @@ internal class UnwrapWebhookEventTest {
                                 )
                                 .build()
                         )
-                        .status(TransactionStatus.CREATED)
-                        .type(IncomingTransaction.Type.INCOMING)
-                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                        .counterpartyInformation(
-                            IncomingTransaction.CounterpartyInformation.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
-                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                        .description("Payment for invoice #1234")
-                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                        .fees(10L)
-                        .rateDetails(
-                            IncomingRateDetails.builder()
-                                .gridApiFixedFee(10L)
-                                .gridApiMultiplier(0.925)
-                                .gridApiVariableFeeAmount(30L)
-                                .gridApiVariableFeeRate(0.003)
-                                .build()
-                        )
-                        .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                         .reconciliationInstructions(
                             ReconciliationInstructions.builder()
                                 .reference("UMA-Q12345-REF")
                                 .transactionHash(
                                     "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                                )
+                                .build()
+                        )
+                        .refund(
+                            Refund.builder()
+                                .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                                .reference("UMA-Q12345-REFUND")
+                                .status(Refund.Status.COMPLETED)
+                                .reason(Refund.Reason.TRANSACTION_FAILED)
+                                .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                .build()
+                        )
+                        .sentAmount(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
                                 )
                                 .build()
                         )
@@ -582,9 +671,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -599,7 +690,30 @@ internal class UnwrapWebhookEventTest {
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(JsonValue.from(mapOf<String, Any>()))
+                            .direction(IncomingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
+                            .status(TransactionStatus.CREATED)
+                            .type(IncomingTransaction.Type.INCOMING)
+                            .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                            .counterpartyInformation(
+                                IncomingTransaction.CounterpartyInformation.builder()
+                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                    .build()
+                            )
+                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                            .description("Payment for invoice #1234")
+                            .exchangeRate(1.08)
+                            .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                            .fees(10L)
+                            .pendingReason(
+                                IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                            )
+                            .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                            .receiptDeliveryConfirmedAt(
+                                OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                            )
                             .receivedAmount(
                                 CurrencyAmount.builder()
                                     .amount(12550L)
@@ -613,36 +727,33 @@ internal class UnwrapWebhookEventTest {
                                     )
                                     .build()
                             )
-                            .status(TransactionStatus.CREATED)
-                            .type(IncomingTransaction.Type.INCOMING)
-                            .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                            .counterpartyInformation(
-                                IncomingTransaction.CounterpartyInformation.builder()
-                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                    .build()
-                            )
-                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                            .description("Payment for invoice #1234")
-                            .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                            .fees(10L)
-                            .rateDetails(
-                                IncomingRateDetails.builder()
-                                    .gridApiFixedFee(10L)
-                                    .gridApiMultiplier(0.925)
-                                    .gridApiVariableFeeAmount(30L)
-                                    .gridApiVariableFeeRate(0.003)
-                                    .build()
-                            )
-                            .receiptDeliveryConfirmedAt(
-                                OffsetDateTime.parse("2025-08-15T14:31:00Z")
-                            )
                             .reconciliationInstructions(
                                 ReconciliationInstructions.builder()
                                     .reference("UMA-Q12345-REF")
                                     .transactionHash(
                                         "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                                    )
+                                    .build()
+                            )
+                            .refund(
+                                Refund.builder()
+                                    .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                                    .reference("UMA-Q12345-REFUND")
+                                    .status(Refund.Status.COMPLETED)
+                                    .reason(Refund.Reason.TRANSACTION_FAILED)
+                                    .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                    .build()
+                            )
+                            .sentAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
                                     )
                                     .build()
                             )
@@ -681,6 +792,7 @@ internal class UnwrapWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(OutgoingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -709,6 +821,7 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
+                        .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
@@ -766,7 +879,13 @@ internal class UnwrapWebhookEventTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                        .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
@@ -809,6 +928,7 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .settlementTimelineSeconds(0L)
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -826,9 +946,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -843,6 +965,7 @@ internal class UnwrapWebhookEventTest {
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(JsonValue.from(mapOf<String, Any>()))
+                            .direction(OutgoingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .sentAmount(
                                 CurrencyAmount.builder()
@@ -871,6 +994,7 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                             .description("Payment for invoice #1234")
                             .exchangeRate(1.08)
+                            .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                             .fees(10L)
                             .addPaymentInstruction(
@@ -928,7 +1052,13 @@ internal class UnwrapWebhookEventTest {
                                     .isPlatformAccount(true)
                                     .build()
                             )
+                            .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                            .pendingReason(
+                                OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                            )
+                            .platformFees(5L)
                             .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                            .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                             .rateDetails(
                                 OutgoingRateDetails.builder()
                                     .counterpartyFixedFee(10L)
@@ -973,6 +1103,7 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                            .settlementTimelineSeconds(0L)
                             .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .build()
                     )
@@ -1009,9 +1140,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1081,9 +1214,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1179,9 +1314,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1242,11 +1379,35 @@ internal class UnwrapWebhookEventTest {
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addAgreementConsent(
+                            AgreementConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("2025-10-13")
+                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                .build()
+                        )
+                        .contactVerification(
+                            Customer.ContactVerification.builder()
+                                .email(Customer.ContactVerification.Email.VERIFIED)
+                                .phone(Customer.ContactVerification.Phone.VERIFIED)
+                                .build()
+                        )
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            Customer.EndUserTermsConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .isDeleted(false)
+                        .phoneNumber("+14155551234")
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
@@ -1259,10 +1420,31 @@ internal class UnwrapWebhookEventTest {
                                 .state("CA")
                                 .build()
                         )
+                        .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
+                        .expectedMonthlyTransactionCount(
+                            IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
+                        .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                        .pepStatus(IndividualCustomer.PepStatus.NONE)
+                        .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                        .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                        .sourceOfFundsOtherDescription("Contest winnings")
+                        .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                        .addSourceOfWealthCategory(
+                            IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                        )
+                        .sourceOfWealthOtherDescription("Royalty income from published works")
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -1279,9 +1461,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1297,11 +1481,35 @@ internal class UnwrapWebhookEventTest {
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .addAgreementConsent(
+                                AgreementConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("2025-10-13")
+                                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                    .build()
+                            )
+                            .contactVerification(
+                                Customer.ContactVerification.builder()
+                                    .email(Customer.ContactVerification.Email.VERIFIED)
+                                    .phone(Customer.ContactVerification.Phone.VERIFIED)
+                                    .build()
+                            )
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .addCurrency("USD")
                             .addCurrency("USDC")
                             .email("john.doe@example.com")
+                            .endUserTermsConsent(
+                                Customer.EndUserTermsConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("V1")
+                                    .build()
+                            )
                             .isDeleted(false)
+                            .phoneNumber("+14155551234")
                             .region("US")
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .address(
@@ -1314,10 +1522,40 @@ internal class UnwrapWebhookEventTest {
                                     .state("CA")
                                     .build()
                             )
+                            .annualIncomeRange(
+                                IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K
+                            )
                             .birthDate(LocalDate.parse("1990-01-15"))
+                            .countryOfIssuance("US")
+                            .expectedMonthlyTransactionCount(
+                                IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            )
+                            .expectedMonthlyTransactionVolume(
+                                IndividualCustomer.ExpectedMonthlyTransactionVolume
+                                    .VOLUME_100_K_TO_1_M
+                            )
                             .fullName("John Michael Doe")
+                            .identifier("123-45-6789")
+                            .idType(IndividualCustomer.IdType.SSN)
                             .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                             .nationality("US")
+                            .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                            .pepStatus(IndividualCustomer.PepStatus.NONE)
+                            .purposeOfAccount(
+                                IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                            )
+                            .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                            .addSourceOfFundsCategory(
+                                IndividualCustomer.SourceOfFundsCategory.SALARY
+                            )
+                            .sourceOfFundsOtherDescription("Contest winnings")
+                            .addSourceOfWealthCategory(
+                                IndividualCustomer.SourceOfWealthCategory.SALARY
+                            )
+                            .addSourceOfWealthCategory(
+                                IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                            )
+                            .sourceOfWealthOtherDescription("Royalty income from published works")
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -1383,10 +1621,90 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .status(InternalAccount.Status.ACTIVE)
+                        .totalBalance(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
+                        .cardCapabilities(
+                            InternalAccount.CardCapabilities.builder()
+                                .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
+                                .supportsPanReveal(true)
+                                .supportsSpendLimits(true)
+                                .supportsSpendLimitsAtIssuance(true)
+                                .supportsTransactionCountLimit(true)
+                                .build()
+                        )
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .label("invoice-4417")
                         .privateEnabled(true)
+                        .sweepRule(
+                            InternalAccount.SweepRule.builder()
+                                .destination(
+                                    InternalAccount.SweepRule.Destination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
+                                .description("Rent sweep")
+                                .maximumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .minimumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .platformFeeOverride(
+                                    InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            InternalAccount.SweepRule.PlatformFeeOverride
+                                                .PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
+                                .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                                .remittanceInformation("Unit 4B March")
+                                .build()
+                        )
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -1403,9 +1721,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1459,14 +1779,251 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .status(InternalAccount.Status.ACTIVE)
+                            .totalBalance(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .type(InternalAccount.Type.INTERNAL_FIAT)
                             .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
+                            .cardCapabilities(
+                                InternalAccount.CardCapabilities.builder()
+                                    .supports3dSecurePassword(false)
+                                    .supportsDigitalWalletTokenization(true)
+                                    .supportsPanReveal(true)
+                                    .supportsSpendLimits(true)
+                                    .supportsSpendLimitsAtIssuance(true)
+                                    .supportsTransactionCountLimit(true)
+                                    .build()
+                            )
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .label("invoice-4417")
                             .privateEnabled(true)
+                            .sweepRule(
+                                InternalAccount.SweepRule.builder()
+                                    .destination(
+                                        InternalAccount.SweepRule.Destination.builder()
+                                            .accountId(
+                                                "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                            )
+                                            .paymentRail(
+                                                InternalAccount.SweepRule.Destination.PaymentRail
+                                                    .ACH
+                                            )
+                                            .build()
+                                    )
+                                    .description("Rent sweep")
+                                    .maximumAmount(
+                                        CurrencyAmount.builder()
+                                            .amount(12550L)
+                                            .currency(
+                                                Currency.builder()
+                                                    .code("USD")
+                                                    .decimals(2L)
+                                                    .name("United States Dollar")
+                                                    .symbol("\$")
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .minimumAmount(
+                                        CurrencyAmount.builder()
+                                            .amount(12550L)
+                                            .currency(
+                                                Currency.builder()
+                                                    .code("USD")
+                                                    .decimals(2L)
+                                                    .name("United States Dollar")
+                                                    .symbol("\$")
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .platformFeeOverride(
+                                        InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                            .platformFixedFee(
+                                                InternalAccount.SweepRule.PlatformFeeOverride
+                                                    .PlatformFixedFee
+                                                    .builder()
+                                                    .amount(50L)
+                                                    .currency("USD")
+                                                    .build()
+                                            )
+                                            .platformVariableFeeBps(30L)
+                                            .build()
+                                    )
+                                    .purposeOfPayment(
+                                        InternalAccount.SweepRule.PurposeOfPayment.SELF
+                                    )
+                                    .remittanceInformation("Unit 4B March")
+                                    .build()
+                            )
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(InternalAccountStatusWebhookEvent.Type.INTERNAL_ACCOUNT_BALANCE_UPDATED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofExternalAccountStatusUpdated() {
+        val externalAccountStatusUpdated =
+            ExternalAccountStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    ExternalAccount.builder()
+                        .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .accountInfo(
+                            ExternalAccountInfoOneOf.SlvAccount.builder()
+                                .beneficiary(
+                                    SlvBeneficiary.builder()
+                                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
+                                        .address(
+                                            Address.builder()
+                                                .country("US")
+                                                .line1("123 Main Street")
+                                                .postalCode("94105")
+                                                .city("San Francisco")
+                                                .line2("Apt 4B")
+                                                .state("CA")
+                                                .build()
+                                        )
+                                        .birthDate("birthDate")
+                                        .countryOfResidence("countryOfResidence")
+                                        .email("email")
+                                        .nationality("nationality")
+                                        .phoneNumber("phoneNumber")
+                                        .build()
+                                )
+                                .addPaymentRail(
+                                    ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                                )
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
+                                .build()
+                        )
+                        .currency("USD")
+                        .status(ExternalAccount.Status.ACTIVE)
+                        .beneficiaryVerificationStatus(
+                            ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                        )
+                        .beneficiaryVerifiedData(
+                            BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                        )
+                        .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
+                        .defaultUmaDepositAccount(false)
+                        .ownershipType(ExternalAccount.OwnershipType.FIRST_PARTY)
+                        .platformAccountId("acc_123456789")
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(ExternalAccountStatusWebhookEvent.Type.EXTERNAL_ACCOUNT_STATUS_UPDATED)
+                .build()
+
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofExternalAccountStatusUpdated(externalAccountStatusUpdated)
+
+        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated())
+            .isEqualTo(externalAccountStatusUpdated)
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
+    }
+
+    @Test
+    fun ofExternalAccountStatusUpdatedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofExternalAccountStatusUpdated(
+                ExternalAccountStatusWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        ExternalAccount.builder()
+                            .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .accountInfo(
+                                ExternalAccountInfoOneOf.SlvAccount.builder()
+                                    .beneficiary(
+                                        SlvBeneficiary.builder()
+                                            .beneficiaryType(
+                                                SlvBeneficiary.BeneficiaryType.INDIVIDUAL
+                                            )
+                                            .fullName("fullName")
+                                            .address(
+                                                Address.builder()
+                                                    .country("US")
+                                                    .line1("123 Main Street")
+                                                    .postalCode("94105")
+                                                    .city("San Francisco")
+                                                    .line2("Apt 4B")
+                                                    .state("CA")
+                                                    .build()
+                                            )
+                                            .birthDate("birthDate")
+                                            .countryOfResidence("countryOfResidence")
+                                            .email("email")
+                                            .nationality("nationality")
+                                            .phoneNumber("phoneNumber")
+                                            .build()
+                                    )
+                                    .addPaymentRail(
+                                        ExternalAccountInfoOneOf.SlvAccount.PaymentRail
+                                            .BANK_TRANSFER
+                                    )
+                                    .accountNumber("0123456789")
+                                    .bankAccountType(
+                                        ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                                    )
+                                    .bankName("Banco Cuscatlan")
+                                    .phoneNumber("+50312345678")
+                                    .build()
+                            )
+                            .currency("USD")
+                            .status(ExternalAccount.Status.ACTIVE)
+                            .beneficiaryVerificationStatus(
+                                ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                            )
+                            .beneficiaryVerifiedData(
+                                BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                            )
+                            .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
+                            .defaultUmaDepositAccount(false)
+                            .ownershipType(ExternalAccount.OwnershipType.FIRST_PARTY)
+                            .platformAccountId("acc_123456789")
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(ExternalAccountStatusWebhookEvent.Type.EXTERNAL_ACCOUNT_STATUS_UPDATED)
                     .build()
             )
 
@@ -1518,9 +2075,11 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isEqualTo(verificationUpdate)
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1565,36 +2124,48 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofCardStateChange() {
-        val cardStateChange =
-            CardStateChangeWebhookEvent.builder()
+    fun ofCardStatusChange() {
+        val cardStatusChange =
+            CardStatusChangeWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     Card.builder()
                         .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-                        .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .form(Card.Form.VIRTUAL)
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
-                        .state(Card.State.PENDING_KYC)
+                        .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .maxSpendPerDay(25000L)
+                        .maxSpendPerTransaction(5000L)
+                        .maxTransactionsPerDay(20)
+                        .status(Card.Status.PENDING_KYC)
                         .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
                         .brand(Card.Brand.VISA)
+                        .cardCapabilities(
+                            Card.CardCapabilities.builder()
+                                .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
+                                .supportsPanReveal(true)
+                                .supportsSpendLimits(true)
+                                .supportsSpendLimitsAtIssuance(true)
+                                .supportsTransactionCountLimit(true)
+                                .build()
+                        )
                         .currency("USD")
                         .expMonth(12L)
                         .expYear(2029L)
-                        .issuerRef("lithic_card_4f8d3a2b1c")
+                        .issuerRef("lead_card_7a1b9c3d")
                         .last4("4242")
-                        .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
-                        .platformCardId("card-emp-aary-001")
-                        .stateReason(Card.StateReason.ISSUER_REJECTED)
+                        .platformCardId("card-emp-001")
+                        .processorRef("card_b81c2a4f")
+                        .statusReason(Card.StatusReason.ISSUER_REJECTED)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                .type(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStateChange(cardStateChange)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStatusChange(cardStatusChange)
 
         assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
@@ -1604,45 +2175,55 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isEqualTo(cardStateChange)
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isEqualTo(cardStatusChange)
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
-    fun ofCardStateChangeRoundtrip() {
+    fun ofCardStatusChangeRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardStateChange(
-                CardStateChangeWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCardStatusChange(
+                CardStatusChangeWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
                         Card.builder()
                             .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-                            .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .form(Card.Form.VIRTUAL)
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
-                            )
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
-                            )
-                            .state(Card.State.PENDING_KYC)
+                            .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                            .maxSpendPerDay(25000L)
+                            .maxSpendPerTransaction(5000L)
+                            .maxTransactionsPerDay(20)
+                            .status(Card.Status.PENDING_KYC)
                             .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
                             .brand(Card.Brand.VISA)
+                            .cardCapabilities(
+                                Card.CardCapabilities.builder()
+                                    .supports3dSecurePassword(false)
+                                    .supportsDigitalWalletTokenization(true)
+                                    .supportsPanReveal(true)
+                                    .supportsSpendLimits(true)
+                                    .supportsSpendLimitsAtIssuance(true)
+                                    .supportsTransactionCountLimit(true)
+                                    .build()
+                            )
                             .currency("USD")
                             .expMonth(12L)
                             .expYear(2029L)
-                            .issuerRef("lithic_card_4f8d3a2b1c")
+                            .issuerRef("lead_card_7a1b9c3d")
                             .last4("4242")
-                            .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
-                            .platformCardId("card-emp-aary-001")
-                            .stateReason(Card.StateReason.ISSUER_REJECTED)
+                            .platformCardId("card-emp-001")
+                            .processorRef("card_b81c2a4f")
+                            .statusReason(Card.StatusReason.ISSUER_REJECTED)
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                    .type(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
                     .build()
             )
 
@@ -1656,37 +2237,82 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofCardFundingSourceChange() {
-        val cardFundingSourceChange =
-            CardFundingSourceChangeWebhookEvent.builder()
+    fun ofCardTransaction() {
+        val cardTransaction =
+            CardTransactionWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    Card.builder()
-                        .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-                        .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
-                        .form(Card.Form.VIRTUAL)
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
-                        .state(Card.State.PENDING_KYC)
-                        .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
-                        .brand(Card.Brand.VISA)
-                        .currency("USD")
-                        .expMonth(12L)
-                        .expYear(2029L)
-                        .issuerRef("lithic_card_4f8d3a2b1c")
-                        .last4("4242")
-                        .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
-                        .platformCardId("card-emp-aary-001")
-                        .stateReason(Card.StateReason.ISSUER_REJECTED)
+                    CardTransaction.builder()
+                        .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
+                        .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .authorizedAmount(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                        .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .direction(CardTransaction.Direction.DEBIT)
+                        .merchant(
+                            CardMerchant.builder()
+                                .descriptor("BLUE BOTTLE COFFEE SF")
+                                .city("San Francisco")
+                                .country("US")
+                                .mcc("5814")
+                                .state("CA")
+                                .build()
+                        )
+                        .platformCustomerId("18d3e5f7b4a9c2")
+                        .status(CardTransaction.Status.AUTHORIZED)
+                        .type(CardTransaction.Type.CARD)
+                        .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                        .cardDeclinedReason(CardTransaction.CardDeclinedReason.INSUFFICIENT_FUNDS)
+                        .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                        .description("BLUE BOTTLE COFFEE SF")
+                        .issuerTransactionToken("lithic_txn_b81c2a4f")
+                        .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
+                        .refundedAmount(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .settledAmount(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardFundingSourceChangeWebhookEvent.Type.CARD_FUNDING_SOURCE_CHANGE)
+                .type(CardTransactionWebhookEvent.Type.CARD_TRANSACTION_AUTHORIZED)
                 .build()
 
-        val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardFundingSourceChange(cardFundingSourceChange)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardTransaction(cardTransaction)
 
         assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
@@ -1696,45 +2322,168 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isEqualTo(cardFundingSourceChange)
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isEqualTo(cardTransaction)
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
-    fun ofCardFundingSourceChangeRoundtrip() {
+    fun ofCardTransactionRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardFundingSourceChange(
-                CardFundingSourceChangeWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCardTransaction(
+                CardTransactionWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        Card.builder()
-                            .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-                            .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
-                            .form(Card.Form.VIRTUAL)
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
+                        CardTransaction.builder()
+                            .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
+                            .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                            .authorizedAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
                             )
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
+                            .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                            .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .direction(CardTransaction.Direction.DEBIT)
+                            .merchant(
+                                CardMerchant.builder()
+                                    .descriptor("BLUE BOTTLE COFFEE SF")
+                                    .city("San Francisco")
+                                    .country("US")
+                                    .mcc("5814")
+                                    .state("CA")
+                                    .build()
                             )
-                            .state(Card.State.PENDING_KYC)
-                            .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
-                            .brand(Card.Brand.VISA)
-                            .currency("USD")
-                            .expMonth(12L)
-                            .expYear(2029L)
-                            .issuerRef("lithic_card_4f8d3a2b1c")
-                            .last4("4242")
-                            .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
-                            .platformCardId("card-emp-aary-001")
-                            .stateReason(Card.StateReason.ISSUER_REJECTED)
+                            .platformCustomerId("18d3e5f7b4a9c2")
+                            .status(CardTransaction.Status.AUTHORIZED)
+                            .type(CardTransaction.Type.CARD)
+                            .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                            .cardDeclinedReason(
+                                CardTransaction.CardDeclinedReason.INSUFFICIENT_FUNDS
+                            )
+                            .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                            .description("BLUE BOTTLE COFFEE SF")
+                            .issuerTransactionToken("lithic_txn_b81c2a4f")
+                            .originalTransactionId(
+                                "Transaction:019542f5-b3e7-1d02-0000-000000000099"
+                            )
+                            .refundedAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .settledAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(CardFundingSourceChangeWebhookEvent.Type.CARD_FUNDING_SOURCE_CHANGE)
+                    .type(CardTransactionWebhookEvent.Type.CARD_TRANSACTION_AUTHORIZED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofWalletOperation() {
+        val walletOperation =
+            WalletOperationWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    WalletOperationWebhookEvent.Data.Completed.builder()
+                        .operationId("Operation:019542f5-b3e7-1d02-0000-000000000099")
+                        .operationType(
+                            WalletOperationWebhookEvent.Data.Completed.OperationType.WALLET_EXPORT
+                        )
+                        .requestId("Request:9f7a2c10-5e88-4fb1-bd0e-1c3a8e7b2d45")
+                        .resourceId("InternalAccount:019542f5-b3e7-1d02-0000-000000000005")
+                        .resourceType(
+                            WalletOperationWebhookEvent.Data.Completed.ResourceType.INTERNAL_ACCOUNT
+                        )
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(WalletOperationWebhookEvent.Type.WALLET_OPERATION_COMPLETED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofWalletOperation(walletOperation)
+
+        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isEqualTo(walletOperation)
+    }
+
+    @Test
+    fun ofWalletOperationRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofWalletOperation(
+                WalletOperationWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        WalletOperationWebhookEvent.Data.Completed.builder()
+                            .operationId("Operation:019542f5-b3e7-1d02-0000-000000000099")
+                            .operationType(
+                                WalletOperationWebhookEvent.Data.Completed.OperationType
+                                    .WALLET_EXPORT
+                            )
+                            .requestId("Request:9f7a2c10-5e88-4fb1-bd0e-1c3a8e7b2d45")
+                            .resourceId("InternalAccount:019542f5-b3e7-1d02-0000-000000000005")
+                            .resourceType(
+                                WalletOperationWebhookEvent.Data.Completed.ResourceType
+                                    .INTERNAL_ACCOUNT
+                            )
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(WalletOperationWebhookEvent.Type.WALLET_OPERATION_COMPLETED)
                     .build()
             )
 

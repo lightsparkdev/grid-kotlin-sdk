@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -26,6 +27,15 @@ internal class BusinessCustomerUpdateRequestTest {
                         .state("CA")
                         .build()
                 )
+                .addAgreementConsent(
+                    AgreementConsentRequest.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
                 .businessInfo(
                     BusinessCustomerUpdateRequest.BusinessInfo.builder()
                         .businessType(
@@ -36,6 +46,7 @@ internal class BusinessCustomerUpdateRequestTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerUpdateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -49,18 +60,36 @@ internal class BusinessCustomerUpdateRequestTest {
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
+                        .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(
+                            BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                                .OPERATING_REVENUE
+                        )
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    BusinessCustomerUpdateRequest.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -77,6 +106,16 @@ internal class BusinessCustomerUpdateRequestTest {
                     .state("CA")
                     .build()
             )
+        assertThat(businessCustomerUpdateRequest.agreementConsents())
+            .containsExactly(
+                AgreementConsentRequest.builder()
+                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .ipAddress("198.51.100.24")
+                    .termsVersion("2025-10-13")
+                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                    .build()
+            )
         assertThat(businessCustomerUpdateRequest.businessInfo())
             .isEqualTo(
                 BusinessCustomerUpdateRequest.BusinessInfo.builder()
@@ -88,6 +127,7 @@ internal class BusinessCustomerUpdateRequestTest {
                     .country("US")
                     .doingBusinessAs("Acme")
                     .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                    .addExpectedCounterpartyCountry("US")
                     .expectedMonthlyTransactionCount(
                         BusinessCustomerUpdateRequest.BusinessInfo.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500
@@ -99,19 +139,38 @@ internal class BusinessCustomerUpdateRequestTest {
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
+                    .naicsCode("541511")
+                    .primaryContactFirstName("Jane")
+                    .primaryContactLastName("Smith")
                     .purposeOfAccount(
                         BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                             .CONTRACTOR_PAYOUTS
                     )
+                    .purposeOfAccountOtherDescription("Escrow for equipment leases")
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
+                    .addSourceOfFundsCategory(
+                        BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                            .OPERATING_REVENUE
+                    )
+                    .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                     .taxId("47-1234567")
                     .build()
             )
         assertThat(businessCustomerUpdateRequest.currencies()).containsExactly("USD", "EUR", "USDC")
         assertThat(businessCustomerUpdateRequest.email()).isEqualTo("john.doe@example.com")
+        assertThat(businessCustomerUpdateRequest.endUserTermsConsent())
+            .isEqualTo(
+                BusinessCustomerUpdateRequest.EndUserTermsConsent.builder()
+                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .ipAddress("198.51.100.24")
+                    .termsVersion("V1")
+                    .build()
+            )
         assertThat(businessCustomerUpdateRequest.kybStatus())
             .isEqualTo(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+        assertThat(businessCustomerUpdateRequest.phoneNumber()).isEqualTo("+14155551234")
         assertThat(businessCustomerUpdateRequest.umaAddress())
             .isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -132,6 +191,15 @@ internal class BusinessCustomerUpdateRequestTest {
                         .state("CA")
                         .build()
                 )
+                .addAgreementConsent(
+                    AgreementConsentRequest.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
                 .businessInfo(
                     BusinessCustomerUpdateRequest.BusinessInfo.builder()
                         .businessType(
@@ -142,6 +210,7 @@ internal class BusinessCustomerUpdateRequestTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerUpdateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -155,18 +224,36 @@ internal class BusinessCustomerUpdateRequestTest {
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
+                        .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(
+                            BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                                .OPERATING_REVENUE
+                        )
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    BusinessCustomerUpdateRequest.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 

@@ -19,12 +19,12 @@ import java.util.Objects
 
 /**
  * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
- * `EMAIL_OTP` credentials the body is a plain `AuthMethod` (wrapped as `AuthMethodResponse` to
- * disambiguate the oneOf). For `PASSKEY` credentials the body is a `PasskeyAuthChallenge` — the
- * passkey auth method fields plus the WebAuthn `credentialId`, Grid-issued `challenge`,
- * `requestId`, and `expiresAt` that drive the subsequent assertion. OAuth credentials do not use
- * the challenge endpoint. Registration responses from `POST /auth/credentials` use the simpler
- * `AuthMethodResponse` shape directly for all three credential types.
+ * `EMAIL_OTP` and `SMS_OTP` credentials the body is a plain `AuthMethod` (wrapped as
+ * `AuthMethodResponse` to disambiguate the oneOf). For `PASSKEY` credentials the body is a
+ * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`,
+ * Grid-issued `challenge`, `requestId`, and `expiresAt` that drive the subsequent assertion. OAuth
+ * credentials do not use the challenge endpoint. Registration responses from `POST
+ * /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all credential types.
  */
 @JsonDeserialize(using = AuthCredentialResponseOneOf.Deserializer::class)
 @JsonSerialize(using = AuthCredentialResponseOneOf.Serializer::class)
@@ -37,17 +37,17 @@ private constructor(
 
     /**
      * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
-     * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf` for
-     * the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only difference from
-     * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
-     * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
-     * ambiguously match both branches.
+     * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` / `SMS_OTP`
+     * branches of `POST /auth/credentials/{id}/challenge`. The only difference from `AuthMethod` is
+     * `unevaluatedProperties: false`, which disambiguates the oneOf against `PasskeyAuthChallenge`
+     * — without the strictness, an `AuthMethod` with extra fields would ambiguously match both
+     * branches.
      *
-     * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
-     * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
-     * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
-     * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
-     * /auth/credentials/{id}/challenge` if it is absent.
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+     * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in
+     * the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code ever
+     * transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call
+     * `POST /auth/credentials/{id}/challenge` if it is absent.
      */
     fun methodResponse(): AuthMethodResponse? = methodResponse
 
@@ -56,9 +56,9 @@ private constructor(
      * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
      * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
      * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
-     * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
-     * encodes this string as the WebAuthn challenge and signs it with the passkey to produce the
-     * assertion submitted to `POST /auth/credentials/{id}/verify`.
+     * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+     * this string as the WebAuthn challenge and signs it with the passkey to produce the assertion
+     * submitted to `POST /auth/credentials/{id}/verify`.
      */
     fun passkeyAuthChallenge(): PasskeyAuthChallenge? = passkeyAuthChallenge
 
@@ -68,17 +68,17 @@ private constructor(
 
     /**
      * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
-     * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf` for
-     * the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only difference from
-     * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
-     * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
-     * ambiguously match both branches.
+     * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` / `SMS_OTP`
+     * branches of `POST /auth/credentials/{id}/challenge`. The only difference from `AuthMethod` is
+     * `unevaluatedProperties: false`, which disambiguates the oneOf against `PasskeyAuthChallenge`
+     * — without the strictness, an `AuthMethod` with extra fields would ambiguously match both
+     * branches.
      *
-     * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
-     * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
-     * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
-     * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
-     * /auth/credentials/{id}/challenge` if it is absent.
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+     * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in
+     * the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code ever
+     * transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call
+     * `POST /auth/credentials/{id}/challenge` if it is absent.
      */
     fun asMethodResponse(): AuthMethodResponse = methodResponse.getOrThrow("methodResponse")
 
@@ -87,9 +87,9 @@ private constructor(
      * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
      * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
      * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
-     * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
-     * encodes this string as the WebAuthn challenge and signs it with the passkey to produce the
-     * assertion submitted to `POST /auth/credentials/{id}/verify`.
+     * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+     * this string as the WebAuthn challenge and signs it with the passkey to produce the assertion
+     * submitted to `POST /auth/credentials/{id}/verify`.
      */
     fun asPasskeyAuthChallenge(): PasskeyAuthChallenge =
         passkeyAuthChallenge.getOrThrow("passkeyAuthChallenge")
@@ -207,17 +207,17 @@ private constructor(
 
         /**
          * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
-         * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf`
-         * for the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only
-         * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the
-         * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
-         * fields would ambiguously match both branches.
+         * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` /
+         * `SMS_OTP` branches of `POST /auth/credentials/{id}/challenge`. The only difference from
+         * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
+         * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
+         * ambiguously match both branches.
          *
-         * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
-         * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
-         * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
-         * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
-         * /auth/credentials/{id}/challenge` if it is absent.
+         * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+         * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code
+         * in the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code
+         * ever transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit
+         * it; call `POST /auth/credentials/{id}/challenge` if it is absent.
          */
         fun ofMethodResponse(methodResponse: AuthMethodResponse) =
             AuthCredentialResponseOneOf(methodResponse = methodResponse)
@@ -227,9 +227,9 @@ private constructor(
          * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
          * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
          * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
-         * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
-         * encodes this string as the WebAuthn challenge and signs it with the passkey to produce
-         * the assertion submitted to `POST /auth/credentials/{id}/verify`.
+         * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+         * this string as the WebAuthn challenge and signs it with the passkey to produce the
+         * assertion submitted to `POST /auth/credentials/{id}/verify`.
          */
         fun ofPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge) =
             AuthCredentialResponseOneOf(passkeyAuthChallenge = passkeyAuthChallenge)
@@ -243,17 +243,17 @@ private constructor(
 
         /**
          * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
-         * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf`
-         * for the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only
-         * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the
-         * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
-         * fields would ambiguously match both branches.
+         * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` /
+         * `SMS_OTP` branches of `POST /auth/credentials/{id}/challenge`. The only difference from
+         * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
+         * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
+         * ambiguously match both branches.
          *
-         * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
-         * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
-         * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
-         * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
-         * /auth/credentials/{id}/challenge` if it is absent.
+         * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+         * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code
+         * in the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code
+         * ever transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit
+         * it; call `POST /auth/credentials/{id}/challenge` if it is absent.
          */
         fun visitMethodResponse(methodResponse: AuthMethodResponse): T
 
@@ -262,9 +262,9 @@ private constructor(
          * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
          * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
          * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
-         * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
-         * encodes this string as the WebAuthn challenge and signs it with the passkey to produce
-         * the assertion submitted to `POST /auth/credentials/{id}/verify`.
+         * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+         * this string as the WebAuthn challenge and signs it with the passkey to produce the
+         * assertion submitted to `POST /auth/credentials/{id}/verify`.
          */
         fun visitPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge): T
 

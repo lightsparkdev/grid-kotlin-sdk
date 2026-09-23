@@ -27,6 +27,14 @@ import java.util.Objects
  *    returns `200` with `encryptedWalletCredentials`, which the client decrypts with the matching
  *    private key.
  *
+ * The export may not settle within that request: an approval- or consensus-gated wallet-provider
+ * activity answers `200` with `status: "PROCESSING"` instead. The credentials are never stored
+ * server-side, so collecting them is the client's job — re-send the byte-identical signed retry
+ * (same headers, same body) until it returns `encryptedWalletCredentials`. The `Request-Id`
+ * challenge stays usable until an attempt actually delivers them, so a `PROCESSING` response never
+ * burns it; a delivered export does, and a later re-send is then rejected with `401`. Subscribe to
+ * `wallet_operation.completed` to learn when re-sending will succeed rather than polling blind.
+ *
  * The `clientPublicKey` is ephemeral: generate a fresh P-256 keypair for this export and discard
  * the private key after decrypting. Do not reuse the keypair from any prior verify call — that
  * private key was already discarded after decrypting the session signing key it was issued against.

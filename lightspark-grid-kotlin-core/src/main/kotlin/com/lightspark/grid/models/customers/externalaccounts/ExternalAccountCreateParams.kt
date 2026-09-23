@@ -2,25 +2,186 @@
 
 package com.lightspark.grid.models.customers.externalaccounts
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.BaseDeserializer
+import com.lightspark.grid.core.BaseSerializer
+import com.lightspark.grid.core.Enum
+import com.lightspark.grid.core.ExcludeMissing
+import com.lightspark.grid.core.JsonField
+import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
+import com.lightspark.grid.models.BdtExternalAccountCreateInfo
+import com.lightspark.grid.models.BrlExternalAccountCreateInfo
+import com.lightspark.grid.models.BwpExternalAccountCreateInfo
+import com.lightspark.grid.models.CadExternalAccountCreateInfo
+import com.lightspark.grid.models.CopExternalAccountCreateInfo
+import com.lightspark.grid.models.DkkExternalAccountCreateInfo
+import com.lightspark.grid.models.EgpExternalAccountCreateInfo
+import com.lightspark.grid.models.EurExternalAccountCreateInfo
+import com.lightspark.grid.models.GbpExternalAccountCreateInfo
+import com.lightspark.grid.models.GhsExternalAccountCreateInfo
+import com.lightspark.grid.models.GtqExternalAccountCreateInfo
+import com.lightspark.grid.models.HkdExternalAccountCreateInfo
+import com.lightspark.grid.models.HtgExternalAccountCreateInfo
+import com.lightspark.grid.models.IdrExternalAccountCreateInfo
+import com.lightspark.grid.models.InrExternalAccountCreateInfo
+import com.lightspark.grid.models.JmdExternalAccountCreateInfo
+import com.lightspark.grid.models.KesExternalAccountCreateInfo
+import com.lightspark.grid.models.MwkExternalAccountCreateInfo
+import com.lightspark.grid.models.MxnExternalAccountCreateInfo
+import com.lightspark.grid.models.MyrExternalAccountCreateInfo
+import com.lightspark.grid.models.NgnExternalAccountCreateInfo
+import com.lightspark.grid.models.PhpExternalAccountCreateInfo
+import com.lightspark.grid.models.PkrExternalAccountCreateInfo
+import com.lightspark.grid.models.RwfExternalAccountCreateInfo
+import com.lightspark.grid.models.SgdExternalAccountCreateInfo
+import com.lightspark.grid.models.SlvBeneficiary
+import com.lightspark.grid.models.SlvExternalAccountCreateInfo
+import com.lightspark.grid.models.SwiftExternalAccountCreateInfo
+import com.lightspark.grid.models.ThbExternalAccountCreateInfo
+import com.lightspark.grid.models.TzsExternalAccountCreateInfo
+import com.lightspark.grid.models.UgxExternalAccountCreateInfo
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.VndExternalAccountCreateInfo
+import com.lightspark.grid.models.XafExternalAccountCreateInfo
+import com.lightspark.grid.models.XofExternalAccountCreateInfo
+import com.lightspark.grid.models.ZarExternalAccountCreateInfo
+import com.lightspark.grid.models.ZmwExternalAccountCreateInfo
+import java.util.Collections
 import java.util.Objects
 
 /** Register a new external bank account for a customer. */
 class ExternalAccountCreateParams
 private constructor(
-    private val externalAccountCreate: ExternalAccountCreate,
+    private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun externalAccountCreate(): ExternalAccountCreate = externalAccountCreate
+    /**
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: accountNumber, bankName
+     * - MOBILE_MONEY: bankName, phoneNumber
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun accountInfo(): AccountInfo = body.accountInfo()
 
-    fun _additionalBodyProperties(): Map<String, JsonValue> =
-        externalAccountCreate._additionalProperties()
+    /**
+     * The ISO 4217 currency code
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun currency(): String = body.currency()
+
+    /**
+     * The ID of the customer who will own the external account. To create an external account owned
+     * by the platform itself, use `POST /platform/external-accounts` instead.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerId(): String = body.customerId()
+
+    /**
+     * Whether to set the external account as the default UMA deposit account. When set to true,
+     * incoming payments to this customer's UMA address will be automatically deposited into this
+     * external account. False if not provided. Note that only one external account can be set as
+     * the default UMA deposit account for a customer, so if there is already a default UMA deposit
+     * account, this will override the existing default UMA deposit account. If there is no default
+     * UMA deposit account, incoming UMA payments will be deposited into the primary internal
+     * account for the customer.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun defaultUmaDepositAccount(): Boolean? = body.defaultUmaDepositAccount()
+
+    /**
+     * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to someone
+     * else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external accounts on
+     * platforms subject to counterparty requirements — for example, under the EU Travel Rule or
+     * similar requirements in other regions; recommended for all other accounts, where providing it
+     * can unlock additional capabilities and smoother compliance handling.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun ownershipType(): OwnershipType? = body.ownershipType()
+
+    /**
+     * Your platform's identifier for the account in your system. This can be used to reference the
+     * account by your own identifier.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun platformAccountId(): String? = body.platformAccountId()
+
+    /**
+     * Returns the raw JSON value of [accountInfo].
+     *
+     * Unlike [accountInfo], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _accountInfo(): JsonField<AccountInfo> = body._accountInfo()
+
+    /**
+     * Returns the raw JSON value of [currency].
+     *
+     * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _currency(): JsonField<String> = body._currency()
+
+    /**
+     * Returns the raw JSON value of [customerId].
+     *
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _customerId(): JsonField<String> = body._customerId()
+
+    /**
+     * Returns the raw JSON value of [defaultUmaDepositAccount].
+     *
+     * Unlike [defaultUmaDepositAccount], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    fun _defaultUmaDepositAccount(): JsonField<Boolean> = body._defaultUmaDepositAccount()
+
+    /**
+     * Returns the raw JSON value of [ownershipType].
+     *
+     * Unlike [ownershipType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _ownershipType(): JsonField<OwnershipType> = body._ownershipType()
+
+    /**
+     * Returns the raw JSON value of [platformAccountId].
+     *
+     * Unlike [platformAccountId], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    fun _platformAccountId(): JsonField<String> = body._platformAccountId()
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -37,7 +198,9 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .externalAccountCreate()
+         * .accountInfo()
+         * .currency()
+         * .customerId()
          * ```
          */
         fun builder() = Builder()
@@ -46,18 +209,460 @@ private constructor(
     /** A builder for [ExternalAccountCreateParams]. */
     class Builder internal constructor() {
 
-        private var externalAccountCreate: ExternalAccountCreate? = null
+        private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(externalAccountCreateParams: ExternalAccountCreateParams) = apply {
-            externalAccountCreate = externalAccountCreateParams.externalAccountCreate
+            body = externalAccountCreateParams.body.toBuilder()
             additionalHeaders = externalAccountCreateParams.additionalHeaders.toBuilder()
             additionalQueryParams = externalAccountCreateParams.additionalQueryParams.toBuilder()
         }
 
-        fun externalAccountCreate(externalAccountCreate: ExternalAccountCreate) = apply {
-            this.externalAccountCreate = externalAccountCreate
+        /**
+         * Sets the entire request body.
+         *
+         * This is generally only useful if you are already constructing the body separately.
+         * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [accountInfo]
+         * - [currency]
+         * - [customerId]
+         * - [defaultUmaDepositAccount]
+         * - [ownershipType]
+         * - etc.
+         */
+        fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun accountInfo(accountInfo: AccountInfo) = apply { body.accountInfo(accountInfo) }
+
+        /**
+         * Sets [Builder.accountInfo] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountInfo] with a well-typed [AccountInfo] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun accountInfo(accountInfo: JsonField<AccountInfo>) = apply {
+            body.accountInfo(accountInfo)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofAedAccount(aedAccount)`. */
+        fun accountInfo(aedAccount: AedExternalAccountCreateInfo) = apply {
+            body.accountInfo(aedAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofBdtAccount(bdtAccount)`. */
+        fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) = apply {
+            body.accountInfo(bdtAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofBrlAccount(brlAccount)`. */
+        fun accountInfo(brlAccount: BrlExternalAccountCreateInfo) = apply {
+            body.accountInfo(brlAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofBwpAccount(bwpAccount)`. */
+        fun accountInfo(bwpAccount: BwpExternalAccountCreateInfo) = apply {
+            body.accountInfo(bwpAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofCadAccount(cadAccount)`. */
+        fun accountInfo(cadAccount: CadExternalAccountCreateInfo) = apply {
+            body.accountInfo(cadAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofCnyAccount(cnyAccount)`. */
+        fun accountInfo(cnyAccount: AccountInfo.CnyAccount) = apply { body.accountInfo(cnyAccount) }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
+        fun accountInfo(copAccount: CopExternalAccountCreateInfo) = apply {
+            body.accountInfo(copAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofDkkAccount(dkkAccount)`. */
+        fun accountInfo(dkkAccount: DkkExternalAccountCreateInfo) = apply {
+            body.accountInfo(dkkAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
+        fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) = apply {
+            body.accountInfo(egpAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofEurAccount(eurAccount)`. */
+        fun accountInfo(eurAccount: EurExternalAccountCreateInfo) = apply {
+            body.accountInfo(eurAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofGbpAccount(gbpAccount)`. */
+        fun accountInfo(gbpAccount: GbpExternalAccountCreateInfo) = apply {
+            body.accountInfo(gbpAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
+        fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) = apply {
+            body.accountInfo(ghsAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
+        fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) = apply {
+            body.accountInfo(gtqAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofHkdAccount(hkdAccount)`. */
+        fun accountInfo(hkdAccount: HkdExternalAccountCreateInfo) = apply {
+            body.accountInfo(hkdAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofHtgAccount(htgAccount)`. */
+        fun accountInfo(htgAccount: HtgExternalAccountCreateInfo) = apply {
+            body.accountInfo(htgAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofIdrAccount(idrAccount)`. */
+        fun accountInfo(idrAccount: IdrExternalAccountCreateInfo) = apply {
+            body.accountInfo(idrAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofInrAccount(inrAccount)`. */
+        fun accountInfo(inrAccount: InrExternalAccountCreateInfo) = apply {
+            body.accountInfo(inrAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * InrExternalAccountCreateInfo.builder()
+         *     .accountType(InrExternalAccountCreateInfo.AccountType.INR_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun inrAccountAccountInfo(beneficiary: InrExternalAccountCreateInfo.Beneficiary) = apply {
+            body.inrAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with
+         * `InrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun inrAccountAccountInfo(individual: InrBeneficiary) = apply {
+            body.inrAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with the following:
+         * ```kotlin
+         * InrBeneficiary.builder()
+         *     .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualInrAccountAccountInfo(fullName: String) = apply {
+            body.individualInrAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with
+         * `InrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun inrAccountAccountInfo(business: InrExternalAccountCreateInfo.Beneficiary.Business) =
+            apply {
+                body.inrAccountAccountInfo(business)
+            }
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with the following:
+         * ```kotlin
+         * InrExternalAccountCreateInfo.Beneficiary.Business.builder()
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessInrAccountAccountInfo(legalName: String) = apply {
+            body.businessInrAccountAccountInfo(legalName)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
+        fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) = apply {
+            body.accountInfo(jmdAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofKesAccount(kesAccount)`. */
+        fun accountInfo(kesAccount: KesExternalAccountCreateInfo) = apply {
+            body.accountInfo(kesAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofMwkAccount(mwkAccount)`. */
+        fun accountInfo(mwkAccount: MwkExternalAccountCreateInfo) = apply {
+            body.accountInfo(mwkAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofMxnAccount(mxnAccount)`. */
+        fun accountInfo(mxnAccount: MxnExternalAccountCreateInfo) = apply {
+            body.accountInfo(mxnAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofMyrAccount(myrAccount)`. */
+        fun accountInfo(myrAccount: MyrExternalAccountCreateInfo) = apply {
+            body.accountInfo(myrAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofNgnAccount(ngnAccount)`. */
+        fun accountInfo(ngnAccount: NgnExternalAccountCreateInfo) = apply {
+            body.accountInfo(ngnAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPhpAccount(phpAccount)`. */
+        fun accountInfo(phpAccount: PhpExternalAccountCreateInfo) = apply {
+            body.accountInfo(phpAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
+        fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) = apply {
+            body.accountInfo(pkrAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofRwfAccount(rwfAccount)`. */
+        fun accountInfo(rwfAccount: RwfExternalAccountCreateInfo) = apply {
+            body.accountInfo(rwfAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSgdAccount(sgdAccount)`. */
+        fun accountInfo(sgdAccount: SgdExternalAccountCreateInfo) = apply {
+            body.accountInfo(sgdAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSlvAccount(slvAccount)`. */
+        fun accountInfo(slvAccount: SlvExternalAccountCreateInfo) = apply {
+            body.accountInfo(slvAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * SlvExternalAccountCreateInfo.builder()
+         *     .accountType(SlvExternalAccountCreateInfo.AccountType.SLV_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun slvAccountAccountInfo(beneficiary: SlvExternalAccountCreateInfo.Beneficiary) = apply {
+            body.slvAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with
+         * `SlvExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun slvAccountAccountInfo(individual: SlvBeneficiary) = apply {
+            body.slvAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with the following:
+         * ```kotlin
+         * SlvBeneficiary.builder()
+         *     .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualSlvAccountAccountInfo(fullName: String) = apply {
+            body.individualSlvAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with
+         * `SlvExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun slvAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.slvAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessSlvAccountAccountInfo(legalName: String) = apply {
+            body.businessSlvAccountAccountInfo(legalName)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofThbAccount(thbAccount)`. */
+        fun accountInfo(thbAccount: ThbExternalAccountCreateInfo) = apply {
+            body.accountInfo(thbAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofTzsAccount(tzsAccount)`. */
+        fun accountInfo(tzsAccount: TzsExternalAccountCreateInfo) = apply {
+            body.accountInfo(tzsAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofUgxAccount(ugxAccount)`. */
+        fun accountInfo(ugxAccount: UgxExternalAccountCreateInfo) = apply {
+            body.accountInfo(ugxAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofUsdAccount(usdAccount)`. */
+        fun accountInfo(usdAccount: UsdExternalAccountCreateInfo) = apply {
+            body.accountInfo(usdAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofVndAccount(vndAccount)`. */
+        fun accountInfo(vndAccount: VndExternalAccountCreateInfo) = apply {
+            body.accountInfo(vndAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofXafAccount(xafAccount)`. */
+        fun accountInfo(xafAccount: XafExternalAccountCreateInfo) = apply {
+            body.accountInfo(xafAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofXofAccount(xofAccount)`. */
+        fun accountInfo(xofAccount: XofExternalAccountCreateInfo) = apply {
+            body.accountInfo(xofAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofZarAccount(zarAccount)`. */
+        fun accountInfo(zarAccount: ZarExternalAccountCreateInfo) = apply {
+            body.accountInfo(zarAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofZmwAccount(zmwAccount)`. */
+        fun accountInfo(zmwAccount: ZmwExternalAccountCreateInfo) = apply {
+            body.accountInfo(zmwAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSwiftAccount(swiftAccount)`. */
+        fun accountInfo(swiftAccount: SwiftExternalAccountCreateInfo) = apply {
+            body.accountInfo(swiftAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofIlsAccount(ilsAccount)`. */
+        fun accountInfo(ilsAccount: AccountInfo.IlsAccount) = apply { body.accountInfo(ilsAccount) }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofTryAccount(tryAccount)`. */
+        fun accountInfo(tryAccount: AccountInfo.TryAccount) = apply { body.accountInfo(tryAccount) }
+
+        /** The ISO 4217 currency code */
+        fun currency(currency: String) = apply { body.currency(currency) }
+
+        /**
+         * Sets [Builder.currency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.currency] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun currency(currency: JsonField<String>) = apply { body.currency(currency) }
+
+        /**
+         * The ID of the customer who will own the external account. To create an external account
+         * owned by the platform itself, use `POST /platform/external-accounts` instead.
+         */
+        fun customerId(customerId: String) = apply { body.customerId(customerId) }
+
+        /**
+         * Sets [Builder.customerId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun customerId(customerId: JsonField<String>) = apply { body.customerId(customerId) }
+
+        /**
+         * Whether to set the external account as the default UMA deposit account. When set to true,
+         * incoming payments to this customer's UMA address will be automatically deposited into
+         * this external account. False if not provided. Note that only one external account can be
+         * set as the default UMA deposit account for a customer, so if there is already a default
+         * UMA deposit account, this will override the existing default UMA deposit account. If
+         * there is no default UMA deposit account, incoming UMA payments will be deposited into the
+         * primary internal account for the customer.
+         */
+        fun defaultUmaDepositAccount(defaultUmaDepositAccount: Boolean) = apply {
+            body.defaultUmaDepositAccount(defaultUmaDepositAccount)
+        }
+
+        /**
+         * Sets [Builder.defaultUmaDepositAccount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.defaultUmaDepositAccount] with a well-typed [Boolean]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun defaultUmaDepositAccount(defaultUmaDepositAccount: JsonField<Boolean>) = apply {
+            body.defaultUmaDepositAccount(defaultUmaDepositAccount)
+        }
+
+        /**
+         * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to
+         * someone else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external
+         * accounts on platforms subject to counterparty requirements — for example, under the EU
+         * Travel Rule or similar requirements in other regions; recommended for all other accounts,
+         * where providing it can unlock additional capabilities and smoother compliance handling.
+         */
+        fun ownershipType(ownershipType: OwnershipType) = apply {
+            body.ownershipType(ownershipType)
+        }
+
+        /**
+         * Sets [Builder.ownershipType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.ownershipType] with a well-typed [OwnershipType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun ownershipType(ownershipType: JsonField<OwnershipType>) = apply {
+            body.ownershipType(ownershipType)
+        }
+
+        /**
+         * Your platform's identifier for the account in your system. This can be used to reference
+         * the account by your own identifier.
+         */
+        fun platformAccountId(platformAccountId: String) = apply {
+            body.platformAccountId(platformAccountId)
+        }
+
+        /**
+         * Sets [Builder.platformAccountId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.platformAccountId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun platformAccountId(platformAccountId: JsonField<String>) = apply {
+            body.platformAccountId(platformAccountId)
+        }
+
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            body.additionalProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            body.putAdditionalProperty(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                body.putAllAdditionalProperties(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            body.removeAllAdditionalProperties(keys)
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -165,24 +770,7017 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .externalAccountCreate()
+         * .accountInfo()
+         * .currency()
+         * .customerId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ExternalAccountCreateParams =
             ExternalAccountCreateParams(
-                checkRequired("externalAccountCreate", externalAccountCreate),
+                body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): ExternalAccountCreate = externalAccountCreate
+    fun _body(): Body = body
 
     override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
+
+    class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val accountInfo: JsonField<AccountInfo>,
+        private val currency: JsonField<String>,
+        private val customerId: JsonField<String>,
+        private val defaultUmaDepositAccount: JsonField<Boolean>,
+        private val ownershipType: JsonField<OwnershipType>,
+        private val platformAccountId: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("accountInfo")
+            @ExcludeMissing
+            accountInfo: JsonField<AccountInfo> = JsonMissing.of(),
+            @JsonProperty("currency")
+            @ExcludeMissing
+            currency: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("customerId")
+            @ExcludeMissing
+            customerId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("defaultUmaDepositAccount")
+            @ExcludeMissing
+            defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("ownershipType")
+            @ExcludeMissing
+            ownershipType: JsonField<OwnershipType> = JsonMissing.of(),
+            @JsonProperty("platformAccountId")
+            @ExcludeMissing
+            platformAccountId: JsonField<String> = JsonMissing.of(),
+        ) : this(
+            accountInfo,
+            currency,
+            customerId,
+            defaultUmaDepositAccount,
+            ownershipType,
+            platformAccountId,
+            mutableMapOf(),
+        )
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun accountInfo(): AccountInfo = accountInfo.getRequired("accountInfo")
+
+        /**
+         * The ISO 4217 currency code
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun currency(): String = currency.getRequired("currency")
+
+        /**
+         * The ID of the customer who will own the external account. To create an external account
+         * owned by the platform itself, use `POST /platform/external-accounts` instead.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun customerId(): String = customerId.getRequired("customerId")
+
+        /**
+         * Whether to set the external account as the default UMA deposit account. When set to true,
+         * incoming payments to this customer's UMA address will be automatically deposited into
+         * this external account. False if not provided. Note that only one external account can be
+         * set as the default UMA deposit account for a customer, so if there is already a default
+         * UMA deposit account, this will override the existing default UMA deposit account. If
+         * there is no default UMA deposit account, incoming UMA payments will be deposited into the
+         * primary internal account for the customer.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun defaultUmaDepositAccount(): Boolean? =
+            defaultUmaDepositAccount.getNullable("defaultUmaDepositAccount")
+
+        /**
+         * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to
+         * someone else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external
+         * accounts on platforms subject to counterparty requirements — for example, under the EU
+         * Travel Rule or similar requirements in other regions; recommended for all other accounts,
+         * where providing it can unlock additional capabilities and smoother compliance handling.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun ownershipType(): OwnershipType? = ownershipType.getNullable("ownershipType")
+
+        /**
+         * Your platform's identifier for the account in your system. This can be used to reference
+         * the account by your own identifier.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun platformAccountId(): String? = platformAccountId.getNullable("platformAccountId")
+
+        /**
+         * Returns the raw JSON value of [accountInfo].
+         *
+         * Unlike [accountInfo], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountInfo")
+        @ExcludeMissing
+        fun _accountInfo(): JsonField<AccountInfo> = accountInfo
+
+        /**
+         * Returns the raw JSON value of [currency].
+         *
+         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+        /**
+         * Returns the raw JSON value of [customerId].
+         *
+         * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("customerId")
+        @ExcludeMissing
+        fun _customerId(): JsonField<String> = customerId
+
+        /**
+         * Returns the raw JSON value of [defaultUmaDepositAccount].
+         *
+         * Unlike [defaultUmaDepositAccount], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("defaultUmaDepositAccount")
+        @ExcludeMissing
+        fun _defaultUmaDepositAccount(): JsonField<Boolean> = defaultUmaDepositAccount
+
+        /**
+         * Returns the raw JSON value of [ownershipType].
+         *
+         * Unlike [ownershipType], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("ownershipType")
+        @ExcludeMissing
+        fun _ownershipType(): JsonField<OwnershipType> = ownershipType
+
+        /**
+         * Returns the raw JSON value of [platformAccountId].
+         *
+         * Unlike [platformAccountId], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("platformAccountId")
+        @ExcludeMissing
+        fun _platformAccountId(): JsonField<String> = platformAccountId
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Body].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .accountInfo()
+             * .currency()
+             * .customerId()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Body]. */
+        class Builder internal constructor() {
+
+            private var accountInfo: JsonField<AccountInfo>? = null
+            private var currency: JsonField<String>? = null
+            private var customerId: JsonField<String>? = null
+            private var defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of()
+            private var ownershipType: JsonField<OwnershipType> = JsonMissing.of()
+            private var platformAccountId: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(body: Body) = apply {
+                accountInfo = body.accountInfo
+                currency = body.currency
+                customerId = body.customerId
+                defaultUmaDepositAccount = body.defaultUmaDepositAccount
+                ownershipType = body.ownershipType
+                platformAccountId = body.platformAccountId
+                additionalProperties = body.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun accountInfo(accountInfo: AccountInfo) = accountInfo(JsonField.of(accountInfo))
+
+            /**
+             * Sets [Builder.accountInfo] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.accountInfo] with a well-typed [AccountInfo] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun accountInfo(accountInfo: JsonField<AccountInfo>) = apply {
+                this.accountInfo = accountInfo
+            }
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofAedAccount(aedAccount)`. */
+            fun accountInfo(aedAccount: AedExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofAedAccount(aedAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofBdtAccount(bdtAccount)`. */
+            fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofBdtAccount(bdtAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofBrlAccount(brlAccount)`. */
+            fun accountInfo(brlAccount: BrlExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofBrlAccount(brlAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofBwpAccount(bwpAccount)`. */
+            fun accountInfo(bwpAccount: BwpExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofBwpAccount(bwpAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofCadAccount(cadAccount)`. */
+            fun accountInfo(cadAccount: CadExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofCadAccount(cadAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofCnyAccount(cnyAccount)`. */
+            fun accountInfo(cnyAccount: AccountInfo.CnyAccount) =
+                accountInfo(AccountInfo.ofCnyAccount(cnyAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
+            fun accountInfo(copAccount: CopExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofCopAccount(copAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofDkkAccount(dkkAccount)`. */
+            fun accountInfo(dkkAccount: DkkExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofDkkAccount(dkkAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
+            fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofEgpAccount(egpAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofEurAccount(eurAccount)`. */
+            fun accountInfo(eurAccount: EurExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofEurAccount(eurAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofGbpAccount(gbpAccount)`. */
+            fun accountInfo(gbpAccount: GbpExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofGbpAccount(gbpAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
+            fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofGhsAccount(ghsAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
+            fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofGtqAccount(gtqAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofHkdAccount(hkdAccount)`. */
+            fun accountInfo(hkdAccount: HkdExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofHkdAccount(hkdAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofHtgAccount(htgAccount)`. */
+            fun accountInfo(htgAccount: HtgExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofHtgAccount(htgAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofIdrAccount(idrAccount)`. */
+            fun accountInfo(idrAccount: IdrExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofIdrAccount(idrAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofInrAccount(inrAccount)`. */
+            fun accountInfo(inrAccount: InrExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofInrAccount(inrAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * InrExternalAccountCreateInfo.builder()
+             *     .accountType(InrExternalAccountCreateInfo.AccountType.INR_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun inrAccountAccountInfo(beneficiary: InrExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    InrExternalAccountCreateInfo.builder()
+                        .accountType(InrExternalAccountCreateInfo.AccountType.INR_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [inrAccountAccountInfo] with
+             * `InrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun inrAccountAccountInfo(individual: InrBeneficiary) =
+                inrAccountAccountInfo(
+                    InrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [inrAccountAccountInfo] with the following:
+             * ```kotlin
+             * InrBeneficiary.builder()
+             *     .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualInrAccountAccountInfo(fullName: String) =
+                inrAccountAccountInfo(
+                    InrBeneficiary.builder()
+                        .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [inrAccountAccountInfo] with
+             * `InrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun inrAccountAccountInfo(business: InrExternalAccountCreateInfo.Beneficiary.Business) =
+                inrAccountAccountInfo(InrExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [inrAccountAccountInfo] with the following:
+             * ```kotlin
+             * InrExternalAccountCreateInfo.Beneficiary.Business.builder()
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessInrAccountAccountInfo(legalName: String) =
+                inrAccountAccountInfo(
+                    InrExternalAccountCreateInfo.Beneficiary.Business.builder()
+                        .legalName(legalName)
+                        .build()
+                )
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
+            fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofJmdAccount(jmdAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofKesAccount(kesAccount)`. */
+            fun accountInfo(kesAccount: KesExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofKesAccount(kesAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofMwkAccount(mwkAccount)`. */
+            fun accountInfo(mwkAccount: MwkExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofMwkAccount(mwkAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofMxnAccount(mxnAccount)`. */
+            fun accountInfo(mxnAccount: MxnExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofMxnAccount(mxnAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofMyrAccount(myrAccount)`. */
+            fun accountInfo(myrAccount: MyrExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofMyrAccount(myrAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofNgnAccount(ngnAccount)`. */
+            fun accountInfo(ngnAccount: NgnExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofNgnAccount(ngnAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofPhpAccount(phpAccount)`. */
+            fun accountInfo(phpAccount: PhpExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofPhpAccount(phpAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
+            fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofPkrAccount(pkrAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofRwfAccount(rwfAccount)`. */
+            fun accountInfo(rwfAccount: RwfExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofRwfAccount(rwfAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofSgdAccount(sgdAccount)`. */
+            fun accountInfo(sgdAccount: SgdExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofSgdAccount(sgdAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofSlvAccount(slvAccount)`. */
+            fun accountInfo(slvAccount: SlvExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofSlvAccount(slvAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * SlvExternalAccountCreateInfo.builder()
+             *     .accountType(SlvExternalAccountCreateInfo.AccountType.SLV_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun slvAccountAccountInfo(beneficiary: SlvExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    SlvExternalAccountCreateInfo.builder()
+                        .accountType(SlvExternalAccountCreateInfo.AccountType.SLV_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with
+             * `SlvExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun slvAccountAccountInfo(individual: SlvBeneficiary) =
+                slvAccountAccountInfo(
+                    SlvExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with the following:
+             * ```kotlin
+             * SlvBeneficiary.builder()
+             *     .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualSlvAccountAccountInfo(fullName: String) =
+                slvAccountAccountInfo(
+                    SlvBeneficiary.builder()
+                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with
+             * `SlvExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun slvAccountAccountInfo(business: BusinessBeneficiary) =
+                slvAccountAccountInfo(SlvExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessSlvAccountAccountInfo(legalName: String) =
+                slvAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofThbAccount(thbAccount)`. */
+            fun accountInfo(thbAccount: ThbExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofThbAccount(thbAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofTzsAccount(tzsAccount)`. */
+            fun accountInfo(tzsAccount: TzsExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofTzsAccount(tzsAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofUgxAccount(ugxAccount)`. */
+            fun accountInfo(ugxAccount: UgxExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofUgxAccount(ugxAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofUsdAccount(usdAccount)`. */
+            fun accountInfo(usdAccount: UsdExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofUsdAccount(usdAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofVndAccount(vndAccount)`. */
+            fun accountInfo(vndAccount: VndExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofVndAccount(vndAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofXafAccount(xafAccount)`. */
+            fun accountInfo(xafAccount: XafExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofXafAccount(xafAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofXofAccount(xofAccount)`. */
+            fun accountInfo(xofAccount: XofExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofXofAccount(xofAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofZarAccount(zarAccount)`. */
+            fun accountInfo(zarAccount: ZarExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofZarAccount(zarAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofZmwAccount(zmwAccount)`. */
+            fun accountInfo(zmwAccount: ZmwExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofZmwAccount(zmwAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofSwiftAccount(swiftAccount)`. */
+            fun accountInfo(swiftAccount: SwiftExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofSwiftAccount(swiftAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofIlsAccount(ilsAccount)`. */
+            fun accountInfo(ilsAccount: AccountInfo.IlsAccount) =
+                accountInfo(AccountInfo.ofIlsAccount(ilsAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofTryAccount(tryAccount)`. */
+            fun accountInfo(tryAccount: AccountInfo.TryAccount) =
+                accountInfo(AccountInfo.ofTryAccount(tryAccount))
+
+            /** The ISO 4217 currency code */
+            fun currency(currency: String) = currency(JsonField.of(currency))
+
+            /**
+             * Sets [Builder.currency] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currency] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+            /**
+             * The ID of the customer who will own the external account. To create an external
+             * account owned by the platform itself, use `POST /platform/external-accounts` instead.
+             */
+            fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+
+            /**
+             * Sets [Builder.customerId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.customerId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
+
+            /**
+             * Whether to set the external account as the default UMA deposit account. When set to
+             * true, incoming payments to this customer's UMA address will be automatically
+             * deposited into this external account. False if not provided. Note that only one
+             * external account can be set as the default UMA deposit account for a customer, so if
+             * there is already a default UMA deposit account, this will override the existing
+             * default UMA deposit account. If there is no default UMA deposit account, incoming UMA
+             * payments will be deposited into the primary internal account for the customer.
+             */
+            fun defaultUmaDepositAccount(defaultUmaDepositAccount: Boolean) =
+                defaultUmaDepositAccount(JsonField.of(defaultUmaDepositAccount))
+
+            /**
+             * Sets [Builder.defaultUmaDepositAccount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.defaultUmaDepositAccount] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun defaultUmaDepositAccount(defaultUmaDepositAccount: JsonField<Boolean>) = apply {
+                this.defaultUmaDepositAccount = defaultUmaDepositAccount
+            }
+
+            /**
+             * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to
+             * someone else (`THIRD_PARTY`). Required when creating self-custody crypto wallet
+             * external accounts on platforms subject to counterparty requirements — for example,
+             * under the EU Travel Rule or similar requirements in other regions; recommended for
+             * all other accounts, where providing it can unlock additional capabilities and
+             * smoother compliance handling.
+             */
+            fun ownershipType(ownershipType: OwnershipType) =
+                ownershipType(JsonField.of(ownershipType))
+
+            /**
+             * Sets [Builder.ownershipType] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ownershipType] with a well-typed [OwnershipType]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun ownershipType(ownershipType: JsonField<OwnershipType>) = apply {
+                this.ownershipType = ownershipType
+            }
+
+            /**
+             * Your platform's identifier for the account in your system. This can be used to
+             * reference the account by your own identifier.
+             */
+            fun platformAccountId(platformAccountId: String) =
+                platformAccountId(JsonField.of(platformAccountId))
+
+            /**
+             * Sets [Builder.platformAccountId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.platformAccountId] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun platformAccountId(platformAccountId: JsonField<String>) = apply {
+                this.platformAccountId = platformAccountId
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Body].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .accountInfo()
+             * .currency()
+             * .customerId()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Body =
+                Body(
+                    checkRequired("accountInfo", accountInfo),
+                    checkRequired("currency", currency),
+                    checkRequired("customerId", customerId),
+                    defaultUmaDepositAccount,
+                    ownershipType,
+                    platformAccountId,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Body = apply {
+            if (validated) {
+                return@apply
+            }
+
+            accountInfo().validate()
+            currency()
+            customerId()
+            defaultUmaDepositAccount()
+            ownershipType()?.validate()
+            platformAccountId()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (accountInfo.asKnown()?.validity() ?: 0) +
+                (if (currency.asKnown() == null) 0 else 1) +
+                (if (customerId.asKnown() == null) 0 else 1) +
+                (if (defaultUmaDepositAccount.asKnown() == null) 0 else 1) +
+                (ownershipType.asKnown()?.validity() ?: 0) +
+                (if (platformAccountId.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Body &&
+                accountInfo == other.accountInfo &&
+                currency == other.currency &&
+                customerId == other.customerId &&
+                defaultUmaDepositAccount == other.defaultUmaDepositAccount &&
+                ownershipType == other.ownershipType &&
+                platformAccountId == other.platformAccountId &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                accountInfo,
+                currency,
+                customerId,
+                defaultUmaDepositAccount,
+                ownershipType,
+                platformAccountId,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Body{accountInfo=$accountInfo, currency=$currency, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, ownershipType=$ownershipType, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+    }
+
+    /**
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: accountNumber, bankName
+     * - MOBILE_MONEY: bankName, phoneNumber
+     */
+    @JsonDeserialize(using = AccountInfo.Deserializer::class)
+    @JsonSerialize(using = AccountInfo.Serializer::class)
+    class AccountInfo
+    private constructor(
+        private val aedAccount: AedExternalAccountCreateInfo? = null,
+        private val bdtAccount: BdtExternalAccountCreateInfo? = null,
+        private val brlAccount: BrlExternalAccountCreateInfo? = null,
+        private val bwpAccount: BwpExternalAccountCreateInfo? = null,
+        private val cadAccount: CadExternalAccountCreateInfo? = null,
+        private val cnyAccount: CnyAccount? = null,
+        private val copAccount: CopExternalAccountCreateInfo? = null,
+        private val dkkAccount: DkkExternalAccountCreateInfo? = null,
+        private val egpAccount: EgpExternalAccountCreateInfo? = null,
+        private val eurAccount: EurExternalAccountCreateInfo? = null,
+        private val gbpAccount: GbpExternalAccountCreateInfo? = null,
+        private val ghsAccount: GhsExternalAccountCreateInfo? = null,
+        private val gtqAccount: GtqExternalAccountCreateInfo? = null,
+        private val hkdAccount: HkdExternalAccountCreateInfo? = null,
+        private val htgAccount: HtgExternalAccountCreateInfo? = null,
+        private val idrAccount: IdrExternalAccountCreateInfo? = null,
+        private val inrAccount: InrExternalAccountCreateInfo? = null,
+        private val jmdAccount: JmdExternalAccountCreateInfo? = null,
+        private val kesAccount: KesExternalAccountCreateInfo? = null,
+        private val mwkAccount: MwkExternalAccountCreateInfo? = null,
+        private val mxnAccount: MxnExternalAccountCreateInfo? = null,
+        private val myrAccount: MyrExternalAccountCreateInfo? = null,
+        private val ngnAccount: NgnExternalAccountCreateInfo? = null,
+        private val phpAccount: PhpExternalAccountCreateInfo? = null,
+        private val pkrAccount: PkrExternalAccountCreateInfo? = null,
+        private val rwfAccount: RwfExternalAccountCreateInfo? = null,
+        private val sgdAccount: SgdExternalAccountCreateInfo? = null,
+        private val slvAccount: SlvExternalAccountCreateInfo? = null,
+        private val thbAccount: ThbExternalAccountCreateInfo? = null,
+        private val tzsAccount: TzsExternalAccountCreateInfo? = null,
+        private val ugxAccount: UgxExternalAccountCreateInfo? = null,
+        private val usdAccount: UsdExternalAccountCreateInfo? = null,
+        private val vndAccount: VndExternalAccountCreateInfo? = null,
+        private val xafAccount: XafExternalAccountCreateInfo? = null,
+        private val xofAccount: XofExternalAccountCreateInfo? = null,
+        private val zarAccount: ZarExternalAccountCreateInfo? = null,
+        private val zmwAccount: ZmwExternalAccountCreateInfo? = null,
+        private val swiftAccount: SwiftExternalAccountCreateInfo? = null,
+        private val ilsAccount: IlsAccount? = null,
+        private val tryAccount: TryAccount? = null,
+        private val _json: JsonValue? = null,
+    ) {
+
+        fun aedAccount(): AedExternalAccountCreateInfo? = aedAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun bdtAccount(): BdtExternalAccountCreateInfo? = bdtAccount
+
+        fun brlAccount(): BrlExternalAccountCreateInfo? = brlAccount
+
+        fun bwpAccount(): BwpExternalAccountCreateInfo? = bwpAccount
+
+        fun cadAccount(): CadExternalAccountCreateInfo? = cadAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary
+         *   must be a business.
+         * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+         *   selects the wallet.
+         */
+        fun cnyAccount(): CnyAccount? = cnyAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun copAccount(): CopExternalAccountCreateInfo? = copAccount
+
+        fun dkkAccount(): DkkExternalAccountCreateInfo? = dkkAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankName, iban
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun egpAccount(): EgpExternalAccountCreateInfo? = egpAccount
+
+        fun eurAccount(): EurExternalAccountCreateInfo? = eurAccount
+
+        fun gbpAccount(): GbpExternalAccountCreateInfo? = gbpAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun ghsAccount(): GhsExternalAccountCreateInfo? = ghsAccount
+
+        fun gtqAccount(): GtqExternalAccountCreateInfo? = gtqAccount
+
+        fun hkdAccount(): HkdExternalAccountCreateInfo? = hkdAccount
+
+        fun htgAccount(): HtgExternalAccountCreateInfo? = htgAccount
+
+        fun idrAccount(): IdrExternalAccountCreateInfo? = idrAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - NEFT: accountNumber, ifsc, rail
+         * - RTGS: accountNumber, ifsc, rail
+         * - UPI: vpa
+         */
+        fun inrAccount(): InrExternalAccountCreateInfo? = inrAccount
+
+        fun jmdAccount(): JmdExternalAccountCreateInfo? = jmdAccount
+
+        fun kesAccount(): KesExternalAccountCreateInfo? = kesAccount
+
+        fun mwkAccount(): MwkExternalAccountCreateInfo? = mwkAccount
+
+        fun mxnAccount(): MxnExternalAccountCreateInfo? = mxnAccount
+
+        fun myrAccount(): MyrExternalAccountCreateInfo? = myrAccount
+
+        fun ngnAccount(): NgnExternalAccountCreateInfo? = ngnAccount
+
+        fun phpAccount(): PhpExternalAccountCreateInfo? = phpAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun pkrAccount(): PkrExternalAccountCreateInfo? = pkrAccount
+
+        fun rwfAccount(): RwfExternalAccountCreateInfo? = rwfAccount
+
+        fun sgdAccount(): SgdExternalAccountCreateInfo? = sgdAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun slvAccount(): SlvExternalAccountCreateInfo? = slvAccount
+
+        fun thbAccount(): ThbExternalAccountCreateInfo? = thbAccount
+
+        fun tzsAccount(): TzsExternalAccountCreateInfo? = tzsAccount
+
+        fun ugxAccount(): UgxExternalAccountCreateInfo? = ugxAccount
+
+        fun usdAccount(): UsdExternalAccountCreateInfo? = usdAccount
+
+        fun vndAccount(): VndExternalAccountCreateInfo? = vndAccount
+
+        fun xafAccount(): XafExternalAccountCreateInfo? = xafAccount
+
+        fun xofAccount(): XofExternalAccountCreateInfo? = xofAccount
+
+        fun zarAccount(): ZarExternalAccountCreateInfo? = zarAccount
+
+        fun zmwAccount(): ZmwExternalAccountCreateInfo? = zmwAccount
+
+        /**
+         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
+         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
+         * both identifiers for the same account.
+         */
+        fun swiftAccount(): SwiftExternalAccountCreateInfo? = swiftAccount
+
+        fun ilsAccount(): IlsAccount? = ilsAccount
+
+        fun tryAccount(): TryAccount? = tryAccount
+
+        fun isAedAccount(): Boolean = aedAccount != null
+
+        fun isBdtAccount(): Boolean = bdtAccount != null
+
+        fun isBrlAccount(): Boolean = brlAccount != null
+
+        fun isBwpAccount(): Boolean = bwpAccount != null
+
+        fun isCadAccount(): Boolean = cadAccount != null
+
+        fun isCnyAccount(): Boolean = cnyAccount != null
+
+        fun isCopAccount(): Boolean = copAccount != null
+
+        fun isDkkAccount(): Boolean = dkkAccount != null
+
+        fun isEgpAccount(): Boolean = egpAccount != null
+
+        fun isEurAccount(): Boolean = eurAccount != null
+
+        fun isGbpAccount(): Boolean = gbpAccount != null
+
+        fun isGhsAccount(): Boolean = ghsAccount != null
+
+        fun isGtqAccount(): Boolean = gtqAccount != null
+
+        fun isHkdAccount(): Boolean = hkdAccount != null
+
+        fun isHtgAccount(): Boolean = htgAccount != null
+
+        fun isIdrAccount(): Boolean = idrAccount != null
+
+        fun isInrAccount(): Boolean = inrAccount != null
+
+        fun isJmdAccount(): Boolean = jmdAccount != null
+
+        fun isKesAccount(): Boolean = kesAccount != null
+
+        fun isMwkAccount(): Boolean = mwkAccount != null
+
+        fun isMxnAccount(): Boolean = mxnAccount != null
+
+        fun isMyrAccount(): Boolean = myrAccount != null
+
+        fun isNgnAccount(): Boolean = ngnAccount != null
+
+        fun isPhpAccount(): Boolean = phpAccount != null
+
+        fun isPkrAccount(): Boolean = pkrAccount != null
+
+        fun isRwfAccount(): Boolean = rwfAccount != null
+
+        fun isSgdAccount(): Boolean = sgdAccount != null
+
+        fun isSlvAccount(): Boolean = slvAccount != null
+
+        fun isThbAccount(): Boolean = thbAccount != null
+
+        fun isTzsAccount(): Boolean = tzsAccount != null
+
+        fun isUgxAccount(): Boolean = ugxAccount != null
+
+        fun isUsdAccount(): Boolean = usdAccount != null
+
+        fun isVndAccount(): Boolean = vndAccount != null
+
+        fun isXafAccount(): Boolean = xafAccount != null
+
+        fun isXofAccount(): Boolean = xofAccount != null
+
+        fun isZarAccount(): Boolean = zarAccount != null
+
+        fun isZmwAccount(): Boolean = zmwAccount != null
+
+        fun isSwiftAccount(): Boolean = swiftAccount != null
+
+        fun isIlsAccount(): Boolean = ilsAccount != null
+
+        fun isTryAccount(): Boolean = tryAccount != null
+
+        fun asAedAccount(): AedExternalAccountCreateInfo = aedAccount.getOrThrow("aedAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun asBdtAccount(): BdtExternalAccountCreateInfo = bdtAccount.getOrThrow("bdtAccount")
+
+        fun asBrlAccount(): BrlExternalAccountCreateInfo = brlAccount.getOrThrow("brlAccount")
+
+        fun asBwpAccount(): BwpExternalAccountCreateInfo = bwpAccount.getOrThrow("bwpAccount")
+
+        fun asCadAccount(): CadExternalAccountCreateInfo = cadAccount.getOrThrow("cadAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary
+         *   must be a business.
+         * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+         *   selects the wallet.
+         */
+        fun asCnyAccount(): CnyAccount = cnyAccount.getOrThrow("cnyAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun asCopAccount(): CopExternalAccountCreateInfo = copAccount.getOrThrow("copAccount")
+
+        fun asDkkAccount(): DkkExternalAccountCreateInfo = dkkAccount.getOrThrow("dkkAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankName, iban
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun asEgpAccount(): EgpExternalAccountCreateInfo = egpAccount.getOrThrow("egpAccount")
+
+        fun asEurAccount(): EurExternalAccountCreateInfo = eurAccount.getOrThrow("eurAccount")
+
+        fun asGbpAccount(): GbpExternalAccountCreateInfo = gbpAccount.getOrThrow("gbpAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun asGhsAccount(): GhsExternalAccountCreateInfo = ghsAccount.getOrThrow("ghsAccount")
+
+        fun asGtqAccount(): GtqExternalAccountCreateInfo = gtqAccount.getOrThrow("gtqAccount")
+
+        fun asHkdAccount(): HkdExternalAccountCreateInfo = hkdAccount.getOrThrow("hkdAccount")
+
+        fun asHtgAccount(): HtgExternalAccountCreateInfo = htgAccount.getOrThrow("htgAccount")
+
+        fun asIdrAccount(): IdrExternalAccountCreateInfo = idrAccount.getOrThrow("idrAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - NEFT: accountNumber, ifsc, rail
+         * - RTGS: accountNumber, ifsc, rail
+         * - UPI: vpa
+         */
+        fun asInrAccount(): InrExternalAccountCreateInfo = inrAccount.getOrThrow("inrAccount")
+
+        fun asJmdAccount(): JmdExternalAccountCreateInfo = jmdAccount.getOrThrow("jmdAccount")
+
+        fun asKesAccount(): KesExternalAccountCreateInfo = kesAccount.getOrThrow("kesAccount")
+
+        fun asMwkAccount(): MwkExternalAccountCreateInfo = mwkAccount.getOrThrow("mwkAccount")
+
+        fun asMxnAccount(): MxnExternalAccountCreateInfo = mxnAccount.getOrThrow("mxnAccount")
+
+        fun asMyrAccount(): MyrExternalAccountCreateInfo = myrAccount.getOrThrow("myrAccount")
+
+        fun asNgnAccount(): NgnExternalAccountCreateInfo = ngnAccount.getOrThrow("ngnAccount")
+
+        fun asPhpAccount(): PhpExternalAccountCreateInfo = phpAccount.getOrThrow("phpAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun asPkrAccount(): PkrExternalAccountCreateInfo = pkrAccount.getOrThrow("pkrAccount")
+
+        fun asRwfAccount(): RwfExternalAccountCreateInfo = rwfAccount.getOrThrow("rwfAccount")
+
+        fun asSgdAccount(): SgdExternalAccountCreateInfo = sgdAccount.getOrThrow("sgdAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun asSlvAccount(): SlvExternalAccountCreateInfo = slvAccount.getOrThrow("slvAccount")
+
+        fun asThbAccount(): ThbExternalAccountCreateInfo = thbAccount.getOrThrow("thbAccount")
+
+        fun asTzsAccount(): TzsExternalAccountCreateInfo = tzsAccount.getOrThrow("tzsAccount")
+
+        fun asUgxAccount(): UgxExternalAccountCreateInfo = ugxAccount.getOrThrow("ugxAccount")
+
+        fun asUsdAccount(): UsdExternalAccountCreateInfo = usdAccount.getOrThrow("usdAccount")
+
+        fun asVndAccount(): VndExternalAccountCreateInfo = vndAccount.getOrThrow("vndAccount")
+
+        fun asXafAccount(): XafExternalAccountCreateInfo = xafAccount.getOrThrow("xafAccount")
+
+        fun asXofAccount(): XofExternalAccountCreateInfo = xofAccount.getOrThrow("xofAccount")
+
+        fun asZarAccount(): ZarExternalAccountCreateInfo = zarAccount.getOrThrow("zarAccount")
+
+        fun asZmwAccount(): ZmwExternalAccountCreateInfo = zmwAccount.getOrThrow("zmwAccount")
+
+        /**
+         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
+         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
+         * both identifiers for the same account.
+         */
+        fun asSwiftAccount(): SwiftExternalAccountCreateInfo =
+            swiftAccount.getOrThrow("swiftAccount")
+
+        fun asIlsAccount(): IlsAccount = ilsAccount.getOrThrow("ilsAccount")
+
+        fun asTryAccount(): TryAccount = tryAccount.getOrThrow("tryAccount")
+
+        fun _json(): JsonValue? = _json
+
+        /**
+         * Maps this instance's current variant to a value of type [T] using the given [visitor].
+         *
+         * Note that this method is _not_ forwards compatible with new variants from the API, unless
+         * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of
+         * the SDK gracefully, consider overriding [Visitor.unknown]:
+         * ```kotlin
+         * import com.lightspark.grid.core.JsonValue
+         *
+         * val result: String? = accountInfo.accept(object : AccountInfo.Visitor<String?> {
+         *     override fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo): String? = aedAccount.toString()
+         *
+         *     // ...
+         *
+         *     override fun unknown(json: JsonValue?): String? {
+         *         // Or inspect the `json`.
+         *         return null
+         *     }
+         * })
+         * ```
+         *
+         * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
+         *   [visitor] and the current variant is unknown.
+         */
+        fun <T> accept(visitor: Visitor<T>): T =
+            when {
+                aedAccount != null -> visitor.visitAedAccount(aedAccount)
+                bdtAccount != null -> visitor.visitBdtAccount(bdtAccount)
+                brlAccount != null -> visitor.visitBrlAccount(brlAccount)
+                bwpAccount != null -> visitor.visitBwpAccount(bwpAccount)
+                cadAccount != null -> visitor.visitCadAccount(cadAccount)
+                cnyAccount != null -> visitor.visitCnyAccount(cnyAccount)
+                copAccount != null -> visitor.visitCopAccount(copAccount)
+                dkkAccount != null -> visitor.visitDkkAccount(dkkAccount)
+                egpAccount != null -> visitor.visitEgpAccount(egpAccount)
+                eurAccount != null -> visitor.visitEurAccount(eurAccount)
+                gbpAccount != null -> visitor.visitGbpAccount(gbpAccount)
+                ghsAccount != null -> visitor.visitGhsAccount(ghsAccount)
+                gtqAccount != null -> visitor.visitGtqAccount(gtqAccount)
+                hkdAccount != null -> visitor.visitHkdAccount(hkdAccount)
+                htgAccount != null -> visitor.visitHtgAccount(htgAccount)
+                idrAccount != null -> visitor.visitIdrAccount(idrAccount)
+                inrAccount != null -> visitor.visitInrAccount(inrAccount)
+                jmdAccount != null -> visitor.visitJmdAccount(jmdAccount)
+                kesAccount != null -> visitor.visitKesAccount(kesAccount)
+                mwkAccount != null -> visitor.visitMwkAccount(mwkAccount)
+                mxnAccount != null -> visitor.visitMxnAccount(mxnAccount)
+                myrAccount != null -> visitor.visitMyrAccount(myrAccount)
+                ngnAccount != null -> visitor.visitNgnAccount(ngnAccount)
+                phpAccount != null -> visitor.visitPhpAccount(phpAccount)
+                pkrAccount != null -> visitor.visitPkrAccount(pkrAccount)
+                rwfAccount != null -> visitor.visitRwfAccount(rwfAccount)
+                sgdAccount != null -> visitor.visitSgdAccount(sgdAccount)
+                slvAccount != null -> visitor.visitSlvAccount(slvAccount)
+                thbAccount != null -> visitor.visitThbAccount(thbAccount)
+                tzsAccount != null -> visitor.visitTzsAccount(tzsAccount)
+                ugxAccount != null -> visitor.visitUgxAccount(ugxAccount)
+                usdAccount != null -> visitor.visitUsdAccount(usdAccount)
+                vndAccount != null -> visitor.visitVndAccount(vndAccount)
+                xafAccount != null -> visitor.visitXafAccount(xafAccount)
+                xofAccount != null -> visitor.visitXofAccount(xofAccount)
+                zarAccount != null -> visitor.visitZarAccount(zarAccount)
+                zmwAccount != null -> visitor.visitZmwAccount(zmwAccount)
+                swiftAccount != null -> visitor.visitSwiftAccount(swiftAccount)
+                ilsAccount != null -> visitor.visitIlsAccount(ilsAccount)
+                tryAccount != null -> visitor.visitTryAccount(tryAccount)
+                else -> visitor.unknown(_json)
+            }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): AccountInfo = apply {
+            if (validated) {
+                return@apply
+            }
+
+            accept(
+                object : Visitor<Unit> {
+                    override fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo) {
+                        aedAccount.validate()
+                    }
+
+                    override fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) {
+                        bdtAccount.validate()
+                    }
+
+                    override fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo) {
+                        brlAccount.validate()
+                    }
+
+                    override fun visitBwpAccount(bwpAccount: BwpExternalAccountCreateInfo) {
+                        bwpAccount.validate()
+                    }
+
+                    override fun visitCadAccount(cadAccount: CadExternalAccountCreateInfo) {
+                        cadAccount.validate()
+                    }
+
+                    override fun visitCnyAccount(cnyAccount: CnyAccount) {
+                        cnyAccount.validate()
+                    }
+
+                    override fun visitCopAccount(copAccount: CopExternalAccountCreateInfo) {
+                        copAccount.validate()
+                    }
+
+                    override fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) {
+                        dkkAccount.validate()
+                    }
+
+                    override fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo) {
+                        egpAccount.validate()
+                    }
+
+                    override fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo) {
+                        eurAccount.validate()
+                    }
+
+                    override fun visitGbpAccount(gbpAccount: GbpExternalAccountCreateInfo) {
+                        gbpAccount.validate()
+                    }
+
+                    override fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) {
+                        ghsAccount.validate()
+                    }
+
+                    override fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) {
+                        gtqAccount.validate()
+                    }
+
+                    override fun visitHkdAccount(hkdAccount: HkdExternalAccountCreateInfo) {
+                        hkdAccount.validate()
+                    }
+
+                    override fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo) {
+                        htgAccount.validate()
+                    }
+
+                    override fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo) {
+                        idrAccount.validate()
+                    }
+
+                    override fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo) {
+                        inrAccount.validate()
+                    }
+
+                    override fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) {
+                        jmdAccount.validate()
+                    }
+
+                    override fun visitKesAccount(kesAccount: KesExternalAccountCreateInfo) {
+                        kesAccount.validate()
+                    }
+
+                    override fun visitMwkAccount(mwkAccount: MwkExternalAccountCreateInfo) {
+                        mwkAccount.validate()
+                    }
+
+                    override fun visitMxnAccount(mxnAccount: MxnExternalAccountCreateInfo) {
+                        mxnAccount.validate()
+                    }
+
+                    override fun visitMyrAccount(myrAccount: MyrExternalAccountCreateInfo) {
+                        myrAccount.validate()
+                    }
+
+                    override fun visitNgnAccount(ngnAccount: NgnExternalAccountCreateInfo) {
+                        ngnAccount.validate()
+                    }
+
+                    override fun visitPhpAccount(phpAccount: PhpExternalAccountCreateInfo) {
+                        phpAccount.validate()
+                    }
+
+                    override fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) {
+                        pkrAccount.validate()
+                    }
+
+                    override fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo) {
+                        rwfAccount.validate()
+                    }
+
+                    override fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) {
+                        sgdAccount.validate()
+                    }
+
+                    override fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo) {
+                        slvAccount.validate()
+                    }
+
+                    override fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo) {
+                        thbAccount.validate()
+                    }
+
+                    override fun visitTzsAccount(tzsAccount: TzsExternalAccountCreateInfo) {
+                        tzsAccount.validate()
+                    }
+
+                    override fun visitUgxAccount(ugxAccount: UgxExternalAccountCreateInfo) {
+                        ugxAccount.validate()
+                    }
+
+                    override fun visitUsdAccount(usdAccount: UsdExternalAccountCreateInfo) {
+                        usdAccount.validate()
+                    }
+
+                    override fun visitVndAccount(vndAccount: VndExternalAccountCreateInfo) {
+                        vndAccount.validate()
+                    }
+
+                    override fun visitXafAccount(xafAccount: XafExternalAccountCreateInfo) {
+                        xafAccount.validate()
+                    }
+
+                    override fun visitXofAccount(xofAccount: XofExternalAccountCreateInfo) {
+                        xofAccount.validate()
+                    }
+
+                    override fun visitZarAccount(zarAccount: ZarExternalAccountCreateInfo) {
+                        zarAccount.validate()
+                    }
+
+                    override fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) {
+                        zmwAccount.validate()
+                    }
+
+                    override fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) {
+                        swiftAccount.validate()
+                    }
+
+                    override fun visitIlsAccount(ilsAccount: IlsAccount) {
+                        ilsAccount.validate()
+                    }
+
+                    override fun visitTryAccount(tryAccount: TryAccount) {
+                        tryAccount.validate()
+                    }
+                }
+            )
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            accept(
+                object : Visitor<Int> {
+                    override fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo) =
+                        aedAccount.validity()
+
+                    override fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
+                        bdtAccount.validity()
+
+                    override fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo) =
+                        brlAccount.validity()
+
+                    override fun visitBwpAccount(bwpAccount: BwpExternalAccountCreateInfo) =
+                        bwpAccount.validity()
+
+                    override fun visitCadAccount(cadAccount: CadExternalAccountCreateInfo) =
+                        cadAccount.validity()
+
+                    override fun visitCnyAccount(cnyAccount: CnyAccount) = cnyAccount.validity()
+
+                    override fun visitCopAccount(copAccount: CopExternalAccountCreateInfo) =
+                        copAccount.validity()
+
+                    override fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) =
+                        dkkAccount.validity()
+
+                    override fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
+                        egpAccount.validity()
+
+                    override fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo) =
+                        eurAccount.validity()
+
+                    override fun visitGbpAccount(gbpAccount: GbpExternalAccountCreateInfo) =
+                        gbpAccount.validity()
+
+                    override fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
+                        ghsAccount.validity()
+
+                    override fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) =
+                        gtqAccount.validity()
+
+                    override fun visitHkdAccount(hkdAccount: HkdExternalAccountCreateInfo) =
+                        hkdAccount.validity()
+
+                    override fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo) =
+                        htgAccount.validity()
+
+                    override fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo) =
+                        idrAccount.validity()
+
+                    override fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo) =
+                        inrAccount.validity()
+
+                    override fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) =
+                        jmdAccount.validity()
+
+                    override fun visitKesAccount(kesAccount: KesExternalAccountCreateInfo) =
+                        kesAccount.validity()
+
+                    override fun visitMwkAccount(mwkAccount: MwkExternalAccountCreateInfo) =
+                        mwkAccount.validity()
+
+                    override fun visitMxnAccount(mxnAccount: MxnExternalAccountCreateInfo) =
+                        mxnAccount.validity()
+
+                    override fun visitMyrAccount(myrAccount: MyrExternalAccountCreateInfo) =
+                        myrAccount.validity()
+
+                    override fun visitNgnAccount(ngnAccount: NgnExternalAccountCreateInfo) =
+                        ngnAccount.validity()
+
+                    override fun visitPhpAccount(phpAccount: PhpExternalAccountCreateInfo) =
+                        phpAccount.validity()
+
+                    override fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
+                        pkrAccount.validity()
+
+                    override fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo) =
+                        rwfAccount.validity()
+
+                    override fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) =
+                        sgdAccount.validity()
+
+                    override fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo) =
+                        slvAccount.validity()
+
+                    override fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo) =
+                        thbAccount.validity()
+
+                    override fun visitTzsAccount(tzsAccount: TzsExternalAccountCreateInfo) =
+                        tzsAccount.validity()
+
+                    override fun visitUgxAccount(ugxAccount: UgxExternalAccountCreateInfo) =
+                        ugxAccount.validity()
+
+                    override fun visitUsdAccount(usdAccount: UsdExternalAccountCreateInfo) =
+                        usdAccount.validity()
+
+                    override fun visitVndAccount(vndAccount: VndExternalAccountCreateInfo) =
+                        vndAccount.validity()
+
+                    override fun visitXafAccount(xafAccount: XafExternalAccountCreateInfo) =
+                        xafAccount.validity()
+
+                    override fun visitXofAccount(xofAccount: XofExternalAccountCreateInfo) =
+                        xofAccount.validity()
+
+                    override fun visitZarAccount(zarAccount: ZarExternalAccountCreateInfo) =
+                        zarAccount.validity()
+
+                    override fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) =
+                        zmwAccount.validity()
+
+                    override fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
+                        swiftAccount.validity()
+
+                    override fun visitIlsAccount(ilsAccount: IlsAccount) = ilsAccount.validity()
+
+                    override fun visitTryAccount(tryAccount: TryAccount) = tryAccount.validity()
+
+                    override fun unknown(json: JsonValue?) = 0
+                }
+            )
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is AccountInfo &&
+                aedAccount == other.aedAccount &&
+                bdtAccount == other.bdtAccount &&
+                brlAccount == other.brlAccount &&
+                bwpAccount == other.bwpAccount &&
+                cadAccount == other.cadAccount &&
+                cnyAccount == other.cnyAccount &&
+                copAccount == other.copAccount &&
+                dkkAccount == other.dkkAccount &&
+                egpAccount == other.egpAccount &&
+                eurAccount == other.eurAccount &&
+                gbpAccount == other.gbpAccount &&
+                ghsAccount == other.ghsAccount &&
+                gtqAccount == other.gtqAccount &&
+                hkdAccount == other.hkdAccount &&
+                htgAccount == other.htgAccount &&
+                idrAccount == other.idrAccount &&
+                inrAccount == other.inrAccount &&
+                jmdAccount == other.jmdAccount &&
+                kesAccount == other.kesAccount &&
+                mwkAccount == other.mwkAccount &&
+                mxnAccount == other.mxnAccount &&
+                myrAccount == other.myrAccount &&
+                ngnAccount == other.ngnAccount &&
+                phpAccount == other.phpAccount &&
+                pkrAccount == other.pkrAccount &&
+                rwfAccount == other.rwfAccount &&
+                sgdAccount == other.sgdAccount &&
+                slvAccount == other.slvAccount &&
+                thbAccount == other.thbAccount &&
+                tzsAccount == other.tzsAccount &&
+                ugxAccount == other.ugxAccount &&
+                usdAccount == other.usdAccount &&
+                vndAccount == other.vndAccount &&
+                xafAccount == other.xafAccount &&
+                xofAccount == other.xofAccount &&
+                zarAccount == other.zarAccount &&
+                zmwAccount == other.zmwAccount &&
+                swiftAccount == other.swiftAccount &&
+                ilsAccount == other.ilsAccount &&
+                tryAccount == other.tryAccount
+        }
+
+        override fun hashCode(): Int =
+            Objects.hash(
+                aedAccount,
+                bdtAccount,
+                brlAccount,
+                bwpAccount,
+                cadAccount,
+                cnyAccount,
+                copAccount,
+                dkkAccount,
+                egpAccount,
+                eurAccount,
+                gbpAccount,
+                ghsAccount,
+                gtqAccount,
+                hkdAccount,
+                htgAccount,
+                idrAccount,
+                inrAccount,
+                jmdAccount,
+                kesAccount,
+                mwkAccount,
+                mxnAccount,
+                myrAccount,
+                ngnAccount,
+                phpAccount,
+                pkrAccount,
+                rwfAccount,
+                sgdAccount,
+                slvAccount,
+                thbAccount,
+                tzsAccount,
+                ugxAccount,
+                usdAccount,
+                vndAccount,
+                xafAccount,
+                xofAccount,
+                zarAccount,
+                zmwAccount,
+                swiftAccount,
+                ilsAccount,
+                tryAccount,
+            )
+
+        override fun toString(): String =
+            when {
+                aedAccount != null -> "AccountInfo{aedAccount=$aedAccount}"
+                bdtAccount != null -> "AccountInfo{bdtAccount=$bdtAccount}"
+                brlAccount != null -> "AccountInfo{brlAccount=$brlAccount}"
+                bwpAccount != null -> "AccountInfo{bwpAccount=$bwpAccount}"
+                cadAccount != null -> "AccountInfo{cadAccount=$cadAccount}"
+                cnyAccount != null -> "AccountInfo{cnyAccount=$cnyAccount}"
+                copAccount != null -> "AccountInfo{copAccount=$copAccount}"
+                dkkAccount != null -> "AccountInfo{dkkAccount=$dkkAccount}"
+                egpAccount != null -> "AccountInfo{egpAccount=$egpAccount}"
+                eurAccount != null -> "AccountInfo{eurAccount=$eurAccount}"
+                gbpAccount != null -> "AccountInfo{gbpAccount=$gbpAccount}"
+                ghsAccount != null -> "AccountInfo{ghsAccount=$ghsAccount}"
+                gtqAccount != null -> "AccountInfo{gtqAccount=$gtqAccount}"
+                hkdAccount != null -> "AccountInfo{hkdAccount=$hkdAccount}"
+                htgAccount != null -> "AccountInfo{htgAccount=$htgAccount}"
+                idrAccount != null -> "AccountInfo{idrAccount=$idrAccount}"
+                inrAccount != null -> "AccountInfo{inrAccount=$inrAccount}"
+                jmdAccount != null -> "AccountInfo{jmdAccount=$jmdAccount}"
+                kesAccount != null -> "AccountInfo{kesAccount=$kesAccount}"
+                mwkAccount != null -> "AccountInfo{mwkAccount=$mwkAccount}"
+                mxnAccount != null -> "AccountInfo{mxnAccount=$mxnAccount}"
+                myrAccount != null -> "AccountInfo{myrAccount=$myrAccount}"
+                ngnAccount != null -> "AccountInfo{ngnAccount=$ngnAccount}"
+                phpAccount != null -> "AccountInfo{phpAccount=$phpAccount}"
+                pkrAccount != null -> "AccountInfo{pkrAccount=$pkrAccount}"
+                rwfAccount != null -> "AccountInfo{rwfAccount=$rwfAccount}"
+                sgdAccount != null -> "AccountInfo{sgdAccount=$sgdAccount}"
+                slvAccount != null -> "AccountInfo{slvAccount=$slvAccount}"
+                thbAccount != null -> "AccountInfo{thbAccount=$thbAccount}"
+                tzsAccount != null -> "AccountInfo{tzsAccount=$tzsAccount}"
+                ugxAccount != null -> "AccountInfo{ugxAccount=$ugxAccount}"
+                usdAccount != null -> "AccountInfo{usdAccount=$usdAccount}"
+                vndAccount != null -> "AccountInfo{vndAccount=$vndAccount}"
+                xafAccount != null -> "AccountInfo{xafAccount=$xafAccount}"
+                xofAccount != null -> "AccountInfo{xofAccount=$xofAccount}"
+                zarAccount != null -> "AccountInfo{zarAccount=$zarAccount}"
+                zmwAccount != null -> "AccountInfo{zmwAccount=$zmwAccount}"
+                swiftAccount != null -> "AccountInfo{swiftAccount=$swiftAccount}"
+                ilsAccount != null -> "AccountInfo{ilsAccount=$ilsAccount}"
+                tryAccount != null -> "AccountInfo{tryAccount=$tryAccount}"
+                _json != null -> "AccountInfo{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid AccountInfo")
+            }
+
+        companion object {
+
+            fun ofAedAccount(aedAccount: AedExternalAccountCreateInfo) =
+                AccountInfo(aedAccount = aedAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun ofBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
+                AccountInfo(bdtAccount = bdtAccount)
+
+            fun ofBrlAccount(brlAccount: BrlExternalAccountCreateInfo) =
+                AccountInfo(brlAccount = brlAccount)
+
+            fun ofBwpAccount(bwpAccount: BwpExternalAccountCreateInfo) =
+                AccountInfo(bwpAccount = bwpAccount)
+
+            fun ofCadAccount(cadAccount: CadExternalAccountCreateInfo) =
+                AccountInfo(cadAccount = cadAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the
+             *   beneficiary must be a business.
+             * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+             *   selects the wallet.
+             */
+            fun ofCnyAccount(cnyAccount: CnyAccount) = AccountInfo(cnyAccount = cnyAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun ofCopAccount(copAccount: CopExternalAccountCreateInfo) =
+                AccountInfo(copAccount = copAccount)
+
+            fun ofDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) =
+                AccountInfo(dkkAccount = dkkAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankName, iban
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun ofEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
+                AccountInfo(egpAccount = egpAccount)
+
+            fun ofEurAccount(eurAccount: EurExternalAccountCreateInfo) =
+                AccountInfo(eurAccount = eurAccount)
+
+            fun ofGbpAccount(gbpAccount: GbpExternalAccountCreateInfo) =
+                AccountInfo(gbpAccount = gbpAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun ofGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
+                AccountInfo(ghsAccount = ghsAccount)
+
+            fun ofGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) =
+                AccountInfo(gtqAccount = gtqAccount)
+
+            fun ofHkdAccount(hkdAccount: HkdExternalAccountCreateInfo) =
+                AccountInfo(hkdAccount = hkdAccount)
+
+            fun ofHtgAccount(htgAccount: HtgExternalAccountCreateInfo) =
+                AccountInfo(htgAccount = htgAccount)
+
+            fun ofIdrAccount(idrAccount: IdrExternalAccountCreateInfo) =
+                AccountInfo(idrAccount = idrAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - NEFT: accountNumber, ifsc, rail
+             * - RTGS: accountNumber, ifsc, rail
+             * - UPI: vpa
+             */
+            fun ofInrAccount(inrAccount: InrExternalAccountCreateInfo) =
+                AccountInfo(inrAccount = inrAccount)
+
+            fun ofJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) =
+                AccountInfo(jmdAccount = jmdAccount)
+
+            fun ofKesAccount(kesAccount: KesExternalAccountCreateInfo) =
+                AccountInfo(kesAccount = kesAccount)
+
+            fun ofMwkAccount(mwkAccount: MwkExternalAccountCreateInfo) =
+                AccountInfo(mwkAccount = mwkAccount)
+
+            fun ofMxnAccount(mxnAccount: MxnExternalAccountCreateInfo) =
+                AccountInfo(mxnAccount = mxnAccount)
+
+            fun ofMyrAccount(myrAccount: MyrExternalAccountCreateInfo) =
+                AccountInfo(myrAccount = myrAccount)
+
+            fun ofNgnAccount(ngnAccount: NgnExternalAccountCreateInfo) =
+                AccountInfo(ngnAccount = ngnAccount)
+
+            fun ofPhpAccount(phpAccount: PhpExternalAccountCreateInfo) =
+                AccountInfo(phpAccount = phpAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun ofPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
+                AccountInfo(pkrAccount = pkrAccount)
+
+            fun ofRwfAccount(rwfAccount: RwfExternalAccountCreateInfo) =
+                AccountInfo(rwfAccount = rwfAccount)
+
+            fun ofSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) =
+                AccountInfo(sgdAccount = sgdAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankAccountType, accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun ofSlvAccount(slvAccount: SlvExternalAccountCreateInfo) =
+                AccountInfo(slvAccount = slvAccount)
+
+            fun ofThbAccount(thbAccount: ThbExternalAccountCreateInfo) =
+                AccountInfo(thbAccount = thbAccount)
+
+            fun ofTzsAccount(tzsAccount: TzsExternalAccountCreateInfo) =
+                AccountInfo(tzsAccount = tzsAccount)
+
+            fun ofUgxAccount(ugxAccount: UgxExternalAccountCreateInfo) =
+                AccountInfo(ugxAccount = ugxAccount)
+
+            fun ofUsdAccount(usdAccount: UsdExternalAccountCreateInfo) =
+                AccountInfo(usdAccount = usdAccount)
+
+            fun ofVndAccount(vndAccount: VndExternalAccountCreateInfo) =
+                AccountInfo(vndAccount = vndAccount)
+
+            fun ofXafAccount(xafAccount: XafExternalAccountCreateInfo) =
+                AccountInfo(xafAccount = xafAccount)
+
+            fun ofXofAccount(xofAccount: XofExternalAccountCreateInfo) =
+                AccountInfo(xofAccount = xofAccount)
+
+            fun ofZarAccount(zarAccount: ZarExternalAccountCreateInfo) =
+                AccountInfo(zarAccount = zarAccount)
+
+            fun ofZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) =
+                AccountInfo(zmwAccount = zmwAccount)
+
+            /**
+             * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g.
+             * BR, GB) use iban, other corridors use accountNumber, and both appear when the bank
+             * exposes both identifiers for the same account.
+             */
+            fun ofSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
+                AccountInfo(swiftAccount = swiftAccount)
+
+            fun ofIlsAccount(ilsAccount: IlsAccount) = AccountInfo(ilsAccount = ilsAccount)
+
+            fun ofTryAccount(tryAccount: TryAccount) = AccountInfo(tryAccount = tryAccount)
+        }
+
+        /**
+         * An interface that defines how to map each variant of [AccountInfo] to a value of type
+         * [T].
+         */
+        interface Visitor<out T> {
+
+            fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo): T
+
+            fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo): T
+
+            fun visitBwpAccount(bwpAccount: BwpExternalAccountCreateInfo): T
+
+            fun visitCadAccount(cadAccount: CadExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the
+             *   beneficiary must be a business.
+             * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+             *   selects the wallet.
+             */
+            fun visitCnyAccount(cnyAccount: CnyAccount): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun visitCopAccount(copAccount: CopExternalAccountCreateInfo): T
+
+            fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankName, iban
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo): T
+
+            fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo): T
+
+            fun visitGbpAccount(gbpAccount: GbpExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo): T
+
+            fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo): T
+
+            fun visitHkdAccount(hkdAccount: HkdExternalAccountCreateInfo): T
+
+            fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo): T
+
+            fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - NEFT: accountNumber, ifsc, rail
+             * - RTGS: accountNumber, ifsc, rail
+             * - UPI: vpa
+             */
+            fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo): T
+
+            fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo): T
+
+            fun visitKesAccount(kesAccount: KesExternalAccountCreateInfo): T
+
+            fun visitMwkAccount(mwkAccount: MwkExternalAccountCreateInfo): T
+
+            fun visitMxnAccount(mxnAccount: MxnExternalAccountCreateInfo): T
+
+            fun visitMyrAccount(myrAccount: MyrExternalAccountCreateInfo): T
+
+            fun visitNgnAccount(ngnAccount: NgnExternalAccountCreateInfo): T
+
+            fun visitPhpAccount(phpAccount: PhpExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo): T
+
+            fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo): T
+
+            fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankAccountType, accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo): T
+
+            fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo): T
+
+            fun visitTzsAccount(tzsAccount: TzsExternalAccountCreateInfo): T
+
+            fun visitUgxAccount(ugxAccount: UgxExternalAccountCreateInfo): T
+
+            fun visitUsdAccount(usdAccount: UsdExternalAccountCreateInfo): T
+
+            fun visitVndAccount(vndAccount: VndExternalAccountCreateInfo): T
+
+            fun visitXafAccount(xafAccount: XafExternalAccountCreateInfo): T
+
+            fun visitXofAccount(xofAccount: XofExternalAccountCreateInfo): T
+
+            fun visitZarAccount(zarAccount: ZarExternalAccountCreateInfo): T
+
+            fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo): T
+
+            /**
+             * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g.
+             * BR, GB) use iban, other corridors use accountNumber, and both appear when the bank
+             * exposes both identifiers for the same account.
+             */
+            fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo): T
+
+            fun visitIlsAccount(ilsAccount: IlsAccount): T
+
+            fun visitTryAccount(tryAccount: TryAccount): T
+
+            /**
+             * Maps an unknown variant of [AccountInfo] to a value of type [T].
+             *
+             * An instance of [AccountInfo] can contain an unknown variant if it was deserialized
+             * from data that doesn't match any known variant. For example, if the SDK is on an
+             * older version than the API, then the API may respond with new variants that the SDK
+             * is unaware of.
+             *
+             * @throws LightsparkGridInvalidDataException in the default implementation.
+             */
+            fun unknown(json: JsonValue?): T {
+                throw LightsparkGridInvalidDataException("Unknown AccountInfo: $json")
+            }
+        }
+
+        internal class Deserializer : BaseDeserializer<AccountInfo>(AccountInfo::class) {
+
+            override fun ObjectCodec.deserialize(node: JsonNode): AccountInfo {
+                val json = JsonValue.fromJsonNode(node)
+                val accountType = json.asObject()?.get("accountType")?.asString()
+
+                when (accountType) {
+                    "AED_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<AedExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(aedAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "BDT_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BdtExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(bdtAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "BRL_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BrlExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(brlAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "BWP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BwpExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(bwpAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "CAD_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<CadExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(cadAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "CNY_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<CnyAccount>())?.let {
+                            AccountInfo(cnyAccount = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "COP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<CopExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(copAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "DKK_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<DkkExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(dkkAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "EGP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<EgpExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(egpAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "EUR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<EurExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(eurAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "GBP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<GbpExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(gbpAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "GHS_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<GhsExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(ghsAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "GTQ_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<GtqExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(gtqAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "HKD_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<HkdExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(hkdAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "HTG_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<HtgExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(htgAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "IDR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<IdrExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(idrAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "INR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<InrExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(inrAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "JMD_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<JmdExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(jmdAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "KES_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<KesExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(kesAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "MWK_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<MwkExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(mwkAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "MXN_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<MxnExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(mxnAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "MYR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<MyrExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(myrAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "NGN_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<NgnExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(ngnAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "PHP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PhpExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(phpAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "PKR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PkrExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(pkrAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "RWF_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<RwfExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(rwfAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "SGD_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SgdExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(sgdAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "SLV_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SlvExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(slvAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "THB_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<ThbExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(thbAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "TZS_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<TzsExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(tzsAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "UGX_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<UgxExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(ugxAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "USD_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<UsdExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(usdAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "VND_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<VndExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(vndAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "XAF_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<XafExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(xafAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "XOF_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<XofExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(xofAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "ZAR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<ZarExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(zarAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "ZMW_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<ZmwExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(zmwAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "SWIFT_ACCOUNT" -> {
+                        return tryDeserialize(
+                                node,
+                                jacksonTypeRef<SwiftExternalAccountCreateInfo>(),
+                            )
+                            ?.let { AccountInfo(swiftAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "ILS_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<IlsAccount>())?.let {
+                            AccountInfo(ilsAccount = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "TRY_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<TryAccount>())?.let {
+                            AccountInfo(tryAccount = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                }
+
+                return AccountInfo(_json = json)
+            }
+        }
+
+        internal class Serializer : BaseSerializer<AccountInfo>(AccountInfo::class) {
+
+            override fun serialize(
+                value: AccountInfo,
+                generator: JsonGenerator,
+                provider: SerializerProvider,
+            ) {
+                when {
+                    value.aedAccount != null -> generator.writeObject(value.aedAccount)
+                    value.bdtAccount != null -> generator.writeObject(value.bdtAccount)
+                    value.brlAccount != null -> generator.writeObject(value.brlAccount)
+                    value.bwpAccount != null -> generator.writeObject(value.bwpAccount)
+                    value.cadAccount != null -> generator.writeObject(value.cadAccount)
+                    value.cnyAccount != null -> generator.writeObject(value.cnyAccount)
+                    value.copAccount != null -> generator.writeObject(value.copAccount)
+                    value.dkkAccount != null -> generator.writeObject(value.dkkAccount)
+                    value.egpAccount != null -> generator.writeObject(value.egpAccount)
+                    value.eurAccount != null -> generator.writeObject(value.eurAccount)
+                    value.gbpAccount != null -> generator.writeObject(value.gbpAccount)
+                    value.ghsAccount != null -> generator.writeObject(value.ghsAccount)
+                    value.gtqAccount != null -> generator.writeObject(value.gtqAccount)
+                    value.hkdAccount != null -> generator.writeObject(value.hkdAccount)
+                    value.htgAccount != null -> generator.writeObject(value.htgAccount)
+                    value.idrAccount != null -> generator.writeObject(value.idrAccount)
+                    value.inrAccount != null -> generator.writeObject(value.inrAccount)
+                    value.jmdAccount != null -> generator.writeObject(value.jmdAccount)
+                    value.kesAccount != null -> generator.writeObject(value.kesAccount)
+                    value.mwkAccount != null -> generator.writeObject(value.mwkAccount)
+                    value.mxnAccount != null -> generator.writeObject(value.mxnAccount)
+                    value.myrAccount != null -> generator.writeObject(value.myrAccount)
+                    value.ngnAccount != null -> generator.writeObject(value.ngnAccount)
+                    value.phpAccount != null -> generator.writeObject(value.phpAccount)
+                    value.pkrAccount != null -> generator.writeObject(value.pkrAccount)
+                    value.rwfAccount != null -> generator.writeObject(value.rwfAccount)
+                    value.sgdAccount != null -> generator.writeObject(value.sgdAccount)
+                    value.slvAccount != null -> generator.writeObject(value.slvAccount)
+                    value.thbAccount != null -> generator.writeObject(value.thbAccount)
+                    value.tzsAccount != null -> generator.writeObject(value.tzsAccount)
+                    value.ugxAccount != null -> generator.writeObject(value.ugxAccount)
+                    value.usdAccount != null -> generator.writeObject(value.usdAccount)
+                    value.vndAccount != null -> generator.writeObject(value.vndAccount)
+                    value.xafAccount != null -> generator.writeObject(value.xafAccount)
+                    value.xofAccount != null -> generator.writeObject(value.xofAccount)
+                    value.zarAccount != null -> generator.writeObject(value.zarAccount)
+                    value.zmwAccount != null -> generator.writeObject(value.zmwAccount)
+                    value.swiftAccount != null -> generator.writeObject(value.swiftAccount)
+                    value.ilsAccount != null -> generator.writeObject(value.ilsAccount)
+                    value.tryAccount != null -> generator.writeObject(value.tryAccount)
+                    value._json != null -> generator.writeObject(value._json)
+                    else -> throw IllegalStateException("Invalid AccountInfo")
+                }
+            }
+        }
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary
+         *   must be a business.
+         * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+         *   selects the wallet.
+         */
+        class CnyAccount
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val accountType: JsonValue,
+            private val bankName: JsonField<String>,
+            private val beneficiary: JsonField<Beneficiary>,
+            private val accountNumber: JsonField<String>,
+            private val phoneNumber: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonValue = JsonMissing.of(),
+                @JsonProperty("bankName")
+                @ExcludeMissing
+                bankName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("beneficiary")
+                @ExcludeMissing
+                beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+                @JsonProperty("accountNumber")
+                @ExcludeMissing
+                accountNumber: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("phoneNumber")
+                @ExcludeMissing
+                phoneNumber: JsonField<String> = JsonMissing.of(),
+            ) : this(accountType, bankName, beneficiary, accountNumber, phoneNumber, mutableMapOf())
+
+            /**
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("CNY_ACCOUNT")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+            /**
+             * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns
+             * for this country and currency. Send it exactly as returned; any other name is
+             * rejected.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun bankName(): String = bankName.getRequired("bankName")
+
+            /**
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
+
+            /**
+             * The account number of the bank
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
+
+            /**
+             * The phone number in international format
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+            /**
+             * Returns the raw JSON value of [bankName].
+             *
+             * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
+
+            /**
+             * Returns the raw JSON value of [beneficiary].
+             *
+             * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("beneficiary")
+            @ExcludeMissing
+            fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+
+            /**
+             * Returns the raw JSON value of [accountNumber].
+             *
+             * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("accountNumber")
+            @ExcludeMissing
+            fun _accountNumber(): JsonField<String> = accountNumber
+
+            /**
+             * Returns the raw JSON value of [phoneNumber].
+             *
+             * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("phoneNumber")
+            @ExcludeMissing
+            fun _phoneNumber(): JsonField<String> = phoneNumber
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [CnyAccount].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .bankName()
+                 * .beneficiary()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [CnyAccount]. */
+            class Builder internal constructor() {
+
+                private var accountType: JsonValue = JsonValue.from("CNY_ACCOUNT")
+                private var bankName: JsonField<String>? = null
+                private var beneficiary: JsonField<Beneficiary>? = null
+                private var accountNumber: JsonField<String> = JsonMissing.of()
+                private var phoneNumber: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(cnyAccount: CnyAccount) = apply {
+                    accountType = cnyAccount.accountType
+                    bankName = cnyAccount.bankName
+                    beneficiary = cnyAccount.beneficiary
+                    accountNumber = cnyAccount.accountNumber
+                    phoneNumber = cnyAccount.phoneNumber
+                    additionalProperties = cnyAccount.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("CNY_ACCOUNT")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+                /**
+                 * The name of the bank. Must be one of the `bankName` values `GET /discoveries`
+                 * returns for this country and currency. Send it exactly as returned; any other
+                 * name is rejected.
+                 */
+                fun bankName(bankName: String) = bankName(JsonField.of(bankName))
+
+                /**
+                 * Sets [Builder.bankName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.bankName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
+
+                fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
+
+                /**
+                 * Sets [Builder.beneficiary] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.beneficiary] with a well-typed [Beneficiary]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun beneficiary(beneficiary: JsonField<Beneficiary>) = apply {
+                    this.beneficiary = beneficiary
+                }
+
+                /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
+                fun beneficiary(individual: Beneficiary.Individual) =
+                    beneficiary(Beneficiary.ofIndividual(individual))
+
+                /**
+                 * Alias for calling [beneficiary] with the following:
+                 * ```kotlin
+                 * Beneficiary.Individual.builder()
+                 *     .fullName(fullName)
+                 *     .build()
+                 * ```
+                 */
+                fun individualBeneficiary(fullName: String) =
+                    beneficiary(Beneficiary.Individual.builder().fullName(fullName).build())
+
+                /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
+                fun beneficiary(business: Beneficiary.Business) =
+                    beneficiary(Beneficiary.ofBusiness(business))
+
+                /** The account number of the bank */
+                fun accountNumber(accountNumber: String) =
+                    accountNumber(JsonField.of(accountNumber))
+
+                /**
+                 * Sets [Builder.accountNumber] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.accountNumber] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun accountNumber(accountNumber: JsonField<String>) = apply {
+                    this.accountNumber = accountNumber
+                }
+
+                /** The phone number in international format */
+                fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+                /**
+                 * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.phoneNumber] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                    this.phoneNumber = phoneNumber
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [CnyAccount].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .bankName()
+                 * .beneficiary()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): CnyAccount =
+                    CnyAccount(
+                        accountType,
+                        checkRequired("bankName", bankName),
+                        checkRequired("beneficiary", beneficiary),
+                        accountNumber,
+                        phoneNumber,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): CnyAccount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                _accountType().let {
+                    if (it != JsonValue.from("CNY_ACCOUNT")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'accountType' is invalid, received $it"
+                        )
+                    }
+                }
+                bankName()
+                beneficiary().validate()
+                accountNumber()
+                phoneNumber()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accountType.let { if (it == JsonValue.from("CNY_ACCOUNT")) 1 else 0 } +
+                    (if (bankName.asKnown() == null) 0 else 1) +
+                    (beneficiary.asKnown()?.validity() ?: 0) +
+                    (if (accountNumber.asKnown() == null) 0 else 1) +
+                    (if (phoneNumber.asKnown() == null) 0 else 1)
+
+            @JsonDeserialize(using = Beneficiary.Deserializer::class)
+            @JsonSerialize(using = Beneficiary.Serializer::class)
+            class Beneficiary
+            private constructor(
+                private val individual: Individual? = null,
+                private val business: Business? = null,
+                private val _json: JsonValue? = null,
+            ) {
+
+                fun individual(): Individual? = individual
+
+                fun business(): Business? = business
+
+                fun isIndividual(): Boolean = individual != null
+
+                fun isBusiness(): Boolean = business != null
+
+                fun asIndividual(): Individual = individual.getOrThrow("individual")
+
+                fun asBusiness(): Business = business.getOrThrow("business")
+
+                fun _json(): JsonValue? = _json
+
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.lightspark.grid.core.JsonValue
+                 *
+                 * val result: String? = beneficiary.accept(object : Beneficiary.Visitor<String?> {
+                 *     override fun visitIndividual(individual: Individual): String? = individual.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden
+                 *   in [visitor] and the current variant is unknown.
+                 */
+                fun <T> accept(visitor: Visitor<T>): T =
+                    when {
+                        individual != null -> visitor.visitIndividual(individual)
+                        business != null -> visitor.visitBusiness(business)
+                        else -> visitor.unknown(_json)
+                    }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): Beneficiary = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    accept(
+                        object : Visitor<Unit> {
+                            override fun visitIndividual(individual: Individual) {
+                                individual.validate()
+                            }
+
+                            override fun visitBusiness(business: Business) {
+                                business.validate()
+                            }
+                        }
+                    )
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    accept(
+                        object : Visitor<Int> {
+                            override fun visitIndividual(individual: Individual) =
+                                individual.validity()
+
+                            override fun visitBusiness(business: Business) = business.validity()
+
+                            override fun unknown(json: JsonValue?) = 0
+                        }
+                    )
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Beneficiary &&
+                        individual == other.individual &&
+                        business == other.business
+                }
+
+                override fun hashCode(): Int = Objects.hash(individual, business)
+
+                override fun toString(): String =
+                    when {
+                        individual != null -> "Beneficiary{individual=$individual}"
+                        business != null -> "Beneficiary{business=$business}"
+                        _json != null -> "Beneficiary{_unknown=$_json}"
+                        else -> throw IllegalStateException("Invalid Beneficiary")
+                    }
+
+                companion object {
+
+                    fun ofIndividual(individual: Individual) = Beneficiary(individual = individual)
+
+                    fun ofBusiness(business: Business) = Beneficiary(business = business)
+                }
+
+                /**
+                 * An interface that defines how to map each variant of [Beneficiary] to a value of
+                 * type [T].
+                 */
+                interface Visitor<out T> {
+
+                    fun visitIndividual(individual: Individual): T
+
+                    fun visitBusiness(business: Business): T
+
+                    /**
+                     * Maps an unknown variant of [Beneficiary] to a value of type [T].
+                     *
+                     * An instance of [Beneficiary] can contain an unknown variant if it was
+                     * deserialized from data that doesn't match any known variant. For example, if
+                     * the SDK is on an older version than the API, then the API may respond with
+                     * new variants that the SDK is unaware of.
+                     *
+                     * @throws LightsparkGridInvalidDataException in the default implementation.
+                     */
+                    fun unknown(json: JsonValue?): T {
+                        throw LightsparkGridInvalidDataException("Unknown Beneficiary: $json")
+                    }
+                }
+
+                internal class Deserializer : BaseDeserializer<Beneficiary>(Beneficiary::class) {
+
+                    override fun ObjectCodec.deserialize(node: JsonNode): Beneficiary {
+                        val json = JsonValue.fromJsonNode(node)
+                        val beneficiaryType = json.asObject()?.get("beneficiaryType")?.asString()
+
+                        when (beneficiaryType) {
+                            "INDIVIDUAL" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
+                                    Beneficiary(individual = it, _json = json)
+                                } ?: Beneficiary(_json = json)
+                            }
+                            "BUSINESS" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Business>())?.let {
+                                    Beneficiary(business = it, _json = json)
+                                } ?: Beneficiary(_json = json)
+                            }
+                        }
+
+                        return Beneficiary(_json = json)
+                    }
+                }
+
+                internal class Serializer : BaseSerializer<Beneficiary>(Beneficiary::class) {
+
+                    override fun serialize(
+                        value: Beneficiary,
+                        generator: JsonGenerator,
+                        provider: SerializerProvider,
+                    ) {
+                        when {
+                            value.individual != null -> generator.writeObject(value.individual)
+                            value.business != null -> generator.writeObject(value.business)
+                            value._json != null -> generator.writeObject(value._json)
+                            else -> throw IllegalStateException("Invalid Beneficiary")
+                        }
+                    }
+                }
+
+                class Individual
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val beneficiaryType: JsonValue,
+                    private val fullName: JsonField<String>,
+                    private val address: JsonField<Address>,
+                    private val birthDate: JsonField<String>,
+                    private val countryOfResidence: JsonField<String>,
+                    private val email: JsonField<String>,
+                    private val nationality: JsonField<String>,
+                    private val phoneNumber: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("beneficiaryType")
+                        @ExcludeMissing
+                        beneficiaryType: JsonValue = JsonMissing.of(),
+                        @JsonProperty("fullName")
+                        @ExcludeMissing
+                        fullName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("address")
+                        @ExcludeMissing
+                        address: JsonField<Address> = JsonMissing.of(),
+                        @JsonProperty("birthDate")
+                        @ExcludeMissing
+                        birthDate: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("countryOfResidence")
+                        @ExcludeMissing
+                        countryOfResidence: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("email")
+                        @ExcludeMissing
+                        email: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("nationality")
+                        @ExcludeMissing
+                        nationality: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("phoneNumber")
+                        @ExcludeMissing
+                        phoneNumber: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        beneficiaryType,
+                        fullName,
+                        address,
+                        birthDate,
+                        countryOfResidence,
+                        email,
+                        nationality,
+                        phoneNumber,
+                        mutableMapOf(),
+                    )
+
+                    /**
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("INDIVIDUAL")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
+                     */
+                    @JsonProperty("beneficiaryType")
+                    @ExcludeMissing
+                    fun _beneficiaryType(): JsonValue = beneficiaryType
+
+                    /**
+                     * The full name of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun fullName(): String = fullName.getRequired("fullName")
+
+                    /**
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun address(): Address? = address.getNullable("address")
+
+                    /**
+                     * The birth date of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun birthDate(): String? = birthDate.getNullable("birthDate")
+
+                    /**
+                     * The country of residence of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun countryOfResidence(): String? =
+                        countryOfResidence.getNullable("countryOfResidence")
+
+                    /**
+                     * The email of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun email(): String? = email.getNullable("email")
+
+                    /**
+                     * The nationality of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun nationality(): String? = nationality.getNullable("nationality")
+
+                    /**
+                     * The phone number of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+                    /**
+                     * Returns the raw JSON value of [fullName].
+                     *
+                     * Unlike [fullName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("fullName")
+                    @ExcludeMissing
+                    fun _fullName(): JsonField<String> = fullName
+
+                    /**
+                     * Returns the raw JSON value of [address].
+                     *
+                     * Unlike [address], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("address")
+                    @ExcludeMissing
+                    fun _address(): JsonField<Address> = address
+
+                    /**
+                     * Returns the raw JSON value of [birthDate].
+                     *
+                     * Unlike [birthDate], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("birthDate")
+                    @ExcludeMissing
+                    fun _birthDate(): JsonField<String> = birthDate
+
+                    /**
+                     * Returns the raw JSON value of [countryOfResidence].
+                     *
+                     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("countryOfResidence")
+                    @ExcludeMissing
+                    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+                    /**
+                     * Returns the raw JSON value of [email].
+                     *
+                     * Unlike [email], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+                    /**
+                     * Returns the raw JSON value of [nationality].
+                     *
+                     * Unlike [nationality], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("nationality")
+                    @ExcludeMissing
+                    fun _nationality(): JsonField<String> = nationality
+
+                    /**
+                     * Returns the raw JSON value of [phoneNumber].
+                     *
+                     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("phoneNumber")
+                    @ExcludeMissing
+                    fun _phoneNumber(): JsonField<String> = phoneNumber
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Individual].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .fullName()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [Individual]. */
+                    class Builder internal constructor() {
+
+                        private var beneficiaryType: JsonValue = JsonValue.from("INDIVIDUAL")
+                        private var fullName: JsonField<String>? = null
+                        private var address: JsonField<Address> = JsonMissing.of()
+                        private var birthDate: JsonField<String> = JsonMissing.of()
+                        private var countryOfResidence: JsonField<String> = JsonMissing.of()
+                        private var email: JsonField<String> = JsonMissing.of()
+                        private var nationality: JsonField<String> = JsonMissing.of()
+                        private var phoneNumber: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(individual: Individual) = apply {
+                            beneficiaryType = individual.beneficiaryType
+                            fullName = individual.fullName
+                            address = individual.address
+                            birthDate = individual.birthDate
+                            countryOfResidence = individual.countryOfResidence
+                            email = individual.email
+                            nationality = individual.nationality
+                            phoneNumber = individual.phoneNumber
+                            additionalProperties = individual.additionalProperties.toMutableMap()
+                        }
+
+                        /**
+                         * Sets the field to an arbitrary JSON value.
+                         *
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("INDIVIDUAL")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
+                         */
+                        fun beneficiaryType(beneficiaryType: JsonValue) = apply {
+                            this.beneficiaryType = beneficiaryType
+                        }
+
+                        /** The full name of the beneficiary */
+                        fun fullName(fullName: String) = fullName(JsonField.of(fullName))
+
+                        /**
+                         * Sets [Builder.fullName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.fullName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun fullName(fullName: JsonField<String>) = apply {
+                            this.fullName = fullName
+                        }
+
+                        fun address(address: Address) = address(JsonField.of(address))
+
+                        /**
+                         * Sets [Builder.address] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.address] with a well-typed [Address]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun address(address: JsonField<Address>) = apply { this.address = address }
+
+                        /** The birth date of the beneficiary */
+                        fun birthDate(birthDate: String) = birthDate(JsonField.of(birthDate))
+
+                        /**
+                         * Sets [Builder.birthDate] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.birthDate] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun birthDate(birthDate: JsonField<String>) = apply {
+                            this.birthDate = birthDate
+                        }
+
+                        /** The country of residence of the beneficiary */
+                        fun countryOfResidence(countryOfResidence: String) =
+                            countryOfResidence(JsonField.of(countryOfResidence))
+
+                        /**
+                         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.countryOfResidence] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+                            this.countryOfResidence = countryOfResidence
+                        }
+
+                        /** The email of the beneficiary */
+                        fun email(email: String) = email(JsonField.of(email))
+
+                        /**
+                         * Sets [Builder.email] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.email] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun email(email: JsonField<String>) = apply { this.email = email }
+
+                        /** The nationality of the beneficiary */
+                        fun nationality(nationality: String) =
+                            nationality(JsonField.of(nationality))
+
+                        /**
+                         * Sets [Builder.nationality] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.nationality] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun nationality(nationality: JsonField<String>) = apply {
+                            this.nationality = nationality
+                        }
+
+                        /** The phone number of the beneficiary */
+                        fun phoneNumber(phoneNumber: String) =
+                            phoneNumber(JsonField.of(phoneNumber))
+
+                        /**
+                         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.phoneNumber] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                            this.phoneNumber = phoneNumber
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Individual].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .fullName()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Individual =
+                            Individual(
+                                beneficiaryType,
+                                checkRequired("fullName", fullName),
+                                address,
+                                birthDate,
+                                countryOfResidence,
+                                email,
+                                nationality,
+                                phoneNumber,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws LightsparkGridInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Individual = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        _beneficiaryType().let {
+                            if (it != JsonValue.from("INDIVIDUAL")) {
+                                throw LightsparkGridInvalidDataException(
+                                    "'beneficiaryType' is invalid, received $it"
+                                )
+                            }
+                        }
+                        fullName()
+                        address()?.validate()
+                        birthDate()
+                        countryOfResidence()
+                        email()
+                        nationality()
+                        phoneNumber()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: LightsparkGridInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        beneficiaryType.let { if (it == JsonValue.from("INDIVIDUAL")) 1 else 0 } +
+                            (if (fullName.asKnown() == null) 0 else 1) +
+                            (address.asKnown()?.validity() ?: 0) +
+                            (if (birthDate.asKnown() == null) 0 else 1) +
+                            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+                            (if (email.asKnown() == null) 0 else 1) +
+                            (if (nationality.asKnown() == null) 0 else 1) +
+                            (if (phoneNumber.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Individual &&
+                            beneficiaryType == other.beneficiaryType &&
+                            fullName == other.fullName &&
+                            address == other.address &&
+                            birthDate == other.birthDate &&
+                            countryOfResidence == other.countryOfResidence &&
+                            email == other.email &&
+                            nationality == other.nationality &&
+                            phoneNumber == other.phoneNumber &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            beneficiaryType,
+                            fullName,
+                            address,
+                            birthDate,
+                            countryOfResidence,
+                            email,
+                            nationality,
+                            phoneNumber,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Individual{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+                }
+
+                class Business
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val address: JsonField<Address>,
+                    private val beneficiaryType: JsonValue,
+                    private val legalName: JsonField<String>,
+                    private val countryOfResidence: JsonField<String>,
+                    private val email: JsonField<String>,
+                    private val phoneNumber: JsonField<String>,
+                    private val registrationNumber: JsonField<String>,
+                    private val taxId: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("address")
+                        @ExcludeMissing
+                        address: JsonField<Address> = JsonMissing.of(),
+                        @JsonProperty("beneficiaryType")
+                        @ExcludeMissing
+                        beneficiaryType: JsonValue = JsonMissing.of(),
+                        @JsonProperty("legalName")
+                        @ExcludeMissing
+                        legalName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("countryOfResidence")
+                        @ExcludeMissing
+                        countryOfResidence: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("email")
+                        @ExcludeMissing
+                        email: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("phoneNumber")
+                        @ExcludeMissing
+                        phoneNumber: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("registrationNumber")
+                        @ExcludeMissing
+                        registrationNumber: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("taxId")
+                        @ExcludeMissing
+                        taxId: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        address,
+                        beneficiaryType,
+                        legalName,
+                        countryOfResidence,
+                        email,
+                        phoneNumber,
+                        registrationNumber,
+                        taxId,
+                        mutableMapOf(),
+                    )
+
+                    /**
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun address(): Address = address.getRequired("address")
+
+                    /**
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("BUSINESS")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
+                     */
+                    @JsonProperty("beneficiaryType")
+                    @ExcludeMissing
+                    fun _beneficiaryType(): JsonValue = beneficiaryType
+
+                    /**
+                     * The legal name of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun legalName(): String = legalName.getRequired("legalName")
+
+                    /**
+                     * The country of residence of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun countryOfResidence(): String? =
+                        countryOfResidence.getNullable("countryOfResidence")
+
+                    /**
+                     * The email of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun email(): String? = email.getNullable("email")
+
+                    /**
+                     * The phone number of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+                    /**
+                     * The company registration number of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun registrationNumber(): String? =
+                        registrationNumber.getNullable("registrationNumber")
+
+                    /**
+                     * The tax identification number of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun taxId(): String? = taxId.getNullable("taxId")
+
+                    /**
+                     * Returns the raw JSON value of [address].
+                     *
+                     * Unlike [address], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("address")
+                    @ExcludeMissing
+                    fun _address(): JsonField<Address> = address
+
+                    /**
+                     * Returns the raw JSON value of [legalName].
+                     *
+                     * Unlike [legalName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("legalName")
+                    @ExcludeMissing
+                    fun _legalName(): JsonField<String> = legalName
+
+                    /**
+                     * Returns the raw JSON value of [countryOfResidence].
+                     *
+                     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("countryOfResidence")
+                    @ExcludeMissing
+                    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+                    /**
+                     * Returns the raw JSON value of [email].
+                     *
+                     * Unlike [email], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+                    /**
+                     * Returns the raw JSON value of [phoneNumber].
+                     *
+                     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("phoneNumber")
+                    @ExcludeMissing
+                    fun _phoneNumber(): JsonField<String> = phoneNumber
+
+                    /**
+                     * Returns the raw JSON value of [registrationNumber].
+                     *
+                     * Unlike [registrationNumber], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("registrationNumber")
+                    @ExcludeMissing
+                    fun _registrationNumber(): JsonField<String> = registrationNumber
+
+                    /**
+                     * Returns the raw JSON value of [taxId].
+                     *
+                     * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Business].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .address()
+                         * .legalName()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [Business]. */
+                    class Builder internal constructor() {
+
+                        private var address: JsonField<Address>? = null
+                        private var beneficiaryType: JsonValue = JsonValue.from("BUSINESS")
+                        private var legalName: JsonField<String>? = null
+                        private var countryOfResidence: JsonField<String> = JsonMissing.of()
+                        private var email: JsonField<String> = JsonMissing.of()
+                        private var phoneNumber: JsonField<String> = JsonMissing.of()
+                        private var registrationNumber: JsonField<String> = JsonMissing.of()
+                        private var taxId: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(business: Business) = apply {
+                            address = business.address
+                            beneficiaryType = business.beneficiaryType
+                            legalName = business.legalName
+                            countryOfResidence = business.countryOfResidence
+                            email = business.email
+                            phoneNumber = business.phoneNumber
+                            registrationNumber = business.registrationNumber
+                            taxId = business.taxId
+                            additionalProperties = business.additionalProperties.toMutableMap()
+                        }
+
+                        fun address(address: Address) = address(JsonField.of(address))
+
+                        /**
+                         * Sets [Builder.address] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.address] with a well-typed [Address]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun address(address: JsonField<Address>) = apply { this.address = address }
+
+                        /**
+                         * Sets the field to an arbitrary JSON value.
+                         *
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("BUSINESS")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
+                         */
+                        fun beneficiaryType(beneficiaryType: JsonValue) = apply {
+                            this.beneficiaryType = beneficiaryType
+                        }
+
+                        /** The legal name of the business */
+                        fun legalName(legalName: String) = legalName(JsonField.of(legalName))
+
+                        /**
+                         * Sets [Builder.legalName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.legalName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun legalName(legalName: JsonField<String>) = apply {
+                            this.legalName = legalName
+                        }
+
+                        /** The country of residence of the beneficiary */
+                        fun countryOfResidence(countryOfResidence: String) =
+                            countryOfResidence(JsonField.of(countryOfResidence))
+
+                        /**
+                         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.countryOfResidence] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+                            this.countryOfResidence = countryOfResidence
+                        }
+
+                        /** The email of the beneficiary */
+                        fun email(email: String) = email(JsonField.of(email))
+
+                        /**
+                         * Sets [Builder.email] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.email] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun email(email: JsonField<String>) = apply { this.email = email }
+
+                        /** The phone number of the beneficiary */
+                        fun phoneNumber(phoneNumber: String) =
+                            phoneNumber(JsonField.of(phoneNumber))
+
+                        /**
+                         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.phoneNumber] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                            this.phoneNumber = phoneNumber
+                        }
+
+                        /** The company registration number of the business */
+                        fun registrationNumber(registrationNumber: String) =
+                            registrationNumber(JsonField.of(registrationNumber))
+
+                        /**
+                         * Sets [Builder.registrationNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.registrationNumber] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun registrationNumber(registrationNumber: JsonField<String>) = apply {
+                            this.registrationNumber = registrationNumber
+                        }
+
+                        /** The tax identification number of the business */
+                        fun taxId(taxId: String) = taxId(JsonField.of(taxId))
+
+                        /**
+                         * Sets [Builder.taxId] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.taxId] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Business].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .address()
+                         * .legalName()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Business =
+                            Business(
+                                checkRequired("address", address),
+                                beneficiaryType,
+                                checkRequired("legalName", legalName),
+                                countryOfResidence,
+                                email,
+                                phoneNumber,
+                                registrationNumber,
+                                taxId,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws LightsparkGridInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Business = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        address().validate()
+                        _beneficiaryType().let {
+                            if (it != JsonValue.from("BUSINESS")) {
+                                throw LightsparkGridInvalidDataException(
+                                    "'beneficiaryType' is invalid, received $it"
+                                )
+                            }
+                        }
+                        legalName()
+                        countryOfResidence()
+                        email()
+                        phoneNumber()
+                        registrationNumber()
+                        taxId()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: LightsparkGridInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        (address.asKnown()?.validity() ?: 0) +
+                            beneficiaryType.let { if (it == JsonValue.from("BUSINESS")) 1 else 0 } +
+                            (if (legalName.asKnown() == null) 0 else 1) +
+                            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+                            (if (email.asKnown() == null) 0 else 1) +
+                            (if (phoneNumber.asKnown() == null) 0 else 1) +
+                            (if (registrationNumber.asKnown() == null) 0 else 1) +
+                            (if (taxId.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Business &&
+                            address == other.address &&
+                            beneficiaryType == other.beneficiaryType &&
+                            legalName == other.legalName &&
+                            countryOfResidence == other.countryOfResidence &&
+                            email == other.email &&
+                            phoneNumber == other.phoneNumber &&
+                            registrationNumber == other.registrationNumber &&
+                            taxId == other.taxId &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            address,
+                            beneficiaryType,
+                            legalName,
+                            countryOfResidence,
+                            email,
+                            phoneNumber,
+                            registrationNumber,
+                            taxId,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Business{address=$address, beneficiaryType=$beneficiaryType, legalName=$legalName, countryOfResidence=$countryOfResidence, email=$email, phoneNumber=$phoneNumber, registrationNumber=$registrationNumber, taxId=$taxId, additionalProperties=$additionalProperties}"
+                }
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is CnyAccount &&
+                    accountType == other.accountType &&
+                    bankName == other.bankName &&
+                    beneficiary == other.beneficiary &&
+                    accountNumber == other.accountNumber &&
+                    phoneNumber == other.phoneNumber &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    accountType,
+                    bankName,
+                    beneficiary,
+                    accountNumber,
+                    phoneNumber,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "CnyAccount{accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, accountNumber=$accountNumber, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        }
+
+        class IlsAccount
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val accountType: JsonValue,
+            private val bankName: JsonField<String>,
+            private val beneficiary: JsonField<Beneficiary>,
+            private val iban: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonValue = JsonMissing.of(),
+                @JsonProperty("bankName")
+                @ExcludeMissing
+                bankName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("beneficiary")
+                @ExcludeMissing
+                beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+                @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
+            ) : this(accountType, bankName, beneficiary, iban, mutableMapOf())
+
+            /**
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("ILS_ACCOUNT")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+            /**
+             * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns
+             * for this country and currency. Send it exactly as returned; any other name is
+             * rejected.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun bankName(): String = bankName.getRequired("bankName")
+
+            /**
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
+
+            /**
+             * Israeli IBAN (23 characters, starting with IL)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun iban(): String = iban.getRequired("iban")
+
+            /**
+             * Returns the raw JSON value of [bankName].
+             *
+             * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
+
+            /**
+             * Returns the raw JSON value of [beneficiary].
+             *
+             * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("beneficiary")
+            @ExcludeMissing
+            fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+
+            /**
+             * Returns the raw JSON value of [iban].
+             *
+             * Unlike [iban], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("iban") @ExcludeMissing fun _iban(): JsonField<String> = iban
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [IlsAccount].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .bankName()
+                 * .beneficiary()
+                 * .iban()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [IlsAccount]. */
+            class Builder internal constructor() {
+
+                private var accountType: JsonValue = JsonValue.from("ILS_ACCOUNT")
+                private var bankName: JsonField<String>? = null
+                private var beneficiary: JsonField<Beneficiary>? = null
+                private var iban: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(ilsAccount: IlsAccount) = apply {
+                    accountType = ilsAccount.accountType
+                    bankName = ilsAccount.bankName
+                    beneficiary = ilsAccount.beneficiary
+                    iban = ilsAccount.iban
+                    additionalProperties = ilsAccount.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("ILS_ACCOUNT")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+                /**
+                 * The name of the bank. Must be one of the `bankName` values `GET /discoveries`
+                 * returns for this country and currency. Send it exactly as returned; any other
+                 * name is rejected.
+                 */
+                fun bankName(bankName: String) = bankName(JsonField.of(bankName))
+
+                /**
+                 * Sets [Builder.bankName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.bankName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
+
+                fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
+
+                /**
+                 * Sets [Builder.beneficiary] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.beneficiary] with a well-typed [Beneficiary]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun beneficiary(beneficiary: JsonField<Beneficiary>) = apply {
+                    this.beneficiary = beneficiary
+                }
+
+                /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
+                fun beneficiary(individual: Beneficiary.Individual) =
+                    beneficiary(Beneficiary.ofIndividual(individual))
+
+                /**
+                 * Alias for calling [beneficiary] with the following:
+                 * ```kotlin
+                 * Beneficiary.Individual.builder()
+                 *     .fullName(fullName)
+                 *     .build()
+                 * ```
+                 */
+                fun individualBeneficiary(fullName: String) =
+                    beneficiary(Beneficiary.Individual.builder().fullName(fullName).build())
+
+                /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
+                fun beneficiary(business: Beneficiary.Business) =
+                    beneficiary(Beneficiary.ofBusiness(business))
+
+                /** Israeli IBAN (23 characters, starting with IL) */
+                fun iban(iban: String) = iban(JsonField.of(iban))
+
+                /**
+                 * Sets [Builder.iban] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.iban] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun iban(iban: JsonField<String>) = apply { this.iban = iban }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [IlsAccount].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .bankName()
+                 * .beneficiary()
+                 * .iban()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): IlsAccount =
+                    IlsAccount(
+                        accountType,
+                        checkRequired("bankName", bankName),
+                        checkRequired("beneficiary", beneficiary),
+                        checkRequired("iban", iban),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): IlsAccount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                _accountType().let {
+                    if (it != JsonValue.from("ILS_ACCOUNT")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'accountType' is invalid, received $it"
+                        )
+                    }
+                }
+                bankName()
+                beneficiary().validate()
+                iban()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accountType.let { if (it == JsonValue.from("ILS_ACCOUNT")) 1 else 0 } +
+                    (if (bankName.asKnown() == null) 0 else 1) +
+                    (beneficiary.asKnown()?.validity() ?: 0) +
+                    (if (iban.asKnown() == null) 0 else 1)
+
+            @JsonDeserialize(using = Beneficiary.Deserializer::class)
+            @JsonSerialize(using = Beneficiary.Serializer::class)
+            class Beneficiary
+            private constructor(
+                private val individual: Individual? = null,
+                private val business: Business? = null,
+                private val _json: JsonValue? = null,
+            ) {
+
+                fun individual(): Individual? = individual
+
+                fun business(): Business? = business
+
+                fun isIndividual(): Boolean = individual != null
+
+                fun isBusiness(): Boolean = business != null
+
+                fun asIndividual(): Individual = individual.getOrThrow("individual")
+
+                fun asBusiness(): Business = business.getOrThrow("business")
+
+                fun _json(): JsonValue? = _json
+
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.lightspark.grid.core.JsonValue
+                 *
+                 * val result: String? = beneficiary.accept(object : Beneficiary.Visitor<String?> {
+                 *     override fun visitIndividual(individual: Individual): String? = individual.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden
+                 *   in [visitor] and the current variant is unknown.
+                 */
+                fun <T> accept(visitor: Visitor<T>): T =
+                    when {
+                        individual != null -> visitor.visitIndividual(individual)
+                        business != null -> visitor.visitBusiness(business)
+                        else -> visitor.unknown(_json)
+                    }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): Beneficiary = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    accept(
+                        object : Visitor<Unit> {
+                            override fun visitIndividual(individual: Individual) {
+                                individual.validate()
+                            }
+
+                            override fun visitBusiness(business: Business) {
+                                business.validate()
+                            }
+                        }
+                    )
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    accept(
+                        object : Visitor<Int> {
+                            override fun visitIndividual(individual: Individual) =
+                                individual.validity()
+
+                            override fun visitBusiness(business: Business) = business.validity()
+
+                            override fun unknown(json: JsonValue?) = 0
+                        }
+                    )
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Beneficiary &&
+                        individual == other.individual &&
+                        business == other.business
+                }
+
+                override fun hashCode(): Int = Objects.hash(individual, business)
+
+                override fun toString(): String =
+                    when {
+                        individual != null -> "Beneficiary{individual=$individual}"
+                        business != null -> "Beneficiary{business=$business}"
+                        _json != null -> "Beneficiary{_unknown=$_json}"
+                        else -> throw IllegalStateException("Invalid Beneficiary")
+                    }
+
+                companion object {
+
+                    fun ofIndividual(individual: Individual) = Beneficiary(individual = individual)
+
+                    fun ofBusiness(business: Business) = Beneficiary(business = business)
+                }
+
+                /**
+                 * An interface that defines how to map each variant of [Beneficiary] to a value of
+                 * type [T].
+                 */
+                interface Visitor<out T> {
+
+                    fun visitIndividual(individual: Individual): T
+
+                    fun visitBusiness(business: Business): T
+
+                    /**
+                     * Maps an unknown variant of [Beneficiary] to a value of type [T].
+                     *
+                     * An instance of [Beneficiary] can contain an unknown variant if it was
+                     * deserialized from data that doesn't match any known variant. For example, if
+                     * the SDK is on an older version than the API, then the API may respond with
+                     * new variants that the SDK is unaware of.
+                     *
+                     * @throws LightsparkGridInvalidDataException in the default implementation.
+                     */
+                    fun unknown(json: JsonValue?): T {
+                        throw LightsparkGridInvalidDataException("Unknown Beneficiary: $json")
+                    }
+                }
+
+                internal class Deserializer : BaseDeserializer<Beneficiary>(Beneficiary::class) {
+
+                    override fun ObjectCodec.deserialize(node: JsonNode): Beneficiary {
+                        val json = JsonValue.fromJsonNode(node)
+                        val beneficiaryType = json.asObject()?.get("beneficiaryType")?.asString()
+
+                        when (beneficiaryType) {
+                            "INDIVIDUAL" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
+                                    Beneficiary(individual = it, _json = json)
+                                } ?: Beneficiary(_json = json)
+                            }
+                            "BUSINESS" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Business>())?.let {
+                                    Beneficiary(business = it, _json = json)
+                                } ?: Beneficiary(_json = json)
+                            }
+                        }
+
+                        return Beneficiary(_json = json)
+                    }
+                }
+
+                internal class Serializer : BaseSerializer<Beneficiary>(Beneficiary::class) {
+
+                    override fun serialize(
+                        value: Beneficiary,
+                        generator: JsonGenerator,
+                        provider: SerializerProvider,
+                    ) {
+                        when {
+                            value.individual != null -> generator.writeObject(value.individual)
+                            value.business != null -> generator.writeObject(value.business)
+                            value._json != null -> generator.writeObject(value._json)
+                            else -> throw IllegalStateException("Invalid Beneficiary")
+                        }
+                    }
+                }
+
+                class Individual
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val beneficiaryType: JsonValue,
+                    private val fullName: JsonField<String>,
+                    private val address: JsonField<Address>,
+                    private val birthDate: JsonField<String>,
+                    private val countryOfResidence: JsonField<String>,
+                    private val email: JsonField<String>,
+                    private val nationality: JsonField<String>,
+                    private val phoneNumber: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("beneficiaryType")
+                        @ExcludeMissing
+                        beneficiaryType: JsonValue = JsonMissing.of(),
+                        @JsonProperty("fullName")
+                        @ExcludeMissing
+                        fullName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("address")
+                        @ExcludeMissing
+                        address: JsonField<Address> = JsonMissing.of(),
+                        @JsonProperty("birthDate")
+                        @ExcludeMissing
+                        birthDate: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("countryOfResidence")
+                        @ExcludeMissing
+                        countryOfResidence: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("email")
+                        @ExcludeMissing
+                        email: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("nationality")
+                        @ExcludeMissing
+                        nationality: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("phoneNumber")
+                        @ExcludeMissing
+                        phoneNumber: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        beneficiaryType,
+                        fullName,
+                        address,
+                        birthDate,
+                        countryOfResidence,
+                        email,
+                        nationality,
+                        phoneNumber,
+                        mutableMapOf(),
+                    )
+
+                    /**
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("INDIVIDUAL")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
+                     */
+                    @JsonProperty("beneficiaryType")
+                    @ExcludeMissing
+                    fun _beneficiaryType(): JsonValue = beneficiaryType
+
+                    /**
+                     * The full name of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun fullName(): String = fullName.getRequired("fullName")
+
+                    /**
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun address(): Address? = address.getNullable("address")
+
+                    /**
+                     * The birth date of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun birthDate(): String? = birthDate.getNullable("birthDate")
+
+                    /**
+                     * The country of residence of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun countryOfResidence(): String? =
+                        countryOfResidence.getNullable("countryOfResidence")
+
+                    /**
+                     * The email of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun email(): String? = email.getNullable("email")
+
+                    /**
+                     * The nationality of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun nationality(): String? = nationality.getNullable("nationality")
+
+                    /**
+                     * The phone number of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+                    /**
+                     * Returns the raw JSON value of [fullName].
+                     *
+                     * Unlike [fullName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("fullName")
+                    @ExcludeMissing
+                    fun _fullName(): JsonField<String> = fullName
+
+                    /**
+                     * Returns the raw JSON value of [address].
+                     *
+                     * Unlike [address], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("address")
+                    @ExcludeMissing
+                    fun _address(): JsonField<Address> = address
+
+                    /**
+                     * Returns the raw JSON value of [birthDate].
+                     *
+                     * Unlike [birthDate], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("birthDate")
+                    @ExcludeMissing
+                    fun _birthDate(): JsonField<String> = birthDate
+
+                    /**
+                     * Returns the raw JSON value of [countryOfResidence].
+                     *
+                     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("countryOfResidence")
+                    @ExcludeMissing
+                    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+                    /**
+                     * Returns the raw JSON value of [email].
+                     *
+                     * Unlike [email], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+                    /**
+                     * Returns the raw JSON value of [nationality].
+                     *
+                     * Unlike [nationality], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("nationality")
+                    @ExcludeMissing
+                    fun _nationality(): JsonField<String> = nationality
+
+                    /**
+                     * Returns the raw JSON value of [phoneNumber].
+                     *
+                     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("phoneNumber")
+                    @ExcludeMissing
+                    fun _phoneNumber(): JsonField<String> = phoneNumber
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Individual].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .fullName()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [Individual]. */
+                    class Builder internal constructor() {
+
+                        private var beneficiaryType: JsonValue = JsonValue.from("INDIVIDUAL")
+                        private var fullName: JsonField<String>? = null
+                        private var address: JsonField<Address> = JsonMissing.of()
+                        private var birthDate: JsonField<String> = JsonMissing.of()
+                        private var countryOfResidence: JsonField<String> = JsonMissing.of()
+                        private var email: JsonField<String> = JsonMissing.of()
+                        private var nationality: JsonField<String> = JsonMissing.of()
+                        private var phoneNumber: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(individual: Individual) = apply {
+                            beneficiaryType = individual.beneficiaryType
+                            fullName = individual.fullName
+                            address = individual.address
+                            birthDate = individual.birthDate
+                            countryOfResidence = individual.countryOfResidence
+                            email = individual.email
+                            nationality = individual.nationality
+                            phoneNumber = individual.phoneNumber
+                            additionalProperties = individual.additionalProperties.toMutableMap()
+                        }
+
+                        /**
+                         * Sets the field to an arbitrary JSON value.
+                         *
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("INDIVIDUAL")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
+                         */
+                        fun beneficiaryType(beneficiaryType: JsonValue) = apply {
+                            this.beneficiaryType = beneficiaryType
+                        }
+
+                        /** The full name of the beneficiary */
+                        fun fullName(fullName: String) = fullName(JsonField.of(fullName))
+
+                        /**
+                         * Sets [Builder.fullName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.fullName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun fullName(fullName: JsonField<String>) = apply {
+                            this.fullName = fullName
+                        }
+
+                        fun address(address: Address) = address(JsonField.of(address))
+
+                        /**
+                         * Sets [Builder.address] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.address] with a well-typed [Address]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun address(address: JsonField<Address>) = apply { this.address = address }
+
+                        /** The birth date of the beneficiary */
+                        fun birthDate(birthDate: String) = birthDate(JsonField.of(birthDate))
+
+                        /**
+                         * Sets [Builder.birthDate] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.birthDate] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun birthDate(birthDate: JsonField<String>) = apply {
+                            this.birthDate = birthDate
+                        }
+
+                        /** The country of residence of the beneficiary */
+                        fun countryOfResidence(countryOfResidence: String) =
+                            countryOfResidence(JsonField.of(countryOfResidence))
+
+                        /**
+                         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.countryOfResidence] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+                            this.countryOfResidence = countryOfResidence
+                        }
+
+                        /** The email of the beneficiary */
+                        fun email(email: String) = email(JsonField.of(email))
+
+                        /**
+                         * Sets [Builder.email] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.email] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun email(email: JsonField<String>) = apply { this.email = email }
+
+                        /** The nationality of the beneficiary */
+                        fun nationality(nationality: String) =
+                            nationality(JsonField.of(nationality))
+
+                        /**
+                         * Sets [Builder.nationality] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.nationality] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun nationality(nationality: JsonField<String>) = apply {
+                            this.nationality = nationality
+                        }
+
+                        /** The phone number of the beneficiary */
+                        fun phoneNumber(phoneNumber: String) =
+                            phoneNumber(JsonField.of(phoneNumber))
+
+                        /**
+                         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.phoneNumber] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                            this.phoneNumber = phoneNumber
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Individual].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .fullName()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Individual =
+                            Individual(
+                                beneficiaryType,
+                                checkRequired("fullName", fullName),
+                                address,
+                                birthDate,
+                                countryOfResidence,
+                                email,
+                                nationality,
+                                phoneNumber,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws LightsparkGridInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Individual = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        _beneficiaryType().let {
+                            if (it != JsonValue.from("INDIVIDUAL")) {
+                                throw LightsparkGridInvalidDataException(
+                                    "'beneficiaryType' is invalid, received $it"
+                                )
+                            }
+                        }
+                        fullName()
+                        address()?.validate()
+                        birthDate()
+                        countryOfResidence()
+                        email()
+                        nationality()
+                        phoneNumber()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: LightsparkGridInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        beneficiaryType.let { if (it == JsonValue.from("INDIVIDUAL")) 1 else 0 } +
+                            (if (fullName.asKnown() == null) 0 else 1) +
+                            (address.asKnown()?.validity() ?: 0) +
+                            (if (birthDate.asKnown() == null) 0 else 1) +
+                            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+                            (if (email.asKnown() == null) 0 else 1) +
+                            (if (nationality.asKnown() == null) 0 else 1) +
+                            (if (phoneNumber.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Individual &&
+                            beneficiaryType == other.beneficiaryType &&
+                            fullName == other.fullName &&
+                            address == other.address &&
+                            birthDate == other.birthDate &&
+                            countryOfResidence == other.countryOfResidence &&
+                            email == other.email &&
+                            nationality == other.nationality &&
+                            phoneNumber == other.phoneNumber &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            beneficiaryType,
+                            fullName,
+                            address,
+                            birthDate,
+                            countryOfResidence,
+                            email,
+                            nationality,
+                            phoneNumber,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Individual{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+                }
+
+                class Business
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val address: JsonField<Address>,
+                    private val beneficiaryType: JsonValue,
+                    private val legalName: JsonField<String>,
+                    private val countryOfResidence: JsonField<String>,
+                    private val email: JsonField<String>,
+                    private val phoneNumber: JsonField<String>,
+                    private val registrationNumber: JsonField<String>,
+                    private val taxId: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("address")
+                        @ExcludeMissing
+                        address: JsonField<Address> = JsonMissing.of(),
+                        @JsonProperty("beneficiaryType")
+                        @ExcludeMissing
+                        beneficiaryType: JsonValue = JsonMissing.of(),
+                        @JsonProperty("legalName")
+                        @ExcludeMissing
+                        legalName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("countryOfResidence")
+                        @ExcludeMissing
+                        countryOfResidence: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("email")
+                        @ExcludeMissing
+                        email: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("phoneNumber")
+                        @ExcludeMissing
+                        phoneNumber: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("registrationNumber")
+                        @ExcludeMissing
+                        registrationNumber: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("taxId")
+                        @ExcludeMissing
+                        taxId: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        address,
+                        beneficiaryType,
+                        legalName,
+                        countryOfResidence,
+                        email,
+                        phoneNumber,
+                        registrationNumber,
+                        taxId,
+                        mutableMapOf(),
+                    )
+
+                    /**
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun address(): Address = address.getRequired("address")
+
+                    /**
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("BUSINESS")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
+                     */
+                    @JsonProperty("beneficiaryType")
+                    @ExcludeMissing
+                    fun _beneficiaryType(): JsonValue = beneficiaryType
+
+                    /**
+                     * The legal name of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun legalName(): String = legalName.getRequired("legalName")
+
+                    /**
+                     * The country of residence of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun countryOfResidence(): String? =
+                        countryOfResidence.getNullable("countryOfResidence")
+
+                    /**
+                     * The email of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun email(): String? = email.getNullable("email")
+
+                    /**
+                     * The phone number of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+                    /**
+                     * The company registration number of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun registrationNumber(): String? =
+                        registrationNumber.getNullable("registrationNumber")
+
+                    /**
+                     * The tax identification number of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun taxId(): String? = taxId.getNullable("taxId")
+
+                    /**
+                     * Returns the raw JSON value of [address].
+                     *
+                     * Unlike [address], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("address")
+                    @ExcludeMissing
+                    fun _address(): JsonField<Address> = address
+
+                    /**
+                     * Returns the raw JSON value of [legalName].
+                     *
+                     * Unlike [legalName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("legalName")
+                    @ExcludeMissing
+                    fun _legalName(): JsonField<String> = legalName
+
+                    /**
+                     * Returns the raw JSON value of [countryOfResidence].
+                     *
+                     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("countryOfResidence")
+                    @ExcludeMissing
+                    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+                    /**
+                     * Returns the raw JSON value of [email].
+                     *
+                     * Unlike [email], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+                    /**
+                     * Returns the raw JSON value of [phoneNumber].
+                     *
+                     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("phoneNumber")
+                    @ExcludeMissing
+                    fun _phoneNumber(): JsonField<String> = phoneNumber
+
+                    /**
+                     * Returns the raw JSON value of [registrationNumber].
+                     *
+                     * Unlike [registrationNumber], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("registrationNumber")
+                    @ExcludeMissing
+                    fun _registrationNumber(): JsonField<String> = registrationNumber
+
+                    /**
+                     * Returns the raw JSON value of [taxId].
+                     *
+                     * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Business].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .address()
+                         * .legalName()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [Business]. */
+                    class Builder internal constructor() {
+
+                        private var address: JsonField<Address>? = null
+                        private var beneficiaryType: JsonValue = JsonValue.from("BUSINESS")
+                        private var legalName: JsonField<String>? = null
+                        private var countryOfResidence: JsonField<String> = JsonMissing.of()
+                        private var email: JsonField<String> = JsonMissing.of()
+                        private var phoneNumber: JsonField<String> = JsonMissing.of()
+                        private var registrationNumber: JsonField<String> = JsonMissing.of()
+                        private var taxId: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(business: Business) = apply {
+                            address = business.address
+                            beneficiaryType = business.beneficiaryType
+                            legalName = business.legalName
+                            countryOfResidence = business.countryOfResidence
+                            email = business.email
+                            phoneNumber = business.phoneNumber
+                            registrationNumber = business.registrationNumber
+                            taxId = business.taxId
+                            additionalProperties = business.additionalProperties.toMutableMap()
+                        }
+
+                        fun address(address: Address) = address(JsonField.of(address))
+
+                        /**
+                         * Sets [Builder.address] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.address] with a well-typed [Address]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun address(address: JsonField<Address>) = apply { this.address = address }
+
+                        /**
+                         * Sets the field to an arbitrary JSON value.
+                         *
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("BUSINESS")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
+                         */
+                        fun beneficiaryType(beneficiaryType: JsonValue) = apply {
+                            this.beneficiaryType = beneficiaryType
+                        }
+
+                        /** The legal name of the business */
+                        fun legalName(legalName: String) = legalName(JsonField.of(legalName))
+
+                        /**
+                         * Sets [Builder.legalName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.legalName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun legalName(legalName: JsonField<String>) = apply {
+                            this.legalName = legalName
+                        }
+
+                        /** The country of residence of the beneficiary */
+                        fun countryOfResidence(countryOfResidence: String) =
+                            countryOfResidence(JsonField.of(countryOfResidence))
+
+                        /**
+                         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.countryOfResidence] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+                            this.countryOfResidence = countryOfResidence
+                        }
+
+                        /** The email of the beneficiary */
+                        fun email(email: String) = email(JsonField.of(email))
+
+                        /**
+                         * Sets [Builder.email] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.email] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun email(email: JsonField<String>) = apply { this.email = email }
+
+                        /** The phone number of the beneficiary */
+                        fun phoneNumber(phoneNumber: String) =
+                            phoneNumber(JsonField.of(phoneNumber))
+
+                        /**
+                         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.phoneNumber] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                            this.phoneNumber = phoneNumber
+                        }
+
+                        /** The company registration number of the business */
+                        fun registrationNumber(registrationNumber: String) =
+                            registrationNumber(JsonField.of(registrationNumber))
+
+                        /**
+                         * Sets [Builder.registrationNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.registrationNumber] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun registrationNumber(registrationNumber: JsonField<String>) = apply {
+                            this.registrationNumber = registrationNumber
+                        }
+
+                        /** The tax identification number of the business */
+                        fun taxId(taxId: String) = taxId(JsonField.of(taxId))
+
+                        /**
+                         * Sets [Builder.taxId] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.taxId] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Business].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .address()
+                         * .legalName()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Business =
+                            Business(
+                                checkRequired("address", address),
+                                beneficiaryType,
+                                checkRequired("legalName", legalName),
+                                countryOfResidence,
+                                email,
+                                phoneNumber,
+                                registrationNumber,
+                                taxId,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws LightsparkGridInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Business = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        address().validate()
+                        _beneficiaryType().let {
+                            if (it != JsonValue.from("BUSINESS")) {
+                                throw LightsparkGridInvalidDataException(
+                                    "'beneficiaryType' is invalid, received $it"
+                                )
+                            }
+                        }
+                        legalName()
+                        countryOfResidence()
+                        email()
+                        phoneNumber()
+                        registrationNumber()
+                        taxId()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: LightsparkGridInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        (address.asKnown()?.validity() ?: 0) +
+                            beneficiaryType.let { if (it == JsonValue.from("BUSINESS")) 1 else 0 } +
+                            (if (legalName.asKnown() == null) 0 else 1) +
+                            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+                            (if (email.asKnown() == null) 0 else 1) +
+                            (if (phoneNumber.asKnown() == null) 0 else 1) +
+                            (if (registrationNumber.asKnown() == null) 0 else 1) +
+                            (if (taxId.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Business &&
+                            address == other.address &&
+                            beneficiaryType == other.beneficiaryType &&
+                            legalName == other.legalName &&
+                            countryOfResidence == other.countryOfResidence &&
+                            email == other.email &&
+                            phoneNumber == other.phoneNumber &&
+                            registrationNumber == other.registrationNumber &&
+                            taxId == other.taxId &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            address,
+                            beneficiaryType,
+                            legalName,
+                            countryOfResidence,
+                            email,
+                            phoneNumber,
+                            registrationNumber,
+                            taxId,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Business{address=$address, beneficiaryType=$beneficiaryType, legalName=$legalName, countryOfResidence=$countryOfResidence, email=$email, phoneNumber=$phoneNumber, registrationNumber=$registrationNumber, taxId=$taxId, additionalProperties=$additionalProperties}"
+                }
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is IlsAccount &&
+                    accountType == other.accountType &&
+                    bankName == other.bankName &&
+                    beneficiary == other.beneficiary &&
+                    iban == other.iban &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(accountType, bankName, beneficiary, iban, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "IlsAccount{accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, iban=$iban, additionalProperties=$additionalProperties}"
+        }
+
+        class TryAccount
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val accountType: JsonValue,
+            private val bankName: JsonField<String>,
+            private val beneficiary: JsonField<Beneficiary>,
+            private val iban: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonValue = JsonMissing.of(),
+                @JsonProperty("bankName")
+                @ExcludeMissing
+                bankName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("beneficiary")
+                @ExcludeMissing
+                beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+                @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
+            ) : this(accountType, bankName, beneficiary, iban, mutableMapOf())
+
+            /**
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("TRY_ACCOUNT")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+            /**
+             * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns
+             * for this country and currency. Send it exactly as returned; any other name is
+             * rejected.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun bankName(): String = bankName.getRequired("bankName")
+
+            /**
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
+
+            /**
+             * Turkish IBAN (26 characters, starting with TR)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun iban(): String = iban.getRequired("iban")
+
+            /**
+             * Returns the raw JSON value of [bankName].
+             *
+             * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
+
+            /**
+             * Returns the raw JSON value of [beneficiary].
+             *
+             * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("beneficiary")
+            @ExcludeMissing
+            fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+
+            /**
+             * Returns the raw JSON value of [iban].
+             *
+             * Unlike [iban], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("iban") @ExcludeMissing fun _iban(): JsonField<String> = iban
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [TryAccount].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .bankName()
+                 * .beneficiary()
+                 * .iban()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [TryAccount]. */
+            class Builder internal constructor() {
+
+                private var accountType: JsonValue = JsonValue.from("TRY_ACCOUNT")
+                private var bankName: JsonField<String>? = null
+                private var beneficiary: JsonField<Beneficiary>? = null
+                private var iban: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(tryAccount: TryAccount) = apply {
+                    accountType = tryAccount.accountType
+                    bankName = tryAccount.bankName
+                    beneficiary = tryAccount.beneficiary
+                    iban = tryAccount.iban
+                    additionalProperties = tryAccount.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("TRY_ACCOUNT")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+                /**
+                 * The name of the bank. Must be one of the `bankName` values `GET /discoveries`
+                 * returns for this country and currency. Send it exactly as returned; any other
+                 * name is rejected.
+                 */
+                fun bankName(bankName: String) = bankName(JsonField.of(bankName))
+
+                /**
+                 * Sets [Builder.bankName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.bankName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
+
+                fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
+
+                /**
+                 * Sets [Builder.beneficiary] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.beneficiary] with a well-typed [Beneficiary]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun beneficiary(beneficiary: JsonField<Beneficiary>) = apply {
+                    this.beneficiary = beneficiary
+                }
+
+                /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
+                fun beneficiary(individual: Beneficiary.Individual) =
+                    beneficiary(Beneficiary.ofIndividual(individual))
+
+                /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
+                fun beneficiary(business: Beneficiary.Business) =
+                    beneficiary(Beneficiary.ofBusiness(business))
+
+                /** Turkish IBAN (26 characters, starting with TR) */
+                fun iban(iban: String) = iban(JsonField.of(iban))
+
+                /**
+                 * Sets [Builder.iban] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.iban] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun iban(iban: JsonField<String>) = apply { this.iban = iban }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [TryAccount].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .bankName()
+                 * .beneficiary()
+                 * .iban()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): TryAccount =
+                    TryAccount(
+                        accountType,
+                        checkRequired("bankName", bankName),
+                        checkRequired("beneficiary", beneficiary),
+                        checkRequired("iban", iban),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): TryAccount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                _accountType().let {
+                    if (it != JsonValue.from("TRY_ACCOUNT")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'accountType' is invalid, received $it"
+                        )
+                    }
+                }
+                bankName()
+                beneficiary().validate()
+                iban()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accountType.let { if (it == JsonValue.from("TRY_ACCOUNT")) 1 else 0 } +
+                    (if (bankName.asKnown() == null) 0 else 1) +
+                    (beneficiary.asKnown()?.validity() ?: 0) +
+                    (if (iban.asKnown() == null) 0 else 1)
+
+            @JsonDeserialize(using = Beneficiary.Deserializer::class)
+            @JsonSerialize(using = Beneficiary.Serializer::class)
+            class Beneficiary
+            private constructor(
+                private val individual: Individual? = null,
+                private val business: Business? = null,
+                private val _json: JsonValue? = null,
+            ) {
+
+                fun individual(): Individual? = individual
+
+                fun business(): Business? = business
+
+                fun isIndividual(): Boolean = individual != null
+
+                fun isBusiness(): Boolean = business != null
+
+                fun asIndividual(): Individual = individual.getOrThrow("individual")
+
+                fun asBusiness(): Business = business.getOrThrow("business")
+
+                fun _json(): JsonValue? = _json
+
+                /**
+                 * Maps this instance's current variant to a value of type [T] using the given
+                 * [visitor].
+                 *
+                 * Note that this method is _not_ forwards compatible with new variants from the
+                 * API, unless [visitor] overrides [Visitor.unknown]. To handle variants not known
+                 * to this version of the SDK gracefully, consider overriding [Visitor.unknown]:
+                 * ```kotlin
+                 * import com.lightspark.grid.core.JsonValue
+                 *
+                 * val result: String? = beneficiary.accept(object : Beneficiary.Visitor<String?> {
+                 *     override fun visitIndividual(individual: Individual): String? = individual.toString()
+                 *
+                 *     // ...
+                 *
+                 *     override fun unknown(json: JsonValue?): String? {
+                 *         // Or inspect the `json`.
+                 *         return null
+                 *     }
+                 * })
+                 * ```
+                 *
+                 * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden
+                 *   in [visitor] and the current variant is unknown.
+                 */
+                fun <T> accept(visitor: Visitor<T>): T =
+                    when {
+                        individual != null -> visitor.visitIndividual(individual)
+                        business != null -> visitor.visitBusiness(business)
+                        else -> visitor.unknown(_json)
+                    }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): Beneficiary = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    accept(
+                        object : Visitor<Unit> {
+                            override fun visitIndividual(individual: Individual) {
+                                individual.validate()
+                            }
+
+                            override fun visitBusiness(business: Business) {
+                                business.validate()
+                            }
+                        }
+                    )
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    accept(
+                        object : Visitor<Int> {
+                            override fun visitIndividual(individual: Individual) =
+                                individual.validity()
+
+                            override fun visitBusiness(business: Business) = business.validity()
+
+                            override fun unknown(json: JsonValue?) = 0
+                        }
+                    )
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Beneficiary &&
+                        individual == other.individual &&
+                        business == other.business
+                }
+
+                override fun hashCode(): Int = Objects.hash(individual, business)
+
+                override fun toString(): String =
+                    when {
+                        individual != null -> "Beneficiary{individual=$individual}"
+                        business != null -> "Beneficiary{business=$business}"
+                        _json != null -> "Beneficiary{_unknown=$_json}"
+                        else -> throw IllegalStateException("Invalid Beneficiary")
+                    }
+
+                companion object {
+
+                    fun ofIndividual(individual: Individual) = Beneficiary(individual = individual)
+
+                    fun ofBusiness(business: Business) = Beneficiary(business = business)
+                }
+
+                /**
+                 * An interface that defines how to map each variant of [Beneficiary] to a value of
+                 * type [T].
+                 */
+                interface Visitor<out T> {
+
+                    fun visitIndividual(individual: Individual): T
+
+                    fun visitBusiness(business: Business): T
+
+                    /**
+                     * Maps an unknown variant of [Beneficiary] to a value of type [T].
+                     *
+                     * An instance of [Beneficiary] can contain an unknown variant if it was
+                     * deserialized from data that doesn't match any known variant. For example, if
+                     * the SDK is on an older version than the API, then the API may respond with
+                     * new variants that the SDK is unaware of.
+                     *
+                     * @throws LightsparkGridInvalidDataException in the default implementation.
+                     */
+                    fun unknown(json: JsonValue?): T {
+                        throw LightsparkGridInvalidDataException("Unknown Beneficiary: $json")
+                    }
+                }
+
+                internal class Deserializer : BaseDeserializer<Beneficiary>(Beneficiary::class) {
+
+                    override fun ObjectCodec.deserialize(node: JsonNode): Beneficiary {
+                        val json = JsonValue.fromJsonNode(node)
+                        val beneficiaryType = json.asObject()?.get("beneficiaryType")?.asString()
+
+                        when (beneficiaryType) {
+                            "INDIVIDUAL" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
+                                    Beneficiary(individual = it, _json = json)
+                                } ?: Beneficiary(_json = json)
+                            }
+                            "BUSINESS" -> {
+                                return tryDeserialize(node, jacksonTypeRef<Business>())?.let {
+                                    Beneficiary(business = it, _json = json)
+                                } ?: Beneficiary(_json = json)
+                            }
+                        }
+
+                        return Beneficiary(_json = json)
+                    }
+                }
+
+                internal class Serializer : BaseSerializer<Beneficiary>(Beneficiary::class) {
+
+                    override fun serialize(
+                        value: Beneficiary,
+                        generator: JsonGenerator,
+                        provider: SerializerProvider,
+                    ) {
+                        when {
+                            value.individual != null -> generator.writeObject(value.individual)
+                            value.business != null -> generator.writeObject(value.business)
+                            value._json != null -> generator.writeObject(value._json)
+                            else -> throw IllegalStateException("Invalid Beneficiary")
+                        }
+                    }
+                }
+
+                class Individual
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val beneficiaryType: JsonValue,
+                    private val countryOfResidence: JsonField<String>,
+                    private val fullName: JsonField<String>,
+                    private val address: JsonField<Address>,
+                    private val birthDate: JsonField<String>,
+                    private val email: JsonField<String>,
+                    private val nationality: JsonField<String>,
+                    private val phoneNumber: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("beneficiaryType")
+                        @ExcludeMissing
+                        beneficiaryType: JsonValue = JsonMissing.of(),
+                        @JsonProperty("countryOfResidence")
+                        @ExcludeMissing
+                        countryOfResidence: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("fullName")
+                        @ExcludeMissing
+                        fullName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("address")
+                        @ExcludeMissing
+                        address: JsonField<Address> = JsonMissing.of(),
+                        @JsonProperty("birthDate")
+                        @ExcludeMissing
+                        birthDate: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("email")
+                        @ExcludeMissing
+                        email: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("nationality")
+                        @ExcludeMissing
+                        nationality: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("phoneNumber")
+                        @ExcludeMissing
+                        phoneNumber: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        beneficiaryType,
+                        countryOfResidence,
+                        fullName,
+                        address,
+                        birthDate,
+                        email,
+                        nationality,
+                        phoneNumber,
+                        mutableMapOf(),
+                    )
+
+                    /**
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("INDIVIDUAL")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
+                     */
+                    @JsonProperty("beneficiaryType")
+                    @ExcludeMissing
+                    fun _beneficiaryType(): JsonValue = beneficiaryType
+
+                    /**
+                     * The country of residence of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun countryOfResidence(): String =
+                        countryOfResidence.getRequired("countryOfResidence")
+
+                    /**
+                     * The full name of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun fullName(): String = fullName.getRequired("fullName")
+
+                    /**
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun address(): Address? = address.getNullable("address")
+
+                    /**
+                     * The birth date of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun birthDate(): String? = birthDate.getNullable("birthDate")
+
+                    /**
+                     * The email of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun email(): String? = email.getNullable("email")
+
+                    /**
+                     * The nationality of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun nationality(): String? = nationality.getNullable("nationality")
+
+                    /**
+                     * The phone number of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+                    /**
+                     * Returns the raw JSON value of [countryOfResidence].
+                     *
+                     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("countryOfResidence")
+                    @ExcludeMissing
+                    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+                    /**
+                     * Returns the raw JSON value of [fullName].
+                     *
+                     * Unlike [fullName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("fullName")
+                    @ExcludeMissing
+                    fun _fullName(): JsonField<String> = fullName
+
+                    /**
+                     * Returns the raw JSON value of [address].
+                     *
+                     * Unlike [address], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("address")
+                    @ExcludeMissing
+                    fun _address(): JsonField<Address> = address
+
+                    /**
+                     * Returns the raw JSON value of [birthDate].
+                     *
+                     * Unlike [birthDate], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("birthDate")
+                    @ExcludeMissing
+                    fun _birthDate(): JsonField<String> = birthDate
+
+                    /**
+                     * Returns the raw JSON value of [email].
+                     *
+                     * Unlike [email], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+                    /**
+                     * Returns the raw JSON value of [nationality].
+                     *
+                     * Unlike [nationality], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("nationality")
+                    @ExcludeMissing
+                    fun _nationality(): JsonField<String> = nationality
+
+                    /**
+                     * Returns the raw JSON value of [phoneNumber].
+                     *
+                     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("phoneNumber")
+                    @ExcludeMissing
+                    fun _phoneNumber(): JsonField<String> = phoneNumber
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Individual].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .countryOfResidence()
+                         * .fullName()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [Individual]. */
+                    class Builder internal constructor() {
+
+                        private var beneficiaryType: JsonValue = JsonValue.from("INDIVIDUAL")
+                        private var countryOfResidence: JsonField<String>? = null
+                        private var fullName: JsonField<String>? = null
+                        private var address: JsonField<Address> = JsonMissing.of()
+                        private var birthDate: JsonField<String> = JsonMissing.of()
+                        private var email: JsonField<String> = JsonMissing.of()
+                        private var nationality: JsonField<String> = JsonMissing.of()
+                        private var phoneNumber: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(individual: Individual) = apply {
+                            beneficiaryType = individual.beneficiaryType
+                            countryOfResidence = individual.countryOfResidence
+                            fullName = individual.fullName
+                            address = individual.address
+                            birthDate = individual.birthDate
+                            email = individual.email
+                            nationality = individual.nationality
+                            phoneNumber = individual.phoneNumber
+                            additionalProperties = individual.additionalProperties.toMutableMap()
+                        }
+
+                        /**
+                         * Sets the field to an arbitrary JSON value.
+                         *
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("INDIVIDUAL")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
+                         */
+                        fun beneficiaryType(beneficiaryType: JsonValue) = apply {
+                            this.beneficiaryType = beneficiaryType
+                        }
+
+                        /** The country of residence of the beneficiary */
+                        fun countryOfResidence(countryOfResidence: String) =
+                            countryOfResidence(JsonField.of(countryOfResidence))
+
+                        /**
+                         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.countryOfResidence] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+                            this.countryOfResidence = countryOfResidence
+                        }
+
+                        /** The full name of the beneficiary */
+                        fun fullName(fullName: String) = fullName(JsonField.of(fullName))
+
+                        /**
+                         * Sets [Builder.fullName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.fullName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun fullName(fullName: JsonField<String>) = apply {
+                            this.fullName = fullName
+                        }
+
+                        fun address(address: Address) = address(JsonField.of(address))
+
+                        /**
+                         * Sets [Builder.address] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.address] with a well-typed [Address]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun address(address: JsonField<Address>) = apply { this.address = address }
+
+                        /** The birth date of the beneficiary */
+                        fun birthDate(birthDate: String) = birthDate(JsonField.of(birthDate))
+
+                        /**
+                         * Sets [Builder.birthDate] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.birthDate] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun birthDate(birthDate: JsonField<String>) = apply {
+                            this.birthDate = birthDate
+                        }
+
+                        /** The email of the beneficiary */
+                        fun email(email: String) = email(JsonField.of(email))
+
+                        /**
+                         * Sets [Builder.email] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.email] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun email(email: JsonField<String>) = apply { this.email = email }
+
+                        /** The nationality of the beneficiary */
+                        fun nationality(nationality: String) =
+                            nationality(JsonField.of(nationality))
+
+                        /**
+                         * Sets [Builder.nationality] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.nationality] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun nationality(nationality: JsonField<String>) = apply {
+                            this.nationality = nationality
+                        }
+
+                        /** The phone number of the beneficiary */
+                        fun phoneNumber(phoneNumber: String) =
+                            phoneNumber(JsonField.of(phoneNumber))
+
+                        /**
+                         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.phoneNumber] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                            this.phoneNumber = phoneNumber
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Individual].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .countryOfResidence()
+                         * .fullName()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Individual =
+                            Individual(
+                                beneficiaryType,
+                                checkRequired("countryOfResidence", countryOfResidence),
+                                checkRequired("fullName", fullName),
+                                address,
+                                birthDate,
+                                email,
+                                nationality,
+                                phoneNumber,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws LightsparkGridInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Individual = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        _beneficiaryType().let {
+                            if (it != JsonValue.from("INDIVIDUAL")) {
+                                throw LightsparkGridInvalidDataException(
+                                    "'beneficiaryType' is invalid, received $it"
+                                )
+                            }
+                        }
+                        countryOfResidence()
+                        fullName()
+                        address()?.validate()
+                        birthDate()
+                        email()
+                        nationality()
+                        phoneNumber()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: LightsparkGridInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        beneficiaryType.let { if (it == JsonValue.from("INDIVIDUAL")) 1 else 0 } +
+                            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+                            (if (fullName.asKnown() == null) 0 else 1) +
+                            (address.asKnown()?.validity() ?: 0) +
+                            (if (birthDate.asKnown() == null) 0 else 1) +
+                            (if (email.asKnown() == null) 0 else 1) +
+                            (if (nationality.asKnown() == null) 0 else 1) +
+                            (if (phoneNumber.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Individual &&
+                            beneficiaryType == other.beneficiaryType &&
+                            countryOfResidence == other.countryOfResidence &&
+                            fullName == other.fullName &&
+                            address == other.address &&
+                            birthDate == other.birthDate &&
+                            email == other.email &&
+                            nationality == other.nationality &&
+                            phoneNumber == other.phoneNumber &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            beneficiaryType,
+                            countryOfResidence,
+                            fullName,
+                            address,
+                            birthDate,
+                            email,
+                            nationality,
+                            phoneNumber,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Individual{beneficiaryType=$beneficiaryType, countryOfResidence=$countryOfResidence, fullName=$fullName, address=$address, birthDate=$birthDate, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+                }
+
+                class Business
+                @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+                private constructor(
+                    private val beneficiaryType: JsonValue,
+                    private val countryOfResidence: JsonField<String>,
+                    private val legalName: JsonField<String>,
+                    private val address: JsonField<Address>,
+                    private val email: JsonField<String>,
+                    private val phoneNumber: JsonField<String>,
+                    private val registrationNumber: JsonField<String>,
+                    private val taxId: JsonField<String>,
+                    private val additionalProperties: MutableMap<String, JsonValue>,
+                ) {
+
+                    @JsonCreator
+                    private constructor(
+                        @JsonProperty("beneficiaryType")
+                        @ExcludeMissing
+                        beneficiaryType: JsonValue = JsonMissing.of(),
+                        @JsonProperty("countryOfResidence")
+                        @ExcludeMissing
+                        countryOfResidence: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("legalName")
+                        @ExcludeMissing
+                        legalName: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("address")
+                        @ExcludeMissing
+                        address: JsonField<Address> = JsonMissing.of(),
+                        @JsonProperty("email")
+                        @ExcludeMissing
+                        email: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("phoneNumber")
+                        @ExcludeMissing
+                        phoneNumber: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("registrationNumber")
+                        @ExcludeMissing
+                        registrationNumber: JsonField<String> = JsonMissing.of(),
+                        @JsonProperty("taxId")
+                        @ExcludeMissing
+                        taxId: JsonField<String> = JsonMissing.of(),
+                    ) : this(
+                        beneficiaryType,
+                        countryOfResidence,
+                        legalName,
+                        address,
+                        email,
+                        phoneNumber,
+                        registrationNumber,
+                        taxId,
+                        mutableMapOf(),
+                    )
+
+                    /**
+                     * Expected to always return the following:
+                     * ```kotlin
+                     * JsonValue.from("BUSINESS")
+                     * ```
+                     *
+                     * However, this method can be useful for debugging and logging (e.g. if the
+                     * server responded with an unexpected value).
+                     */
+                    @JsonProperty("beneficiaryType")
+                    @ExcludeMissing
+                    fun _beneficiaryType(): JsonValue = beneficiaryType
+
+                    /**
+                     * The country of residence of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun countryOfResidence(): String =
+                        countryOfResidence.getRequired("countryOfResidence")
+
+                    /**
+                     * The legal name of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type or is unexpectedly missing or null (e.g. if the server
+                     *   responded with an unexpected value).
+                     */
+                    fun legalName(): String = legalName.getRequired("legalName")
+
+                    /**
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun address(): Address? = address.getNullable("address")
+
+                    /**
+                     * The email of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun email(): String? = email.getNullable("email")
+
+                    /**
+                     * The phone number of the beneficiary
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+                    /**
+                     * The company registration number of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun registrationNumber(): String? =
+                        registrationNumber.getNullable("registrationNumber")
+
+                    /**
+                     * The tax identification number of the business
+                     *
+                     * @throws LightsparkGridInvalidDataException if the JSON field has an
+                     *   unexpected type (e.g. if the server responded with an unexpected value).
+                     */
+                    fun taxId(): String? = taxId.getNullable("taxId")
+
+                    /**
+                     * Returns the raw JSON value of [countryOfResidence].
+                     *
+                     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("countryOfResidence")
+                    @ExcludeMissing
+                    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+                    /**
+                     * Returns the raw JSON value of [legalName].
+                     *
+                     * Unlike [legalName], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("legalName")
+                    @ExcludeMissing
+                    fun _legalName(): JsonField<String> = legalName
+
+                    /**
+                     * Returns the raw JSON value of [address].
+                     *
+                     * Unlike [address], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("address")
+                    @ExcludeMissing
+                    fun _address(): JsonField<Address> = address
+
+                    /**
+                     * Returns the raw JSON value of [email].
+                     *
+                     * Unlike [email], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+                    /**
+                     * Returns the raw JSON value of [phoneNumber].
+                     *
+                     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an
+                     * unexpected type.
+                     */
+                    @JsonProperty("phoneNumber")
+                    @ExcludeMissing
+                    fun _phoneNumber(): JsonField<String> = phoneNumber
+
+                    /**
+                     * Returns the raw JSON value of [registrationNumber].
+                     *
+                     * Unlike [registrationNumber], this method doesn't throw if the JSON field has
+                     * an unexpected type.
+                     */
+                    @JsonProperty("registrationNumber")
+                    @ExcludeMissing
+                    fun _registrationNumber(): JsonField<String> = registrationNumber
+
+                    /**
+                     * Returns the raw JSON value of [taxId].
+                     *
+                     * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected
+                     * type.
+                     */
+                    @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
+
+                    @JsonAnySetter
+                    private fun putAdditionalProperty(key: String, value: JsonValue) {
+                        additionalProperties.put(key, value)
+                    }
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> =
+                        Collections.unmodifiableMap(additionalProperties)
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /**
+                         * Returns a mutable builder for constructing an instance of [Business].
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .countryOfResidence()
+                         * .legalName()
+                         * ```
+                         */
+                        fun builder() = Builder()
+                    }
+
+                    /** A builder for [Business]. */
+                    class Builder internal constructor() {
+
+                        private var beneficiaryType: JsonValue = JsonValue.from("BUSINESS")
+                        private var countryOfResidence: JsonField<String>? = null
+                        private var legalName: JsonField<String>? = null
+                        private var address: JsonField<Address> = JsonMissing.of()
+                        private var email: JsonField<String> = JsonMissing.of()
+                        private var phoneNumber: JsonField<String> = JsonMissing.of()
+                        private var registrationNumber: JsonField<String> = JsonMissing.of()
+                        private var taxId: JsonField<String> = JsonMissing.of()
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        internal fun from(business: Business) = apply {
+                            beneficiaryType = business.beneficiaryType
+                            countryOfResidence = business.countryOfResidence
+                            legalName = business.legalName
+                            address = business.address
+                            email = business.email
+                            phoneNumber = business.phoneNumber
+                            registrationNumber = business.registrationNumber
+                            taxId = business.taxId
+                            additionalProperties = business.additionalProperties.toMutableMap()
+                        }
+
+                        /**
+                         * Sets the field to an arbitrary JSON value.
+                         *
+                         * It is usually unnecessary to call this method because the field defaults
+                         * to the following:
+                         * ```kotlin
+                         * JsonValue.from("BUSINESS")
+                         * ```
+                         *
+                         * This method is primarily for setting the field to an undocumented or not
+                         * yet supported value.
+                         */
+                        fun beneficiaryType(beneficiaryType: JsonValue) = apply {
+                            this.beneficiaryType = beneficiaryType
+                        }
+
+                        /** The country of residence of the beneficiary */
+                        fun countryOfResidence(countryOfResidence: String) =
+                            countryOfResidence(JsonField.of(countryOfResidence))
+
+                        /**
+                         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.countryOfResidence] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+                            this.countryOfResidence = countryOfResidence
+                        }
+
+                        /** The legal name of the business */
+                        fun legalName(legalName: String) = legalName(JsonField.of(legalName))
+
+                        /**
+                         * Sets [Builder.legalName] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.legalName] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun legalName(legalName: JsonField<String>) = apply {
+                            this.legalName = legalName
+                        }
+
+                        fun address(address: Address) = address(JsonField.of(address))
+
+                        /**
+                         * Sets [Builder.address] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.address] with a well-typed [Address]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun address(address: JsonField<Address>) = apply { this.address = address }
+
+                        /** The email of the beneficiary */
+                        fun email(email: String) = email(JsonField.of(email))
+
+                        /**
+                         * Sets [Builder.email] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.email] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun email(email: JsonField<String>) = apply { this.email = email }
+
+                        /** The phone number of the beneficiary */
+                        fun phoneNumber(phoneNumber: String) =
+                            phoneNumber(JsonField.of(phoneNumber))
+
+                        /**
+                         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.phoneNumber] with a well-typed [String]
+                         * value instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                            this.phoneNumber = phoneNumber
+                        }
+
+                        /** The company registration number of the business */
+                        fun registrationNumber(registrationNumber: String) =
+                            registrationNumber(JsonField.of(registrationNumber))
+
+                        /**
+                         * Sets [Builder.registrationNumber] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.registrationNumber] with a well-typed
+                         * [String] value instead. This method is primarily for setting the field to
+                         * an undocumented or not yet supported value.
+                         */
+                        fun registrationNumber(registrationNumber: JsonField<String>) = apply {
+                            this.registrationNumber = registrationNumber
+                        }
+
+                        /** The tax identification number of the business */
+                        fun taxId(taxId: String) = taxId(JsonField.of(taxId))
+
+                        /**
+                         * Sets [Builder.taxId] to an arbitrary JSON value.
+                         *
+                         * You should usually call [Builder.taxId] with a well-typed [String] value
+                         * instead. This method is primarily for setting the field to an
+                         * undocumented or not yet supported value.
+                         */
+                        fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Business].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         *
+                         * The following fields are required:
+                         * ```kotlin
+                         * .countryOfResidence()
+                         * .legalName()
+                         * ```
+                         *
+                         * @throws IllegalStateException if any required field is unset.
+                         */
+                        fun build(): Business =
+                            Business(
+                                beneficiaryType,
+                                checkRequired("countryOfResidence", countryOfResidence),
+                                checkRequired("legalName", legalName),
+                                address,
+                                email,
+                                phoneNumber,
+                                registrationNumber,
+                                taxId,
+                                additionalProperties.toMutableMap(),
+                            )
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws LightsparkGridInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Business = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        _beneficiaryType().let {
+                            if (it != JsonValue.from("BUSINESS")) {
+                                throw LightsparkGridInvalidDataException(
+                                    "'beneficiaryType' is invalid, received $it"
+                                )
+                            }
+                        }
+                        countryOfResidence()
+                        legalName()
+                        address()?.validate()
+                        email()
+                        phoneNumber()
+                        registrationNumber()
+                        taxId()
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: LightsparkGridInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    internal fun validity(): Int =
+                        beneficiaryType.let { if (it == JsonValue.from("BUSINESS")) 1 else 0 } +
+                            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+                            (if (legalName.asKnown() == null) 0 else 1) +
+                            (address.asKnown()?.validity() ?: 0) +
+                            (if (email.asKnown() == null) 0 else 1) +
+                            (if (phoneNumber.asKnown() == null) 0 else 1) +
+                            (if (registrationNumber.asKnown() == null) 0 else 1) +
+                            (if (taxId.asKnown() == null) 0 else 1)
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Business &&
+                            beneficiaryType == other.beneficiaryType &&
+                            countryOfResidence == other.countryOfResidence &&
+                            legalName == other.legalName &&
+                            address == other.address &&
+                            email == other.email &&
+                            phoneNumber == other.phoneNumber &&
+                            registrationNumber == other.registrationNumber &&
+                            taxId == other.taxId &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy {
+                        Objects.hash(
+                            beneficiaryType,
+                            countryOfResidence,
+                            legalName,
+                            address,
+                            email,
+                            phoneNumber,
+                            registrationNumber,
+                            taxId,
+                            additionalProperties,
+                        )
+                    }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() =
+                        "Business{beneficiaryType=$beneficiaryType, countryOfResidence=$countryOfResidence, legalName=$legalName, address=$address, email=$email, phoneNumber=$phoneNumber, registrationNumber=$registrationNumber, taxId=$taxId, additionalProperties=$additionalProperties}"
+                }
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is TryAccount &&
+                    accountType == other.accountType &&
+                    bankName == other.bankName &&
+                    beneficiary == other.beneficiary &&
+                    iban == other.iban &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(accountType, bankName, beneficiary, iban, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "TryAccount{accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, iban=$iban, additionalProperties=$additionalProperties}"
+        }
+    }
+
+    /**
+     * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to someone
+     * else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external accounts on
+     * platforms subject to counterparty requirements — for example, under the EU Travel Rule or
+     * similar requirements in other regions; recommended for all other accounts, where providing it
+     * can unlock additional capabilities and smoother compliance handling.
+     */
+    class OwnershipType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val FIRST_PARTY = of("FIRST_PARTY")
+
+            val THIRD_PARTY = of("THIRD_PARTY")
+
+            fun of(value: String) = OwnershipType(JsonField.of(value))
+        }
+
+        /** An enum containing [OwnershipType]'s known values. */
+        enum class Known {
+            FIRST_PARTY,
+            THIRD_PARTY,
+        }
+
+        /**
+         * An enum containing [OwnershipType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [OwnershipType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            FIRST_PARTY,
+            THIRD_PARTY,
+            /**
+             * An enum member indicating that [OwnershipType] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                FIRST_PARTY -> Value.FIRST_PARTY
+                THIRD_PARTY -> Value.THIRD_PARTY
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                FIRST_PARTY -> Known.FIRST_PARTY
+                THIRD_PARTY -> Known.THIRD_PARTY
+                else -> throw LightsparkGridInvalidDataException("Unknown OwnershipType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): OwnershipType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is OwnershipType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -190,14 +7788,13 @@ private constructor(
         }
 
         return other is ExternalAccountCreateParams &&
-            externalAccountCreate == other.externalAccountCreate &&
+            body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(externalAccountCreate, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int = Objects.hash(body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "ExternalAccountCreateParams{externalAccountCreate=$externalAccountCreate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ExternalAccountCreateParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

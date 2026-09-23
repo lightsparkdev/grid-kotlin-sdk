@@ -26,8 +26,10 @@ internal class SimulateAuthorizationParamsTest {
                     .merchant(
                         CardMerchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
+                            .city("San Francisco")
                             .country("US")
                             .mcc("5814")
+                            .state("CA")
                             .build()
                     )
                     .build()
@@ -75,8 +77,10 @@ internal class SimulateAuthorizationParamsTest {
                         .merchant(
                             CardMerchant.builder()
                                 .descriptor("BLUE BOTTLE COFFEE SF")
+                                .city("San Francisco")
                                 .country("US")
                                 .mcc("5814")
+                                .state("CA")
                                 .build()
                         )
                         .build()
@@ -100,8 +104,10 @@ internal class SimulateAuthorizationParamsTest {
                     .merchant(
                         CardMerchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
+                            .city("San Francisco")
                             .country("US")
                             .mcc("5814")
+                            .state("CA")
                             .build()
                     )
                     .build()

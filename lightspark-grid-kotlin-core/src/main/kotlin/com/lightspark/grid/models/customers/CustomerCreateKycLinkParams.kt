@@ -15,25 +15,34 @@ import java.util.Objects
  * provider's SDK.
  *
  * The customer must already exist — create them with `POST /customers` first. Calling this endpoint
- * does not change the customer's `kycStatus`; the customer remains `PENDING` until they complete
- * (or fail) the hosted flow.
+ * does not change the customer's verification status; the customer remains at their current status
+ * until they complete (or fail) the hosted flow.
+ *
+ * This endpoint generates the link for both customer types; `customerType` selects which flow the
+ * provider runs. `INDIVIDUAL` runs identity verification (KYC), tracked on `kycStatus`. `BUSINESS`
+ * runs business verification (KYB), tracked on `kybStatus` — the flow confirms the company details,
+ * collects formation, ownership, and proof-of-address documents, and gathers the control person and
+ * every beneficial owner holding 25% or more. Business information already supplied via `POST
+ * /customers` or `PATCH /customers/{customerId}` is prefilled, so send what you have before
+ * generating the link.
+ *
+ * The hosted link is one of two ways to verify a customer. To collect the data yourself instead,
+ * submit it through `POST /customers`, `POST /beneficial-owners` (business customers), and `POST
+ * /documents`, then call `POST /verifications`. Both paths produce the same status transitions and
+ * the same `CUSTOMER.KYC_*` / `CUSTOMER.KYB_*` webhooks.
  *
  * Each call returns a fresh link. Previously-issued links are not invalidated, but they remain
- * single-use and will expire on their own. For request-level retry safety, include an
- * `Idempotency-Key` header.
+ * single-use and will expire on their own.
  */
 class CustomerCreateKycLinkParams
 private constructor(
     private val customerId: String?,
-    private val idempotencyKey: String?,
     private val kycLinkCreateRequest: KycLinkCreateRequest?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun customerId(): String? = customerId
-
-    fun idempotencyKey(): String? = idempotencyKey
 
     /** Request body for generating a hosted KYC link for an existing customer. */
     fun kycLinkCreateRequest(): KycLinkCreateRequest? = kycLinkCreateRequest
@@ -63,22 +72,18 @@ private constructor(
     class Builder internal constructor() {
 
         private var customerId: String? = null
-        private var idempotencyKey: String? = null
         private var kycLinkCreateRequest: KycLinkCreateRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(customerCreateKycLinkParams: CustomerCreateKycLinkParams) = apply {
             customerId = customerCreateKycLinkParams.customerId
-            idempotencyKey = customerCreateKycLinkParams.idempotencyKey
             kycLinkCreateRequest = customerCreateKycLinkParams.kycLinkCreateRequest
             additionalHeaders = customerCreateKycLinkParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerCreateKycLinkParams.additionalQueryParams.toBuilder()
         }
 
         fun customerId(customerId: String?) = apply { this.customerId = customerId }
-
-        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
 
         /** Request body for generating a hosted KYC link for an existing customer. */
         fun kycLinkCreateRequest(kycLinkCreateRequest: KycLinkCreateRequest?) = apply {
@@ -191,7 +196,6 @@ private constructor(
         fun build(): CustomerCreateKycLinkParams =
             CustomerCreateKycLinkParams(
                 customerId,
-                idempotencyKey,
                 kycLinkCreateRequest,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -206,13 +210,7 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers =
-        Headers.builder()
-            .apply {
-                idempotencyKey?.let { put("Idempotency-Key", it) }
-                putAll(additionalHeaders)
-            }
-            .build()
+    override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -223,21 +221,14 @@ private constructor(
 
         return other is CustomerCreateKycLinkParams &&
             customerId == other.customerId &&
-            idempotencyKey == other.idempotencyKey &&
             kycLinkCreateRequest == other.kycLinkCreateRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            customerId,
-            idempotencyKey,
-            kycLinkCreateRequest,
-            additionalHeaders,
-            additionalQueryParams,
-        )
+        Objects.hash(customerId, kycLinkCreateRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CustomerCreateKycLinkParams{customerId=$customerId, idempotencyKey=$idempotencyKey, kycLinkCreateRequest=$kycLinkCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerCreateKycLinkParams{customerId=$customerId, kycLinkCreateRequest=$kycLinkCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -14,6 +14,11 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Instructions for reconciling a payment with this transaction. For the on-chain transaction to or
+ * from an external crypto wallet that is the transaction's own source or destination, use the
+ * `onChainTransaction` on the relevant source or destination instead.
+ */
 class ReconciliationInstructions
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -40,12 +45,22 @@ private constructor(
     fun reference(): String? = reference.getNullable("reference")
 
     /**
-     * Transaction hash for the crypto transfer that delivered funds to the transaction destination,
-     * when available.
+     * Transaction hash of the settlement transfer, when available. This field reports two different
+     * transfers, and only one of them has a replacement today:
+     *
+     * For a crypto transfer to or from a customer's own external wallet, use the
+     * `onChainTransaction` on the relevant source or destination instead — it names the network
+     * alongside the hash. That is the transfer this field is deprecated for.
+     *
+     * For the inter-VASP settlement leg of a UMA payment (e.g. USDC on Solana to the receiving
+     * partner), this field remains the only place the hash is reported: a UMA address is not a
+     * wallet you hold, so its source and destination carry no `onChainTransaction`. The field will
+     * not be removed before that leg has a replacement.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun transactionHash(): String? = transactionHash.getNullable("transactionHash")
 
     /**
@@ -60,6 +75,7 @@ private constructor(
      *
      * Unlike [transactionHash], this method doesn't throw if the JSON field has an unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("transactionHash")
     @ExcludeMissing
     fun _transactionHash(): JsonField<String> = transactionHash
@@ -113,9 +129,19 @@ private constructor(
         fun reference(reference: JsonField<String>) = apply { this.reference = reference }
 
         /**
-         * Transaction hash for the crypto transfer that delivered funds to the transaction
-         * destination, when available.
+         * Transaction hash of the settlement transfer, when available. This field reports two
+         * different transfers, and only one of them has a replacement today:
+         *
+         * For a crypto transfer to or from a customer's own external wallet, use the
+         * `onChainTransaction` on the relevant source or destination instead — it names the network
+         * alongside the hash. That is the transfer this field is deprecated for.
+         *
+         * For the inter-VASP settlement leg of a UMA payment (e.g. USDC on Solana to the receiving
+         * partner), this field remains the only place the hash is reported: a UMA address is not a
+         * wallet you hold, so its source and destination carry no `onChainTransaction`. The field
+         * will not be removed before that leg has a replacement.
          */
+        @Deprecated("deprecated")
         fun transactionHash(transactionHash: String) =
             transactionHash(JsonField.of(transactionHash))
 
@@ -126,6 +152,7 @@ private constructor(
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
+        @Deprecated("deprecated")
         fun transactionHash(transactionHash: JsonField<String>) = apply {
             this.transactionHash = transactionHash
         }

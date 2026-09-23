@@ -21,6 +21,7 @@ class UmaLookupResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val lookupId: JsonField<String>,
+    private val sendingCurrency: JsonValue,
     private val supportedCurrencies: JsonField<List<LookupResponse.SupportedCurrency>>,
     private val requiredPayerDataFields: JsonField<List<CounterpartyFieldDefinition>>,
     private val receiverUmaAddress: JsonField<String>,
@@ -30,6 +31,9 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("lookupId") @ExcludeMissing lookupId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("sendingCurrency")
+        @ExcludeMissing
+        sendingCurrency: JsonValue = JsonMissing.of(),
         @JsonProperty("supportedCurrencies")
         @ExcludeMissing
         supportedCurrencies: JsonField<List<LookupResponse.SupportedCurrency>> = JsonMissing.of(),
@@ -41,6 +45,7 @@ private constructor(
         receiverUmaAddress: JsonField<String> = JsonMissing.of(),
     ) : this(
         lookupId,
+        sendingCurrency,
         supportedCurrencies,
         requiredPayerDataFields,
         receiverUmaAddress,
@@ -50,6 +55,7 @@ private constructor(
     fun toLookupResponse(): LookupResponse =
         LookupResponse.builder()
             .lookupId(lookupId)
+            .sendingCurrency(sendingCurrency)
             .supportedCurrencies(supportedCurrencies)
             .requiredPayerDataFields(requiredPayerDataFields)
             .build()
@@ -61,6 +67,21 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun lookupId(): String = lookupId.getRequired("lookupId")
+
+    /**
+     * The currency the payment is sent from — the sender's default, or the one named by the
+     * `sendingCurrency` query parameter. Every `estimatedExchangeRate` in `supportedCurrencies`
+     * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated in
+     * its smallest unit.
+     *
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = umaLookupResponse.sendingCurrency().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("sendingCurrency")
+    @ExcludeMissing
+    fun _sendingCurrency(): JsonValue = sendingCurrency
 
     /**
      * List of currencies supported by the receiving account
@@ -147,6 +168,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .lookupId()
+         * .sendingCurrency()
          * .supportedCurrencies()
          * .receiverUmaAddress()
          * ```
@@ -158,6 +180,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var lookupId: JsonField<String>? = null
+        private var sendingCurrency: JsonValue? = null
         private var supportedCurrencies: JsonField<MutableList<LookupResponse.SupportedCurrency>>? =
             null
         private var requiredPayerDataFields: JsonField<MutableList<CounterpartyFieldDefinition>>? =
@@ -167,6 +190,7 @@ private constructor(
 
         internal fun from(umaLookupResponse: UmaLookupResponse) = apply {
             lookupId = umaLookupResponse.lookupId
+            sendingCurrency = umaLookupResponse.sendingCurrency
             supportedCurrencies = umaLookupResponse.supportedCurrencies.map { it.toMutableList() }
             requiredPayerDataFields =
                 umaLookupResponse.requiredPayerDataFields.map { it.toMutableList() }
@@ -184,6 +208,16 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun lookupId(lookupId: JsonField<String>) = apply { this.lookupId = lookupId }
+
+        /**
+         * The currency the payment is sent from — the sender's default, or the one named by the
+         * `sendingCurrency` query parameter. Every `estimatedExchangeRate` in `supportedCurrencies`
+         * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated
+         * in its smallest unit.
+         */
+        fun sendingCurrency(sendingCurrency: JsonValue) = apply {
+            this.sendingCurrency = sendingCurrency
+        }
 
         /** List of currencies supported by the receiving account */
         fun supportedCurrencies(supportedCurrencies: List<LookupResponse.SupportedCurrency>) =
@@ -286,6 +320,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .lookupId()
+         * .sendingCurrency()
          * .supportedCurrencies()
          * .receiverUmaAddress()
          * ```
@@ -295,6 +330,7 @@ private constructor(
         fun build(): UmaLookupResponse =
             UmaLookupResponse(
                 checkRequired("lookupId", lookupId),
+                checkRequired("sendingCurrency", sendingCurrency),
                 checkRequired("supportedCurrencies", supportedCurrencies).map { it.toImmutable() },
                 (requiredPayerDataFields ?: JsonMissing.of()).map { it.toImmutable() },
                 checkRequired("receiverUmaAddress", receiverUmaAddress),
@@ -350,6 +386,7 @@ private constructor(
 
         return other is UmaLookupResponse &&
             lookupId == other.lookupId &&
+            sendingCurrency == other.sendingCurrency &&
             supportedCurrencies == other.supportedCurrencies &&
             requiredPayerDataFields == other.requiredPayerDataFields &&
             receiverUmaAddress == other.receiverUmaAddress &&
@@ -359,6 +396,7 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             lookupId,
+            sendingCurrency,
             supportedCurrencies,
             requiredPayerDataFields,
             receiverUmaAddress,
@@ -369,5 +407,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "UmaLookupResponse{lookupId=$lookupId, supportedCurrencies=$supportedCurrencies, requiredPayerDataFields=$requiredPayerDataFields, receiverUmaAddress=$receiverUmaAddress, additionalProperties=$additionalProperties}"
+        "UmaLookupResponse{lookupId=$lookupId, sendingCurrency=$sendingCurrency, supportedCurrencies=$supportedCurrencies, requiredPayerDataFields=$requiredPayerDataFields, receiverUmaAddress=$receiverUmaAddress, additionalProperties=$additionalProperties}"
 }
