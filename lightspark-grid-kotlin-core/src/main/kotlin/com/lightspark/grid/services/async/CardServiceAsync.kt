@@ -54,7 +54,8 @@ interface CardServiceAsync {
 
     /**
      * Update a card's `status`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
-     * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
+     * `maxSpendPerDay`, or `maxTransactionsPerDay`, or set a new `threeDSecurePassword`. At least
+     * one field must be supplied.
      * - `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.

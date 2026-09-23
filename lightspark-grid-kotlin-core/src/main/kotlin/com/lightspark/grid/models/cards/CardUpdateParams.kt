@@ -11,7 +11,8 @@ import java.util.Objects
 
 /**
  * Update a card's `status`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
- * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
+ * `maxSpendPerDay`, or `maxTransactionsPerDay`, or set a new `threeDSecurePassword`. At least one
+ * field must be supplied.
  * - `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`. `CLOSED`
  *   is terminal and irreversible. Any other transition returns `409 INVALID_STATE_TRANSITION`.
  * - `fundingSource`, when supplied, replaces the card's bound internal account. It must belong to
@@ -80,12 +81,12 @@ private constructor(
 
     /**
      * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
-     * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
-     * Supplying `status` also requires `substatus` and `reason`, so every card state change carries
-     * why it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
-     * CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal
-     * and irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
-     * `maxSpendPerDay`, or `maxTransactionsPerDay`.
+     * `maxSpendPerTransaction`, `maxSpendPerDay`, `maxTransactionsPerDay`, or
+     * `threeDSecurePassword` must be supplied. Supplying `status` also requires `substatus` and
+     * `reason`, so every card state change carries why it happened. `status` transitions are
+     * limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition returns
+     * `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be combined
+     * with `fundingSource`, `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay`.
      */
     fun cardUpdateRequest(): CardUpdateRequest = cardUpdateRequest
 
@@ -132,12 +133,13 @@ private constructor(
 
         /**
          * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
-         * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
-         * Supplying `status` also requires `substatus` and `reason`, so every card state change
-         * carries why it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and
-         * `ACTIVE | FROZEN → CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`.
-         * `CLOSED` is terminal and irreversible and cannot be combined with `fundingSource`,
-         * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay`.
+         * `maxSpendPerTransaction`, `maxSpendPerDay`, `maxTransactionsPerDay`, or
+         * `threeDSecurePassword` must be supplied. Supplying `status` also requires `substatus` and
+         * `reason`, so every card state change carries why it happened. `status` transitions are
+         * limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition returns
+         * `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be
+         * combined with `fundingSource`, `maxSpendPerTransaction`, `maxSpendPerDay`, or
+         * `maxTransactionsPerDay`.
          */
         fun cardUpdateRequest(cardUpdateRequest: CardUpdateRequest) = apply {
             this.cardUpdateRequest = cardUpdateRequest

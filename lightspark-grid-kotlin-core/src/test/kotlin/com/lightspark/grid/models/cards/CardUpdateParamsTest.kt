@@ -20,6 +20,7 @@ internal class CardUpdateParamsTest {
                     .reason("Cardholder reported the card stolen.")
                     .status(CardUpdateRequest.Status.FROZEN)
                     .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
+                    .threeDSecurePassword("AbCd1234EfGh5678")
                     .build()
             )
             .build()
@@ -52,6 +53,7 @@ internal class CardUpdateParamsTest {
                         .reason("Cardholder reported the card stolen.")
                         .status(CardUpdateRequest.Status.FROZEN)
                         .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
+                        .threeDSecurePassword("AbCd1234EfGh5678")
                         .build()
                 )
                 .build()
@@ -68,6 +70,7 @@ internal class CardUpdateParamsTest {
                     .reason("Cardholder reported the card stolen.")
                     .status(CardUpdateRequest.Status.FROZEN)
                     .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
+                    .threeDSecurePassword("AbCd1234EfGh5678")
                     .build()
             )
     }
