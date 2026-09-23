@@ -22,6 +22,7 @@ internal class PlatformConfigTest {
                         .maxSpendPerDay(50000L)
                         .maxSpendPerTransaction(10000L)
                         .maxTransactionsPerDay(50)
+                        .panRevealCssUrl("https://acme.com/card-reveal.css")
                         .build()
                 )
                 .cardTokenization2faConfig(
@@ -122,6 +123,7 @@ internal class PlatformConfigTest {
                     .maxSpendPerDay(50000L)
                     .maxSpendPerTransaction(10000L)
                     .maxTransactionsPerDay(50)
+                    .panRevealCssUrl("https://acme.com/card-reveal.css")
                     .build()
             )
         assertThat(platformConfig.cardTokenization2faConfig())
@@ -232,6 +234,7 @@ internal class PlatformConfigTest {
                         .maxSpendPerDay(50000L)
                         .maxSpendPerTransaction(10000L)
                         .maxTransactionsPerDay(50)
+                        .panRevealCssUrl("https://acme.com/card-reveal.css")
                         .build()
                 )
                 .cardTokenization2faConfig(

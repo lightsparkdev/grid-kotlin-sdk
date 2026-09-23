@@ -19,6 +19,7 @@ internal class ConfigUpdateParamsTest {
                             .maxSpendPerDay(50000L)
                             .maxSpendPerTransaction(10000L)
                             .maxTransactionsPerDay(50)
+                            .panRevealCssUrl("https://acme.com/card-reveal.css")
                             .build()
                     )
                     .cardTokenization2faConfig(
@@ -124,6 +125,7 @@ internal class ConfigUpdateParamsTest {
                                 .maxSpendPerDay(50000L)
                                 .maxSpendPerTransaction(10000L)
                                 .maxTransactionsPerDay(50)
+                                .panRevealCssUrl("https://acme.com/card-reveal.css")
                                 .build()
                         )
                         .cardTokenization2faConfig(
@@ -228,6 +230,7 @@ internal class ConfigUpdateParamsTest {
                             .maxSpendPerDay(50000L)
                             .maxSpendPerTransaction(10000L)
                             .maxTransactionsPerDay(50)
+                            .panRevealCssUrl("https://acme.com/card-reveal.css")
                             .build()
                     )
                     .cardTokenization2faConfig(
