@@ -487,6 +487,7 @@ private constructor(
         private val maxSpendPerDay: JsonField<Long>,
         private val maxSpendPerTransaction: JsonField<Long>,
         private val maxTransactionsPerDay: JsonField<Int>,
+        private val panRevealCssUrl: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -501,7 +502,16 @@ private constructor(
             @JsonProperty("maxTransactionsPerDay")
             @ExcludeMissing
             maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
-        ) : this(maxSpendPerDay, maxSpendPerTransaction, maxTransactionsPerDay, mutableMapOf())
+            @JsonProperty("panRevealCssUrl")
+            @ExcludeMissing
+            panRevealCssUrl: JsonField<String> = JsonMissing.of(),
+        ) : this(
+            maxSpendPerDay,
+            maxSpendPerTransaction,
+            maxTransactionsPerDay,
+            panRevealCssUrl,
+            mutableMapOf(),
+        )
 
         /**
          * Platform-level cap on cumulative new spend during one UTC calendar day for every card
@@ -549,6 +559,23 @@ private constructor(
             maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
 
         /**
+         * HTTPS URL of a stylesheet that styles the card-details iframe returned by `POST
+         * /cards/{id}/reveal`, so the revealed PAN, expiry, and CVV carry your branding instead of
+         * the default. The card processor's page links the stylesheet and the cardholder's browser
+         * fetches it, so it must be reachable over HTTPS without credentials. Style the `card`,
+         * `pan`, `expiry`, and `cvv` ids and the `pan-separator` class; the rest of the page
+         * structure is not a contract. The stylesheet loads into the page rendering the live card
+         * details, so host it somewhere you would trust with them. `null` restores the default
+         * styling. A `cssUrl` in the body of `POST /cards/{id}/reveal` overrides this for one
+         * reveal. Applies to cards whose `cardCapabilities.supportsPanReveal` is true; cards
+         * revealed through the card issuer's own hosted flow are styled by that issuer.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun panRevealCssUrl(): String? = panRevealCssUrl.getNullable("panRevealCssUrl")
+
+        /**
          * Returns the raw JSON value of [maxSpendPerDay].
          *
          * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected
@@ -578,6 +605,16 @@ private constructor(
         @ExcludeMissing
         fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
 
+        /**
+         * Returns the raw JSON value of [panRevealCssUrl].
+         *
+         * Unlike [panRevealCssUrl], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("panRevealCssUrl")
+        @ExcludeMissing
+        fun _panRevealCssUrl(): JsonField<String> = panRevealCssUrl
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -602,12 +639,14 @@ private constructor(
             private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
             private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
             private var maxTransactionsPerDay: JsonField<Int> = JsonMissing.of()
+            private var panRevealCssUrl: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(cardConfigs: CardConfigs) = apply {
                 maxSpendPerDay = cardConfigs.maxSpendPerDay
                 maxSpendPerTransaction = cardConfigs.maxSpendPerTransaction
                 maxTransactionsPerDay = cardConfigs.maxTransactionsPerDay
+                panRevealCssUrl = cardConfigs.panRevealCssUrl
                 additionalProperties = cardConfigs.additionalProperties.toMutableMap()
             }
 
@@ -704,6 +743,33 @@ private constructor(
                 this.maxTransactionsPerDay = maxTransactionsPerDay
             }
 
+            /**
+             * HTTPS URL of a stylesheet that styles the card-details iframe returned by `POST
+             * /cards/{id}/reveal`, so the revealed PAN, expiry, and CVV carry your branding instead
+             * of the default. The card processor's page links the stylesheet and the cardholder's
+             * browser fetches it, so it must be reachable over HTTPS without credentials. Style the
+             * `card`, `pan`, `expiry`, and `cvv` ids and the `pan-separator` class; the rest of the
+             * page structure is not a contract. The stylesheet loads into the page rendering the
+             * live card details, so host it somewhere you would trust with them. `null` restores
+             * the default styling. A `cssUrl` in the body of `POST /cards/{id}/reveal` overrides
+             * this for one reveal. Applies to cards whose `cardCapabilities.supportsPanReveal` is
+             * true; cards revealed through the card issuer's own hosted flow are styled by that
+             * issuer.
+             */
+            fun panRevealCssUrl(panRevealCssUrl: String?) =
+                panRevealCssUrl(JsonField.ofNullable(panRevealCssUrl))
+
+            /**
+             * Sets [Builder.panRevealCssUrl] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.panRevealCssUrl] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun panRevealCssUrl(panRevealCssUrl: JsonField<String>) = apply {
+                this.panRevealCssUrl = panRevealCssUrl
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -733,6 +799,7 @@ private constructor(
                     maxSpendPerDay,
                     maxSpendPerTransaction,
                     maxTransactionsPerDay,
+                    panRevealCssUrl,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -756,6 +823,7 @@ private constructor(
             maxSpendPerDay()
             maxSpendPerTransaction()
             maxTransactionsPerDay()
+            panRevealCssUrl()
             validated = true
         }
 
@@ -776,7 +844,8 @@ private constructor(
         internal fun validity(): Int =
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
                 (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
-                (if (maxTransactionsPerDay.asKnown() == null) 0 else 1)
+                (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
+                (if (panRevealCssUrl.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -787,6 +856,7 @@ private constructor(
                 maxSpendPerDay == other.maxSpendPerDay &&
                 maxSpendPerTransaction == other.maxSpendPerTransaction &&
                 maxTransactionsPerDay == other.maxTransactionsPerDay &&
+                panRevealCssUrl == other.panRevealCssUrl &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -795,6 +865,7 @@ private constructor(
                 maxSpendPerDay,
                 maxSpendPerTransaction,
                 maxTransactionsPerDay,
+                panRevealCssUrl,
                 additionalProperties,
             )
         }
@@ -802,7 +873,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "CardConfigs{maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, additionalProperties=$additionalProperties}"
+            "CardConfigs{maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, panRevealCssUrl=$panRevealCssUrl, additionalProperties=$additionalProperties}"
     }
 
     /**
