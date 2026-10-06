@@ -267,7 +267,7 @@ private constructor(
 
     /**
      * Business information returned on a customer. `taxId` and `incorporatedOn` are required on
-     * creation but may be absent on legacy customers that pre-date the requirement, so both are
+     * creation only when the customer's currency uses direct customer-owned accounts, so both are
      * optional in responses.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -750,8 +750,8 @@ private constructor(
 
         /**
          * Business information returned on a customer. `taxId` and `incorporatedOn` are required on
-         * creation but may be absent on legacy customers that pre-date the requirement, so both are
-         * optional in responses.
+         * creation only when the customer's currency uses direct customer-owned accounts, so both
+         * are optional in responses.
          */
         fun businessInfo(businessInfo: BusinessInfo) = businessInfo(JsonField.of(businessInfo))
 
@@ -1038,7 +1038,7 @@ private constructor(
 
     /**
      * Business information returned on a customer. `taxId` and `incorporatedOn` are required on
-     * creation but may be absent on legacy customers that pre-date the requirement, so both are
+     * creation only when the customer's currency uses direct customer-owned accounts, so both are
      * optional in responses.
      */
     class BusinessInfo

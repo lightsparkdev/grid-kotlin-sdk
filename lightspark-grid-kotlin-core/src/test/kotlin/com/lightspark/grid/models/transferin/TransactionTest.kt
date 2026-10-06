@@ -13,6 +13,7 @@ import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
+import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
@@ -33,7 +34,27 @@ internal class TransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(
+                    IncomingTransaction.Destination.AccountDestination.builder()
+                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .onChainTransaction(
+                            IncomingTransaction.Destination.AccountDestination.OnChainTransaction
+                                .builder()
+                                .network(
+                                    IncomingTransaction.Destination.AccountDestination
+                                        .OnChainTransaction
+                                        .Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .direction(IncomingTransaction.Direction.CREDIT)
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
@@ -99,7 +120,24 @@ internal class TransactionTest {
                         .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(TransactionSourceOneOf.builder().build())
+                .source(
+                    TransactionSourceOneOf.AccountSource.builder()
+                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .onChainTransaction(
+                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                .network(
+                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
@@ -118,7 +156,28 @@ internal class TransactionTest {
                 IncomingTransaction.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .destination(JsonValue.from(mapOf<String, Any>()))
+                    .destination(
+                        IncomingTransaction.Destination.AccountDestination.builder()
+                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .onChainTransaction(
+                                IncomingTransaction.Destination.AccountDestination
+                                    .OnChainTransaction
+                                    .builder()
+                                    .network(
+                                        IncomingTransaction.Destination.AccountDestination
+                                            .OnChainTransaction
+                                            .Network
+                                            .SOLANA
+                                    )
+                                    .transactionHash(
+                                        "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .direction(IncomingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .status(TransactionStatus.CREATED)
@@ -186,7 +245,25 @@ internal class TransactionTest {
                             .build()
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                    .source(TransactionSourceOneOf.builder().build())
+                    .source(
+                        TransactionSourceOneOf.AccountSource.builder()
+                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .onChainTransaction(
+                                TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                    .network(
+                                        TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                            .Network
+                                            .SOLANA
+                                    )
+                                    .transactionHash(
+                                        "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .build()
             )
@@ -206,7 +283,27 @@ internal class TransactionTest {
             OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(
+                    OutgoingTransaction.Destination.AccountDestination.builder()
+                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .onChainTransaction(
+                            OutgoingTransaction.Destination.AccountDestination.OnChainTransaction
+                                .builder()
+                                .network(
+                                    OutgoingTransaction.Destination.AccountDestination
+                                        .OnChainTransaction
+                                        .Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .direction(OutgoingTransaction.Direction.CREDIT)
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .sentAmount(
@@ -222,7 +319,24 @@ internal class TransactionTest {
                         )
                         .build()
                 )
-                .source(TransactionSourceOneOf.builder().build())
+                .source(
+                    TransactionSourceOneOf.AccountSource.builder()
+                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .onChainTransaction(
+                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                .network(
+                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .status(OutgoingTransaction.Status.PENDING)
                 .type(OutgoingTransaction.Type.OUTGOING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -268,19 +382,14 @@ internal class TransactionTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                .accountHolderName("Acme Exports Pte Ltd")
-                                .bankName("Deutsche Bank")
-                                .country("NG")
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
-                                        .SWIFT
+                            PaymentInstructions.AccountOrWalletInfo.SparkWallet.builder()
+                                .address(
+                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                 )
-                                .swiftCode("DEUTDEFF")
-                                .accountNumber("1234567890")
-                                .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                .iban("GB29NWBK60161331926819")
-                                .reference("UMA-Q12345-REF")
+                                .assetType("BTC")
+                                .invoice(
+                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                )
                                 .build()
                         )
                         .instructionsNotes(
@@ -356,7 +465,28 @@ internal class TransactionTest {
                 OutgoingTransaction.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .destination(JsonValue.from(mapOf<String, Any>()))
+                    .destination(
+                        OutgoingTransaction.Destination.AccountDestination.builder()
+                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .onChainTransaction(
+                                OutgoingTransaction.Destination.AccountDestination
+                                    .OnChainTransaction
+                                    .builder()
+                                    .network(
+                                        OutgoingTransaction.Destination.AccountDestination
+                                            .OnChainTransaction
+                                            .Network
+                                            .SOLANA
+                                    )
+                                    .transactionHash(
+                                        "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .direction(OutgoingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .sentAmount(
@@ -372,7 +502,25 @@ internal class TransactionTest {
                             )
                             .build()
                     )
-                    .source(TransactionSourceOneOf.builder().build())
+                    .source(
+                        TransactionSourceOneOf.AccountSource.builder()
+                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .onChainTransaction(
+                                TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                    .network(
+                                        TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                            .Network
+                                            .SOLANA
+                                    )
+                                    .transactionHash(
+                                        "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .status(OutgoingTransaction.Status.PENDING)
                     .type(OutgoingTransaction.Type.OUTGOING)
                     .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -420,20 +568,14 @@ internal class TransactionTest {
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                    .accountHolderName("Acme Exports Pte Ltd")
-                                    .bankName("Deutsche Bank")
-                                    .country("NG")
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                            .PaymentRail
-                                            .SWIFT
+                                PaymentInstructions.AccountOrWalletInfo.SparkWallet.builder()
+                                    .address(
+                                        "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                     )
-                                    .swiftCode("DEUTDEFF")
-                                    .accountNumber("1234567890")
-                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                    .iban("GB29NWBK60161331926819")
-                                    .reference("UMA-Q12345-REF")
+                                    .assetType("BTC")
+                                    .invoice(
+                                        "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                    )
                                     .build()
                             )
                             .instructionsNotes(

@@ -3,21 +3,43 @@
 package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 
 internal class QuoteSourceOneOfTest {
 
     @Test
-    fun create() {
-        val quoteSourceOneOf = QuoteSourceOneOf.builder().build()
+    fun ofAccount() {
+        val account =
+            QuoteSourceOneOf.Account.builder()
+                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .build()
+
+        val quoteSourceOneOf = QuoteSourceOneOf.ofAccount(account)
+
+        assertThat(quoteSourceOneOf.account()).isEqualTo(account)
+        assertThat(quoteSourceOneOf.realTimeFunding()).isNull()
     }
 
     @Test
-    fun roundtrip() {
+    fun ofAccountRoundtrip() {
         val jsonMapper = jsonMapper()
-        val quoteSourceOneOf = QuoteSourceOneOf.builder().build()
+        val quoteSourceOneOf =
+            QuoteSourceOneOf.ofAccount(
+                QuoteSourceOneOf.Account.builder()
+                    .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                    .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .build()
+            )
 
         val roundtrippedQuoteSourceOneOf =
             jsonMapper.readValue(
@@ -26,5 +48,61 @@ internal class QuoteSourceOneOfTest {
             )
 
         assertThat(roundtrippedQuoteSourceOneOf).isEqualTo(quoteSourceOneOf)
+    }
+
+    @Test
+    fun ofRealTimeFunding() {
+        val realTimeFunding =
+            QuoteSourceOneOf.RealTimeFunding.builder()
+                .sourceType(BaseQuoteSource.SourceType.REALTIME_FUNDING)
+                .currency("USD")
+                .cryptoNetwork("SOLANA")
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
+                .build()
+
+        val quoteSourceOneOf = QuoteSourceOneOf.ofRealTimeFunding(realTimeFunding)
+
+        assertThat(quoteSourceOneOf.account()).isNull()
+        assertThat(quoteSourceOneOf.realTimeFunding()).isEqualTo(realTimeFunding)
+    }
+
+    @Test
+    fun ofRealTimeFundingRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val quoteSourceOneOf =
+            QuoteSourceOneOf.ofRealTimeFunding(
+                QuoteSourceOneOf.RealTimeFunding.builder()
+                    .sourceType(BaseQuoteSource.SourceType.REALTIME_FUNDING)
+                    .currency("USD")
+                    .cryptoNetwork("SOLANA")
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
+                    .build()
+            )
+
+        val roundtrippedQuoteSourceOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(quoteSourceOneOf),
+                jacksonTypeRef<QuoteSourceOneOf>(),
+            )
+
+        assertThat(roundtrippedQuoteSourceOneOf).isEqualTo(quoteSourceOneOf)
+    }
+
+    enum class IncompatibleJsonShapeTestCase(val value: JsonValue) {
+        BOOLEAN(JsonValue.from(false)),
+        STRING(JsonValue.from("invalid")),
+        INTEGER(JsonValue.from(-1)),
+        FLOAT(JsonValue.from(3.14)),
+        ARRAY(JsonValue.from(listOf("invalid", "array"))),
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    fun incompatibleJsonShapeDeserializesToUnknown(testCase: IncompatibleJsonShapeTestCase) {
+        val quoteSourceOneOf =
+            jsonMapper().convertValue(testCase.value, jacksonTypeRef<QuoteSourceOneOf>())
+
+        val e = assertThrows<LightsparkGridInvalidDataException> { quoteSourceOneOf.validate() }
+        assertThat(e).hasMessageStartingWith("Unknown ")
     }
 }

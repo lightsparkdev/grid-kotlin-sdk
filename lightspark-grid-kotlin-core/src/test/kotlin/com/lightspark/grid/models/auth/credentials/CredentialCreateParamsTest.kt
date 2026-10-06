@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.models.auth.credentials
 
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -19,7 +18,7 @@ internal class CredentialCreateParamsTest {
             .authCredentialCreateRequest(
                 EmailOtpCredentialCreateRequest.builder()
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .type(JsonValue.from("EMAIL_OTP"))
+                    .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                     .email("jane.new@example.com")
                     .build()
             )
@@ -37,7 +36,7 @@ internal class CredentialCreateParamsTest {
                 .authCredentialCreateRequest(
                     EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(JsonValue.from("EMAIL_OTP"))
+                        .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                         .email("jane.new@example.com")
                         .build()
                 )
@@ -63,8 +62,7 @@ internal class CredentialCreateParamsTest {
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(
                     EmailOtpCredentialCreateRequest.builder()
-                        .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(JsonValue.from("EMAIL_OTP"))
+                        .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                         .build()
                 )
                 .build()
@@ -85,7 +83,7 @@ internal class CredentialCreateParamsTest {
                 .authCredentialCreateRequest(
                     EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(JsonValue.from("EMAIL_OTP"))
+                        .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                         .email("jane.new@example.com")
                         .build()
                 )
@@ -95,10 +93,10 @@ internal class CredentialCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                AuthCredentialCreateRequestOneOf.ofEmailOtp(
                     EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(JsonValue.from("EMAIL_OTP"))
+                        .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                         .email("jane.new@example.com")
                         .build()
                 )
@@ -111,8 +109,7 @@ internal class CredentialCreateParamsTest {
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(
                     EmailOtpCredentialCreateRequest.builder()
-                        .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(JsonValue.from("EMAIL_OTP"))
+                        .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                         .build()
                 )
                 .build()
@@ -121,10 +118,9 @@ internal class CredentialCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                AuthCredentialCreateRequestOneOf.ofEmailOtp(
                     EmailOtpCredentialCreateRequest.builder()
-                        .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(JsonValue.from("EMAIL_OTP"))
+                        .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                         .build()
                 )
             )
