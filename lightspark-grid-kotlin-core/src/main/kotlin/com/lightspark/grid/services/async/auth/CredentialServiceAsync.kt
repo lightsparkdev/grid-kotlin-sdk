@@ -77,52 +77,31 @@ interface CredentialServiceAsync {
 
     /** @see create */
     suspend fun create(
-        emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
+        emailOtp: EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
-        create(
-            AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
-                emailOtpCredentialCreateRequest
-            ),
-            requestOptions,
-        )
+        create(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp), requestOptions)
 
     /** @see create */
     suspend fun create(
-        smsOtpCredentialCreateRequest:
-            AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
+        smsOtp: AuthCredentialCreateRequestOneOf.SmsOtp,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
-        create(
-            AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
-                smsOtpCredentialCreateRequest
-            ),
-            requestOptions,
-        )
+        create(AuthCredentialCreateRequestOneOf.ofSmsOtp(smsOtp), requestOptions)
 
     /** @see create */
     suspend fun create(
-        oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
+        oauth: OAuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
-        create(
-            AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
-                oauthCredentialCreateRequest
-            ),
-            requestOptions,
-        )
+        create(AuthCredentialCreateRequestOneOf.ofOAuth(oauth), requestOptions)
 
     /** @see create */
     suspend fun create(
-        passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
+        passkey: PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
-        create(
-            AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
-                passkeyCredentialCreateRequest
-            ),
-            requestOptions,
-        )
+        create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
 
     /**
      * Retrieve all authentication credentials registered on an Embedded Wallet internal account.
@@ -302,55 +281,34 @@ interface CredentialServiceAsync {
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
+            emailOtp: EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
-            create(
-                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
-                    emailOtpCredentialCreateRequest
-                ),
-                requestOptions,
-            )
+            create(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp), requestOptions)
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            smsOtpCredentialCreateRequest:
-                AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
+            smsOtp: AuthCredentialCreateRequestOneOf.SmsOtp,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
-            create(
-                AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
-                    smsOtpCredentialCreateRequest
-                ),
-                requestOptions,
-            )
+            create(AuthCredentialCreateRequestOneOf.ofSmsOtp(smsOtp), requestOptions)
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
+            oauth: OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
-            create(
-                AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
-                    oauthCredentialCreateRequest
-                ),
-                requestOptions,
-            )
+            create(AuthCredentialCreateRequestOneOf.ofOAuth(oauth), requestOptions)
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
+            passkey: PasskeyCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
-            create(
-                AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
-                    passkeyCredentialCreateRequest
-                ),
-                requestOptions,
-            )
+            create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /auth/credentials`, but is otherwise the same as

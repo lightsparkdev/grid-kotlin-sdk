@@ -14,10 +14,22 @@ internal class QuoteRequestTest {
     fun create() {
         val quoteRequest =
             QuoteRequest.builder()
-                .destination(QuoteDestinationOneOf.builder().build())
+                .destination(
+                    QuoteDestinationOneOf.Account.builder()
+                        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                        .build()
+                )
                 .lockedCurrencyAmount(1000L)
                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                .source(QuoteSourceOneOf.builder().build())
+                .source(
+                    QuoteSourceOneOf.Account.builder()
+                        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
                 .description("Invoice #1234 payment")
                 .documentIds(
                     listOf(
@@ -50,11 +62,29 @@ internal class QuoteRequestTest {
                 )
                 .build()
 
-        assertThat(quoteRequest.destination()).isEqualTo(QuoteDestinationOneOf.builder().build())
+        assertThat(quoteRequest.destination())
+            .isEqualTo(
+                QuoteDestinationOneOf.ofAccount(
+                    QuoteDestinationOneOf.Account.builder()
+                        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                        .build()
+                )
+            )
         assertThat(quoteRequest.lockedCurrencyAmount()).isEqualTo(1000L)
         assertThat(quoteRequest.lockedCurrencySide())
             .isEqualTo(QuoteRequest.LockedCurrencySide.SENDING)
-        assertThat(quoteRequest.source()).isEqualTo(QuoteSourceOneOf.builder().build())
+        assertThat(quoteRequest.source())
+            .isEqualTo(
+                QuoteSourceOneOf.ofAccount(
+                    QuoteSourceOneOf.Account.builder()
+                        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
+            )
         assertThat(quoteRequest.description()).isEqualTo("Invoice #1234 payment")
         assertThat(quoteRequest.documentIds())
             .containsExactly(
@@ -93,10 +123,22 @@ internal class QuoteRequestTest {
         val jsonMapper = jsonMapper()
         val quoteRequest =
             QuoteRequest.builder()
-                .destination(QuoteDestinationOneOf.builder().build())
+                .destination(
+                    QuoteDestinationOneOf.Account.builder()
+                        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                        .build()
+                )
                 .lockedCurrencyAmount(1000L)
                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                .source(QuoteSourceOneOf.builder().build())
+                .source(
+                    QuoteSourceOneOf.Account.builder()
+                        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
                 .description("Invoice #1234 payment")
                 .documentIds(
                     listOf(

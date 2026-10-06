@@ -13,17 +13,18 @@ internal class AuthCredentialVerifyRequestTest {
     @Test
     fun create() {
         val authCredentialVerifyRequest =
-            AuthCredentialVerifyRequest.builder().type(JsonValue.from(mapOf<String, Any>())).build()
-
-        assertThat(authCredentialVerifyRequest._type())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
+            AuthCredentialVerifyRequest.builder()
+                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                .build()
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val authCredentialVerifyRequest =
-            AuthCredentialVerifyRequest.builder().type(JsonValue.from(mapOf<String, Any>())).build()
+            AuthCredentialVerifyRequest.builder()
+                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                .build()
 
         val roundtrippedAuthCredentialVerifyRequest =
             jsonMapper.readValue(

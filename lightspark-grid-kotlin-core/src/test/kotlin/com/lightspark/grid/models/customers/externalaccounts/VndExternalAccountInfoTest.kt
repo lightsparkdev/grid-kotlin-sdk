@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.VndAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,11 +14,65 @@ internal class VndExternalAccountInfoTest {
     fun create() {
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("VND_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Vietcombank"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("BFTVVNVX"))
+                .beneficiary(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .accountNumber("1234567890")
+                .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
+                .bankName("Vietcombank")
+                .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .build()
+
+        assertThat(vndExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                VndExternalAccountInfo.Beneficiary.ofIndividual(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
+        assertThat(vndExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(vndExternalAccountInfo.accountType())
+            .isEqualTo(VndAccountInfo.AccountType.VND_ACCOUNT)
+        assertThat(vndExternalAccountInfo.bankName()).isEqualTo("Vietcombank")
+        assertThat(vndExternalAccountInfo.paymentRails())
+            .containsExactly(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(vndExternalAccountInfo.swiftCode()).isEqualTo("BFTVVNVX")
     }
 
     @Test
@@ -26,10 +80,32 @@ internal class VndExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("VND_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Vietcombank"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("BFTVVNVX"))
+                .beneficiary(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .accountNumber("1234567890")
+                .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
+                .bankName("Vietcombank")
+                .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .build()
 
         val roundtrippedVndExternalAccountInfo =
