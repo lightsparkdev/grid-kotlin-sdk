@@ -31,6 +31,7 @@ import com.lightspark.grid.models.CadExternalAccountCreateInfo
 import com.lightspark.grid.models.CopExternalAccountCreateInfo
 import com.lightspark.grid.models.DkkExternalAccountCreateInfo
 import com.lightspark.grid.models.EgpExternalAccountCreateInfo
+import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import com.lightspark.grid.models.EurExternalAccountCreateInfo
 import com.lightspark.grid.models.GbpExternalAccountCreateInfo
 import com.lightspark.grid.models.GhsExternalAccountCreateInfo
@@ -62,8 +63,16 @@ import com.lightspark.grid.models.XofExternalAccountCreateInfo
 import com.lightspark.grid.models.ZarExternalAccountCreateInfo
 import com.lightspark.grid.models.ZmwExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.ArbitrumWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.BaseWalletInfo
 import com.lightspark.grid.models.customers.externalaccounts.BusinessBeneficiary
 import com.lightspark.grid.models.customers.externalaccounts.InrBeneficiary
+import com.lightspark.grid.models.customers.externalaccounts.LightningWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.PlasmaWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.PolygonWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.SolanaWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.SparkWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.TronWalletInfo
 import java.util.Collections
 import java.util.Objects
 
@@ -510,6 +519,178 @@ private constructor(
         fun accountInfo(swiftAccount: SwiftExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofSwiftAccount(swiftAccount))
 
+        /** Alias for calling [accountInfo] with `AccountInfo.ofBaseWallet(baseWallet)`. */
+        fun accountInfo(baseWallet: BaseWalletInfo) =
+            accountInfo(AccountInfo.ofBaseWallet(baseWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * BaseWalletInfo.builder()
+         *     .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun baseWalletAccountInfo(address: String) =
+            accountInfo(
+                BaseWalletInfo.builder()
+                    .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofEthereumWallet(ethereumWallet)`. */
+        fun accountInfo(ethereumWallet: EthereumWalletExternalAccountInfo) =
+            accountInfo(AccountInfo.ofEthereumWallet(ethereumWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * EthereumWalletExternalAccountInfo.builder()
+         *     .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun ethereumWalletAccountInfo(address: String) =
+            accountInfo(
+                EthereumWalletExternalAccountInfo.builder()
+                    .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofLightning(lightning)`. */
+        fun accountInfo(lightning: LightningWalletInfo) =
+            accountInfo(AccountInfo.ofLightning(lightning))
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPolygonWallet(polygonWallet)`. */
+        fun accountInfo(polygonWallet: PolygonWalletInfo) =
+            accountInfo(AccountInfo.ofPolygonWallet(polygonWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * PolygonWalletInfo.builder()
+         *     .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun polygonWalletAccountInfo(address: String) =
+            accountInfo(
+                PolygonWalletInfo.builder()
+                    .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPlasmaWallet(plasmaWallet)`. */
+        fun accountInfo(plasmaWallet: PlasmaWalletInfo) =
+            accountInfo(AccountInfo.ofPlasmaWallet(plasmaWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * PlasmaWalletInfo.builder()
+         *     .accountType(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun plasmaWalletAccountInfo(address: String) =
+            accountInfo(
+                PlasmaWalletInfo.builder()
+                    .accountType(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofArbitrumWallet(arbitrumWallet)`. */
+        fun accountInfo(arbitrumWallet: ArbitrumWalletInfo) =
+            accountInfo(AccountInfo.ofArbitrumWallet(arbitrumWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * ArbitrumWalletInfo.builder()
+         *     .accountType(ArbitrumWalletInfo.AccountType.ARBITRUM_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun arbitrumWalletAccountInfo(address: String) =
+            accountInfo(
+                ArbitrumWalletInfo.builder()
+                    .accountType(ArbitrumWalletInfo.AccountType.ARBITRUM_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSolanaWallet(solanaWallet)`. */
+        fun accountInfo(solanaWallet: SolanaWalletInfo) =
+            accountInfo(AccountInfo.ofSolanaWallet(solanaWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * SolanaWalletInfo.builder()
+         *     .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun solanaWalletAccountInfo(address: String) =
+            accountInfo(
+                SolanaWalletInfo.builder()
+                    .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSparkWallet(sparkWallet)`. */
+        fun accountInfo(sparkWallet: SparkWalletInfo) =
+            accountInfo(AccountInfo.ofSparkWallet(sparkWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * SparkWalletInfo.builder()
+         *     .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun sparkWalletAccountInfo(address: String) =
+            accountInfo(
+                SparkWalletInfo.builder()
+                    .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofTronWallet(tronWallet)`. */
+        fun accountInfo(tronWallet: TronWalletInfo) =
+            accountInfo(AccountInfo.ofTronWallet(tronWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * TronWalletInfo.builder()
+         *     .accountType(TronWalletInfo.AccountType.TRON_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun tronWalletAccountInfo(address: String) =
+            accountInfo(
+                TronWalletInfo.builder()
+                    .accountType(TronWalletInfo.AccountType.TRON_WALLET)
+                    .address(address)
+                    .build()
+            )
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofIlsAccount(ilsAccount)`. */
         fun accountInfo(ilsAccount: AccountInfo.IlsAccount) =
             accountInfo(AccountInfo.ofIlsAccount(ilsAccount))
@@ -697,6 +878,15 @@ private constructor(
         private val zarAccount: ZarExternalAccountCreateInfo? = null,
         private val zmwAccount: ZmwExternalAccountCreateInfo? = null,
         private val swiftAccount: SwiftExternalAccountCreateInfo? = null,
+        private val baseWallet: BaseWalletInfo? = null,
+        private val ethereumWallet: EthereumWalletExternalAccountInfo? = null,
+        private val lightning: LightningWalletInfo? = null,
+        private val polygonWallet: PolygonWalletInfo? = null,
+        private val plasmaWallet: PlasmaWalletInfo? = null,
+        private val arbitrumWallet: ArbitrumWalletInfo? = null,
+        private val solanaWallet: SolanaWalletInfo? = null,
+        private val sparkWallet: SparkWalletInfo? = null,
+        private val tronWallet: TronWalletInfo? = null,
         private val ilsAccount: IlsAccount? = null,
         private val tryAccount: TryAccount? = null,
         private val _json: JsonValue? = null,
@@ -826,6 +1016,28 @@ private constructor(
          */
         fun swiftAccount(): SwiftExternalAccountCreateInfo? = swiftAccount
 
+        fun baseWallet(): BaseWalletInfo? = baseWallet
+
+        fun ethereumWallet(): EthereumWalletExternalAccountInfo? = ethereumWallet
+
+        /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         */
+        fun lightning(): LightningWalletInfo? = lightning
+
+        fun polygonWallet(): PolygonWalletInfo? = polygonWallet
+
+        fun plasmaWallet(): PlasmaWalletInfo? = plasmaWallet
+
+        fun arbitrumWallet(): ArbitrumWalletInfo? = arbitrumWallet
+
+        fun solanaWallet(): SolanaWalletInfo? = solanaWallet
+
+        fun sparkWallet(): SparkWalletInfo? = sparkWallet
+
+        fun tronWallet(): TronWalletInfo? = tronWallet
+
         fun ilsAccount(): IlsAccount? = ilsAccount
 
         fun tryAccount(): TryAccount? = tryAccount
@@ -905,6 +1117,24 @@ private constructor(
         fun isZmwAccount(): Boolean = zmwAccount != null
 
         fun isSwiftAccount(): Boolean = swiftAccount != null
+
+        fun isBaseWallet(): Boolean = baseWallet != null
+
+        fun isEthereumWallet(): Boolean = ethereumWallet != null
+
+        fun isLightning(): Boolean = lightning != null
+
+        fun isPolygonWallet(): Boolean = polygonWallet != null
+
+        fun isPlasmaWallet(): Boolean = plasmaWallet != null
+
+        fun isArbitrumWallet(): Boolean = arbitrumWallet != null
+
+        fun isSolanaWallet(): Boolean = solanaWallet != null
+
+        fun isSparkWallet(): Boolean = sparkWallet != null
+
+        fun isTronWallet(): Boolean = tronWallet != null
 
         fun isIlsAccount(): Boolean = ilsAccount != null
 
@@ -1035,6 +1265,29 @@ private constructor(
         fun asSwiftAccount(): SwiftExternalAccountCreateInfo =
             swiftAccount.getOrThrow("swiftAccount")
 
+        fun asBaseWallet(): BaseWalletInfo = baseWallet.getOrThrow("baseWallet")
+
+        fun asEthereumWallet(): EthereumWalletExternalAccountInfo =
+            ethereumWallet.getOrThrow("ethereumWallet")
+
+        /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         */
+        fun asLightning(): LightningWalletInfo = lightning.getOrThrow("lightning")
+
+        fun asPolygonWallet(): PolygonWalletInfo = polygonWallet.getOrThrow("polygonWallet")
+
+        fun asPlasmaWallet(): PlasmaWalletInfo = plasmaWallet.getOrThrow("plasmaWallet")
+
+        fun asArbitrumWallet(): ArbitrumWalletInfo = arbitrumWallet.getOrThrow("arbitrumWallet")
+
+        fun asSolanaWallet(): SolanaWalletInfo = solanaWallet.getOrThrow("solanaWallet")
+
+        fun asSparkWallet(): SparkWalletInfo = sparkWallet.getOrThrow("sparkWallet")
+
+        fun asTronWallet(): TronWalletInfo = tronWallet.getOrThrow("tronWallet")
+
         fun asIlsAccount(): IlsAccount = ilsAccount.getOrThrow("ilsAccount")
 
         fun asTryAccount(): TryAccount = tryAccount.getOrThrow("tryAccount")
@@ -1105,6 +1358,15 @@ private constructor(
                 zarAccount != null -> visitor.visitZarAccount(zarAccount)
                 zmwAccount != null -> visitor.visitZmwAccount(zmwAccount)
                 swiftAccount != null -> visitor.visitSwiftAccount(swiftAccount)
+                baseWallet != null -> visitor.visitBaseWallet(baseWallet)
+                ethereumWallet != null -> visitor.visitEthereumWallet(ethereumWallet)
+                lightning != null -> visitor.visitLightning(lightning)
+                polygonWallet != null -> visitor.visitPolygonWallet(polygonWallet)
+                plasmaWallet != null -> visitor.visitPlasmaWallet(plasmaWallet)
+                arbitrumWallet != null -> visitor.visitArbitrumWallet(arbitrumWallet)
+                solanaWallet != null -> visitor.visitSolanaWallet(solanaWallet)
+                sparkWallet != null -> visitor.visitSparkWallet(sparkWallet)
+                tronWallet != null -> visitor.visitTronWallet(tronWallet)
                 ilsAccount != null -> visitor.visitIlsAccount(ilsAccount)
                 tryAccount != null -> visitor.visitTryAccount(tryAccount)
                 else -> visitor.unknown(_json)
@@ -1280,6 +1542,44 @@ private constructor(
                         swiftAccount.validate()
                     }
 
+                    override fun visitBaseWallet(baseWallet: BaseWalletInfo) {
+                        baseWallet.validate()
+                    }
+
+                    override fun visitEthereumWallet(
+                        ethereumWallet: EthereumWalletExternalAccountInfo
+                    ) {
+                        ethereumWallet.validate()
+                    }
+
+                    override fun visitLightning(lightning: LightningWalletInfo) {
+                        lightning.validate()
+                    }
+
+                    override fun visitPolygonWallet(polygonWallet: PolygonWalletInfo) {
+                        polygonWallet.validate()
+                    }
+
+                    override fun visitPlasmaWallet(plasmaWallet: PlasmaWalletInfo) {
+                        plasmaWallet.validate()
+                    }
+
+                    override fun visitArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo) {
+                        arbitrumWallet.validate()
+                    }
+
+                    override fun visitSolanaWallet(solanaWallet: SolanaWalletInfo) {
+                        solanaWallet.validate()
+                    }
+
+                    override fun visitSparkWallet(sparkWallet: SparkWalletInfo) {
+                        sparkWallet.validate()
+                    }
+
+                    override fun visitTronWallet(tronWallet: TronWalletInfo) {
+                        tronWallet.validate()
+                    }
+
                     override fun visitIlsAccount(ilsAccount: IlsAccount) {
                         ilsAccount.validate()
                     }
@@ -1422,6 +1722,32 @@ private constructor(
                     override fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
                         swiftAccount.validity()
 
+                    override fun visitBaseWallet(baseWallet: BaseWalletInfo) = baseWallet.validity()
+
+                    override fun visitEthereumWallet(
+                        ethereumWallet: EthereumWalletExternalAccountInfo
+                    ) = ethereumWallet.validity()
+
+                    override fun visitLightning(lightning: LightningWalletInfo) =
+                        lightning.validity()
+
+                    override fun visitPolygonWallet(polygonWallet: PolygonWalletInfo) =
+                        polygonWallet.validity()
+
+                    override fun visitPlasmaWallet(plasmaWallet: PlasmaWalletInfo) =
+                        plasmaWallet.validity()
+
+                    override fun visitArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo) =
+                        arbitrumWallet.validity()
+
+                    override fun visitSolanaWallet(solanaWallet: SolanaWalletInfo) =
+                        solanaWallet.validity()
+
+                    override fun visitSparkWallet(sparkWallet: SparkWalletInfo) =
+                        sparkWallet.validity()
+
+                    override fun visitTronWallet(tronWallet: TronWalletInfo) = tronWallet.validity()
+
                     override fun visitIlsAccount(ilsAccount: IlsAccount) = ilsAccount.validity()
 
                     override fun visitTryAccount(tryAccount: TryAccount) = tryAccount.validity()
@@ -1474,6 +1800,15 @@ private constructor(
                 zarAccount == other.zarAccount &&
                 zmwAccount == other.zmwAccount &&
                 swiftAccount == other.swiftAccount &&
+                baseWallet == other.baseWallet &&
+                ethereumWallet == other.ethereumWallet &&
+                lightning == other.lightning &&
+                polygonWallet == other.polygonWallet &&
+                plasmaWallet == other.plasmaWallet &&
+                arbitrumWallet == other.arbitrumWallet &&
+                solanaWallet == other.solanaWallet &&
+                sparkWallet == other.sparkWallet &&
+                tronWallet == other.tronWallet &&
                 ilsAccount == other.ilsAccount &&
                 tryAccount == other.tryAccount
         }
@@ -1518,6 +1853,15 @@ private constructor(
                 zarAccount,
                 zmwAccount,
                 swiftAccount,
+                baseWallet,
+                ethereumWallet,
+                lightning,
+                polygonWallet,
+                plasmaWallet,
+                arbitrumWallet,
+                solanaWallet,
+                sparkWallet,
+                tronWallet,
                 ilsAccount,
                 tryAccount,
             )
@@ -1562,6 +1906,15 @@ private constructor(
                 zarAccount != null -> "AccountInfo{zarAccount=$zarAccount}"
                 zmwAccount != null -> "AccountInfo{zmwAccount=$zmwAccount}"
                 swiftAccount != null -> "AccountInfo{swiftAccount=$swiftAccount}"
+                baseWallet != null -> "AccountInfo{baseWallet=$baseWallet}"
+                ethereumWallet != null -> "AccountInfo{ethereumWallet=$ethereumWallet}"
+                lightning != null -> "AccountInfo{lightning=$lightning}"
+                polygonWallet != null -> "AccountInfo{polygonWallet=$polygonWallet}"
+                plasmaWallet != null -> "AccountInfo{plasmaWallet=$plasmaWallet}"
+                arbitrumWallet != null -> "AccountInfo{arbitrumWallet=$arbitrumWallet}"
+                solanaWallet != null -> "AccountInfo{solanaWallet=$solanaWallet}"
+                sparkWallet != null -> "AccountInfo{sparkWallet=$sparkWallet}"
+                tronWallet != null -> "AccountInfo{tronWallet=$tronWallet}"
                 ilsAccount != null -> "AccountInfo{ilsAccount=$ilsAccount}"
                 tryAccount != null -> "AccountInfo{tryAccount=$tryAccount}"
                 _json != null -> "AccountInfo{_unknown=$_json}"
@@ -1731,6 +2084,33 @@ private constructor(
             fun ofSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
                 AccountInfo(swiftAccount = swiftAccount)
 
+            fun ofBaseWallet(baseWallet: BaseWalletInfo) = AccountInfo(baseWallet = baseWallet)
+
+            fun ofEthereumWallet(ethereumWallet: EthereumWalletExternalAccountInfo) =
+                AccountInfo(ethereumWallet = ethereumWallet)
+
+            /**
+             * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or
+             * `lightningAddress` must be provided.
+             */
+            fun ofLightning(lightning: LightningWalletInfo) = AccountInfo(lightning = lightning)
+
+            fun ofPolygonWallet(polygonWallet: PolygonWalletInfo) =
+                AccountInfo(polygonWallet = polygonWallet)
+
+            fun ofPlasmaWallet(plasmaWallet: PlasmaWalletInfo) =
+                AccountInfo(plasmaWallet = plasmaWallet)
+
+            fun ofArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo) =
+                AccountInfo(arbitrumWallet = arbitrumWallet)
+
+            fun ofSolanaWallet(solanaWallet: SolanaWalletInfo) =
+                AccountInfo(solanaWallet = solanaWallet)
+
+            fun ofSparkWallet(sparkWallet: SparkWalletInfo) = AccountInfo(sparkWallet = sparkWallet)
+
+            fun ofTronWallet(tronWallet: TronWalletInfo) = AccountInfo(tronWallet = tronWallet)
+
             fun ofIlsAccount(ilsAccount: IlsAccount) = AccountInfo(ilsAccount = ilsAccount)
 
             fun ofTryAccount(tryAccount: TryAccount) = AccountInfo(tryAccount = tryAccount)
@@ -1865,6 +2245,28 @@ private constructor(
              * exposes both identifiers for the same account.
              */
             fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo): T
+
+            fun visitBaseWallet(baseWallet: BaseWalletInfo): T
+
+            fun visitEthereumWallet(ethereumWallet: EthereumWalletExternalAccountInfo): T
+
+            /**
+             * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or
+             * `lightningAddress` must be provided.
+             */
+            fun visitLightning(lightning: LightningWalletInfo): T
+
+            fun visitPolygonWallet(polygonWallet: PolygonWalletInfo): T
+
+            fun visitPlasmaWallet(plasmaWallet: PlasmaWalletInfo): T
+
+            fun visitArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo): T
+
+            fun visitSolanaWallet(solanaWallet: SolanaWalletInfo): T
+
+            fun visitSparkWallet(sparkWallet: SparkWalletInfo): T
+
+            fun visitTronWallet(tronWallet: TronWalletInfo): T
 
             fun visitIlsAccount(ilsAccount: IlsAccount): T
 
@@ -2085,6 +2487,54 @@ private constructor(
                             ?.let { AccountInfo(swiftAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
+                    "BASE_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
+                            AccountInfo(baseWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "ETHEREUM_WALLET" -> {
+                        return tryDeserialize(
+                                node,
+                                jacksonTypeRef<EthereumWalletExternalAccountInfo>(),
+                            )
+                            ?.let { AccountInfo(ethereumWallet = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "LIGHTNING" -> {
+                        return tryDeserialize(node, jacksonTypeRef<LightningWalletInfo>())?.let {
+                            AccountInfo(lightning = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "POLYGON_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PolygonWalletInfo>())?.let {
+                            AccountInfo(polygonWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "PLASMA_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PlasmaWalletInfo>())?.let {
+                            AccountInfo(plasmaWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "ARBITRUM_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<ArbitrumWalletInfo>())?.let {
+                            AccountInfo(arbitrumWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "SOLANA_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SolanaWalletInfo>())?.let {
+                            AccountInfo(solanaWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "SPARK_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SparkWalletInfo>())?.let {
+                            AccountInfo(sparkWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "TRON_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<TronWalletInfo>())?.let {
+                            AccountInfo(tronWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
                     "ILS_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<IlsAccount>())?.let {
                             AccountInfo(ilsAccount = it, _json = json)
@@ -2147,6 +2597,15 @@ private constructor(
                     value.zarAccount != null -> generator.writeObject(value.zarAccount)
                     value.zmwAccount != null -> generator.writeObject(value.zmwAccount)
                     value.swiftAccount != null -> generator.writeObject(value.swiftAccount)
+                    value.baseWallet != null -> generator.writeObject(value.baseWallet)
+                    value.ethereumWallet != null -> generator.writeObject(value.ethereumWallet)
+                    value.lightning != null -> generator.writeObject(value.lightning)
+                    value.polygonWallet != null -> generator.writeObject(value.polygonWallet)
+                    value.plasmaWallet != null -> generator.writeObject(value.plasmaWallet)
+                    value.arbitrumWallet != null -> generator.writeObject(value.arbitrumWallet)
+                    value.solanaWallet != null -> generator.writeObject(value.solanaWallet)
+                    value.sparkWallet != null -> generator.writeObject(value.sparkWallet)
+                    value.tronWallet != null -> generator.writeObject(value.tronWallet)
                     value.ilsAccount != null -> generator.writeObject(value.ilsAccount)
                     value.tryAccount != null -> generator.writeObject(value.tryAccount)
                     value._json != null -> generator.writeObject(value._json)

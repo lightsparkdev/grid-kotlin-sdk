@@ -2,7 +2,8 @@
 
 package com.lightspark.grid.models.customers.externalaccounts
 
-import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,14 +13,10 @@ internal class ExternalAccountCreateParamsTest {
     fun create() {
         ExternalAccountCreateParams.builder()
             .accountInfo(
-                UsdExternalAccountCreateInfo.builder()
-                    .accountNumber("12345678901")
-                    .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                    .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                AedExternalAccountCreateInfo.builder()
+                    .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                     .beneficiary(
-                        UsdBeneficiary.builder()
-                            .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .fullName("John Doe")
+                        AedBeneficiary.builder()
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -30,6 +27,8 @@ internal class ExternalAccountCreateParamsTest {
                                     .state("CA")
                                     .build()
                             )
+                            .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("John Doe")
                             .birthDate("1990-01-15")
                             .countryOfResidence("countryOfResidence")
                             .email("email")
@@ -37,11 +36,8 @@ internal class ExternalAccountCreateParamsTest {
                             .phoneNumber("phoneNumber")
                             .build()
                     )
-                    .routingNumber("123456789")
-                    .bankName("Chase Bank")
-                    .fiToFiInformation("/BNF/Invoice 4471")
-                    .intermediaryBankName("JPMorgan Chase Bank")
-                    .intermediaryRoutingNumber("021000021")
+                    .iban("AE070331234567890123456")
+                    .swiftCode("EBILAEAD")
                     .build()
             )
             .currency("USD")
@@ -57,14 +53,10 @@ internal class ExternalAccountCreateParamsTest {
         val params =
             ExternalAccountCreateParams.builder()
                 .accountInfo(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
-                            UsdBeneficiary.builder()
-                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("John Doe")
+                            AedBeneficiary.builder()
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -75,6 +67,8 @@ internal class ExternalAccountCreateParamsTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("John Doe")
                                 .birthDate("1990-01-15")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -82,11 +76,8 @@ internal class ExternalAccountCreateParamsTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
-                        .routingNumber("123456789")
-                        .bankName("Chase Bank")
-                        .fiToFiInformation("/BNF/Invoice 4471")
-                        .intermediaryBankName("JPMorgan Chase Bank")
-                        .intermediaryRoutingNumber("021000021")
+                        .iban("AE070331234567890123456")
+                        .swiftCode("EBILAEAD")
                         .build()
                 )
                 .currency("USD")
@@ -100,15 +91,11 @@ internal class ExternalAccountCreateParamsTest {
 
         assertThat(body.accountInfo())
             .isEqualTo(
-                ExternalAccountCreateParams.AccountInfo.ofUsdAccount(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                ExternalAccountCreateParams.AccountInfo.ofAedAccount(
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
-                            UsdBeneficiary.builder()
-                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("John Doe")
+                            AedBeneficiary.builder()
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -119,6 +106,8 @@ internal class ExternalAccountCreateParamsTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("John Doe")
                                 .birthDate("1990-01-15")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -126,11 +115,8 @@ internal class ExternalAccountCreateParamsTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
-                        .routingNumber("123456789")
-                        .bankName("Chase Bank")
-                        .fiToFiInformation("/BNF/Invoice 4471")
-                        .intermediaryBankName("JPMorgan Chase Bank")
-                        .intermediaryRoutingNumber("021000021")
+                        .iban("AE070331234567890123456")
+                        .swiftCode("EBILAEAD")
                         .build()
                 )
             )
@@ -147,12 +133,22 @@ internal class ExternalAccountCreateParamsTest {
         val params =
             ExternalAccountCreateParams.builder()
                 .accountInfo(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
-                        .individualBeneficiary("John Doe")
-                        .routingNumber("123456789")
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                        .beneficiary(
+                            AedBeneficiary.builder()
+                                .address(
+                                    Address.builder()
+                                        .country("US")
+                                        .line1("123 Main Street")
+                                        .postalCode("94105")
+                                        .build()
+                                )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("John Doe")
+                                .build()
+                        )
+                        .iban("AE070331234567890123456")
                         .build()
                 )
                 .currency("USD")
@@ -163,13 +159,23 @@ internal class ExternalAccountCreateParamsTest {
 
         assertThat(body.accountInfo())
             .isEqualTo(
-                ExternalAccountCreateParams.AccountInfo.ofUsdAccount(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
-                        .individualBeneficiary("John Doe")
-                        .routingNumber("123456789")
+                ExternalAccountCreateParams.AccountInfo.ofAedAccount(
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                        .beneficiary(
+                            AedBeneficiary.builder()
+                                .address(
+                                    Address.builder()
+                                        .country("US")
+                                        .line1("123 Main Street")
+                                        .postalCode("94105")
+                                        .build()
+                                )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("John Doe")
+                                .build()
+                        )
+                        .iban("AE070331234567890123456")
                         .build()
                 )
             )
