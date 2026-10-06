@@ -16,11 +16,13 @@ internal class EmailOtpCredentialCreateRequestTest {
             EmailOtpCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .type(JsonValue.from("EMAIL_OTP"))
+                .email("jane.new@example.com")
                 .build()
 
         assertThat(emailOtpCredentialCreateRequest.accountId())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(emailOtpCredentialCreateRequest._type()).isEqualTo(JsonValue.from("EMAIL_OTP"))
+        assertThat(emailOtpCredentialCreateRequest.email()).isEqualTo("jane.new@example.com")
     }
 
     @Test
@@ -30,6 +32,7 @@ internal class EmailOtpCredentialCreateRequestTest {
             EmailOtpCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .type(JsonValue.from("EMAIL_OTP"))
+                .email("jane.new@example.com")
                 .build()
 
         val roundtrippedEmailOtpCredentialCreateRequest =

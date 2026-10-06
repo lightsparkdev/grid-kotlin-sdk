@@ -15,7 +15,10 @@ internal class ThbExternalAccountInfoTest {
         val thbExternalAccountInfo =
             ThbExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("THB_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty(
+                    "bankName",
+                    JsonValue.from("Bangkok Bank Public Company Limited"),
+                )
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("BKKBTHBK"))
                 .build()
@@ -27,7 +30,10 @@ internal class ThbExternalAccountInfoTest {
         val thbExternalAccountInfo =
             ThbExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("THB_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty(
+                    "bankName",
+                    JsonValue.from("Bangkok Bank Public Company Limited"),
+                )
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("BKKBTHBK"))
                 .build()

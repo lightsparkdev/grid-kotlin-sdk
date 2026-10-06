@@ -17,10 +17,12 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnResponse
 
 /** Endpoints to trigger test cases in sandbox */
 class SimulateServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -38,21 +40,21 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun authorization(
         params: SimulateAuthorizationParams,
         requestOptions: RequestOptions,
-    ): CardTransaction =
+    ): SimulateAuthorizationResponse =
         // post /sandbox/cards/{id}/simulate/authorization
         withRawResponse().authorization(params, requestOptions).parse()
 
     override suspend fun clearing(
         params: SimulateClearingParams,
         requestOptions: RequestOptions,
-    ): CardTransaction =
+    ): SimulateClearingResponse =
         // post /sandbox/cards/{id}/simulate/clearing
         withRawResponse().clearing(params, requestOptions).parse()
 
     override suspend fun return_(
         params: SimulateReturnParams,
         requestOptions: RequestOptions,
-    ): CardTransaction =
+    ): SimulateReturnResponse =
         // post /sandbox/cards/{id}/simulate/return
         withRawResponse().return_(params, requestOptions).parse()
 
@@ -69,13 +71,13 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val authorizationHandler: Handler<CardTransaction> =
-            jsonHandler<CardTransaction>(clientOptions.jsonMapper)
+        private val authorizationHandler: Handler<SimulateAuthorizationResponse> =
+            jsonHandler<SimulateAuthorizationResponse>(clientOptions.jsonMapper)
 
         override suspend fun authorization(
             params: SimulateAuthorizationParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CardTransaction> {
+        ): HttpResponseFor<SimulateAuthorizationResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -110,13 +112,13 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val clearingHandler: Handler<CardTransaction> =
-            jsonHandler<CardTransaction>(clientOptions.jsonMapper)
+        private val clearingHandler: Handler<SimulateClearingResponse> =
+            jsonHandler<SimulateClearingResponse>(clientOptions.jsonMapper)
 
         override suspend fun clearing(
             params: SimulateClearingParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CardTransaction> {
+        ): HttpResponseFor<SimulateClearingResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -151,13 +153,13 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val returnHandler: Handler<CardTransaction> =
-            jsonHandler<CardTransaction>(clientOptions.jsonMapper)
+        private val returnHandler: Handler<SimulateReturnResponse> =
+            jsonHandler<SimulateReturnResponse>(clientOptions.jsonMapper)
 
         override suspend fun return_(
             params: SimulateReturnParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CardTransaction> {
+        ): HttpResponseFor<SimulateReturnResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())

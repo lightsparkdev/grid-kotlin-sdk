@@ -39,21 +39,20 @@ internal class InternalAccountStatusWebhookEventTest {
                         .addFundingPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                        .accountHolderName("Acme Exports Pte Ltd")
+                                        .bankName("Deutsche Bank")
+                                        .country("NG")
                                         .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
                                                 .PaymentRail
-                                                .BANK_TRANSFER
+                                                .SWIFT
                                         )
+                                        .swiftCode("DEUTDEFF")
+                                        .accountNumber("1234567890")
+                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                        .iban("GB29NWBK60161331926819")
                                         .reference("UMA-Q12345-REF")
-                                        .accountNumber("0123456789")
-                                        .bankAccountType(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .BankAccountType
-                                                .CHECKING
-                                        )
-                                        .bankName("Banco Cuscatlan")
-                                        .phoneNumber("+50312345678")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -63,10 +62,91 @@ internal class InternalAccountStatusWebhookEventTest {
                                 .build()
                         )
                         .status(InternalAccount.Status.ACTIVE)
+                        .totalBalance(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
+                        .cardCapabilities(
+                            InternalAccount.CardCapabilities.builder()
+                                .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
+                                .supportsPanReveal(true)
+                                .supportsSpendLimits(true)
+                                .supportsSpendLimitsAtIssuance(true)
+                                .supportsTransactionCountLimit(true)
+                                .build()
+                        )
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .label("invoice-4417")
+                        .onBehalfOfCustomerId("Customer:019542f5-b3e7-1d02-0000-000000000002")
                         .privateEnabled(true)
+                        .sweepRule(
+                            InternalAccount.SweepRule.builder()
+                                .destination(
+                                    InternalAccount.SweepRule.Destination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
+                                .description("Rent sweep")
+                                .maximumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .minimumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .platformFeeOverride(
+                                    InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            InternalAccount.SweepRule.PlatformFeeOverride
+                                                .PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
+                                .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                                .remittanceInformation("Unit 4B March")
+                                .build()
+                        )
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -96,21 +176,20 @@ internal class InternalAccountStatusWebhookEventTest {
                     .addFundingPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                    .accountHolderName("Acme Exports Pte Ltd")
+                                    .bankName("Deutsche Bank")
+                                    .country("NG")
                                     .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
                                             .PaymentRail
-                                            .BANK_TRANSFER
+                                            .SWIFT
                                     )
+                                    .swiftCode("DEUTDEFF")
+                                    .accountNumber("1234567890")
+                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                    .iban("GB29NWBK60161331926819")
                                     .reference("UMA-Q12345-REF")
-                                    .accountNumber("0123456789")
-                                    .bankAccountType(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                            .BankAccountType
-                                            .CHECKING
-                                    )
-                                    .bankName("Banco Cuscatlan")
-                                    .phoneNumber("+50312345678")
                                     .build()
                             )
                             .instructionsNotes(
@@ -120,10 +199,91 @@ internal class InternalAccountStatusWebhookEventTest {
                             .build()
                     )
                     .status(InternalAccount.Status.ACTIVE)
+                    .totalBalance(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .type(InternalAccount.Type.INTERNAL_FIAT)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
+                    .cardCapabilities(
+                        InternalAccount.CardCapabilities.builder()
+                            .supports3dSecurePassword(false)
+                            .supportsDigitalWalletTokenization(true)
+                            .supportsPanReveal(true)
+                            .supportsSpendLimits(true)
+                            .supportsSpendLimitsAtIssuance(true)
+                            .supportsTransactionCountLimit(true)
+                            .build()
+                    )
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .label("invoice-4417")
+                    .onBehalfOfCustomerId("Customer:019542f5-b3e7-1d02-0000-000000000002")
                     .privateEnabled(true)
+                    .sweepRule(
+                        InternalAccount.SweepRule.builder()
+                            .destination(
+                                InternalAccount.SweepRule.Destination.builder()
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .paymentRail(
+                                        InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                    )
+                                    .build()
+                            )
+                            .description("Rent sweep")
+                            .maximumAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .minimumAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .platformFeeOverride(
+                                InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                    .platformFixedFee(
+                                        InternalAccount.SweepRule.PlatformFeeOverride
+                                            .PlatformFixedFee
+                                            .builder()
+                                            .amount(50L)
+                                            .currency("USD")
+                                            .build()
+                                    )
+                                    .platformVariableFeeBps(30L)
+                                    .build()
+                            )
+                            .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                            .remittanceInformation("Unit 4B March")
+                            .build()
+                    )
                     .build()
             )
         assertThat(internalAccountStatusWebhookEvent.timestamp())
@@ -158,21 +318,20 @@ internal class InternalAccountStatusWebhookEventTest {
                         .addFundingPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                        .accountHolderName("Acme Exports Pte Ltd")
+                                        .bankName("Deutsche Bank")
+                                        .country("NG")
                                         .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
                                                 .PaymentRail
-                                                .BANK_TRANSFER
+                                                .SWIFT
                                         )
+                                        .swiftCode("DEUTDEFF")
+                                        .accountNumber("1234567890")
+                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                        .iban("GB29NWBK60161331926819")
                                         .reference("UMA-Q12345-REF")
-                                        .accountNumber("0123456789")
-                                        .bankAccountType(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .BankAccountType
-                                                .CHECKING
-                                        )
-                                        .bankName("Banco Cuscatlan")
-                                        .phoneNumber("+50312345678")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -182,10 +341,91 @@ internal class InternalAccountStatusWebhookEventTest {
                                 .build()
                         )
                         .status(InternalAccount.Status.ACTIVE)
+                        .totalBalance(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
+                        .cardCapabilities(
+                            InternalAccount.CardCapabilities.builder()
+                                .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
+                                .supportsPanReveal(true)
+                                .supportsSpendLimits(true)
+                                .supportsSpendLimitsAtIssuance(true)
+                                .supportsTransactionCountLimit(true)
+                                .build()
+                        )
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .label("invoice-4417")
+                        .onBehalfOfCustomerId("Customer:019542f5-b3e7-1d02-0000-000000000002")
                         .privateEnabled(true)
+                        .sweepRule(
+                            InternalAccount.SweepRule.builder()
+                                .destination(
+                                    InternalAccount.SweepRule.Destination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
+                                .description("Rent sweep")
+                                .maximumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .minimumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .platformFeeOverride(
+                                    InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            InternalAccount.SweepRule.PlatformFeeOverride
+                                                .PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
+                                .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                                .remittanceInformation("Unit 4B March")
+                                .build()
+                        )
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))

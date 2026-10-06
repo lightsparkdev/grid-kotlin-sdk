@@ -27,6 +27,11 @@ import com.lightspark.grid.models.customers.externalaccounts.BusinessBeneficiary
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR, GB) use
+ * iban, other corridors use accountNumber, and both appear when the bank exposes both identifiers
+ * for the same account.
+ */
 class SwiftExternalAccountCreateInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

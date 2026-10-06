@@ -17,22 +17,32 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.customers.AgreementDocumentListResponse
+import com.lightspark.grid.models.customers.BalanceChangeListResponse
+import com.lightspark.grid.models.customers.CustomerConfirmStatementDeliveryParams
 import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerExportResponse
+import com.lightspark.grid.models.customers.CustomerListAgreementsParams
+import com.lightspark.grid.models.customers.CustomerListBalanceChangesPageAsync
+import com.lightspark.grid.models.customers.CustomerListBalanceChangesParams
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageAsync
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPageAsync
 import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerListResponse
 import com.lightspark.grid.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerRetrieveEndUserTermsParams
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
+import com.lightspark.grid.models.customers.CustomerUpdateResponse
+import com.lightspark.grid.models.customers.EndUserTerms
 import com.lightspark.grid.models.customers.InternalAccountListResponse
 import com.lightspark.grid.models.customers.KycLinkResponse
+import com.lightspark.grid.models.customers.StatementDelivery
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.async.customers.BulkServiceAsync
 import com.lightspark.grid.services.async.customers.BulkServiceAsyncImpl
@@ -80,7 +90,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun update(
         params: CustomerUpdateParams,
         requestOptions: RequestOptions,
-    ): CustomerOneOf =
+    ): CustomerUpdateResponse =
         // patch /customers/{customerId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -98,6 +108,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         // delete /customers/{customerId}
         withRawResponse().delete(params, requestOptions).parse()
 
+    override suspend fun confirmStatementDelivery(
+        params: CustomerConfirmStatementDeliveryParams,
+        requestOptions: RequestOptions,
+    ): StatementDelivery =
+        // post /internal-accounts/{id}/confirm-statement
+        withRawResponse().confirmStatementDelivery(params, requestOptions).parse()
+
     override suspend fun createKycLink(
         params: CustomerCreateKycLinkParams,
         requestOptions: RequestOptions,
@@ -108,9 +125,23 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions,
-    ): InternalAccountExportResponse =
+    ): CustomerExportResponse =
         // post /internal-accounts/{id}/export
         withRawResponse().export(params, requestOptions).parse()
+
+    override suspend fun listAgreements(
+        params: CustomerListAgreementsParams,
+        requestOptions: RequestOptions,
+    ): AgreementDocumentListResponse =
+        // get /customers/agreements
+        withRawResponse().listAgreements(params, requestOptions).parse()
+
+    override suspend fun listBalanceChanges(
+        params: CustomerListBalanceChangesParams,
+        requestOptions: RequestOptions,
+    ): CustomerListBalanceChangesPageAsync =
+        // get /internal-accounts/{id}/balance-changes
+        withRawResponse().listBalanceChanges(params, requestOptions).parse()
 
     override suspend fun listInternalAccounts(
         params: CustomerListInternalAccountsParams,
@@ -118,6 +149,14 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CustomerListInternalAccountsPageAsync =
         // get /customers/internal-accounts
         withRawResponse().listInternalAccounts(params, requestOptions).parse()
+
+    @Deprecated("deprecated")
+    override suspend fun retrieveEndUserTerms(
+        params: CustomerRetrieveEndUserTermsParams,
+        requestOptions: RequestOptions,
+    ): EndUserTerms =
+        // get /customers/end-user-terms
+        withRawResponse().retrieveEndUserTerms(params, requestOptions).parse()
 
     override suspend fun updateInternalAccount(
         params: CustomerUpdateInternalAccountParams,
@@ -222,13 +261,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val updateHandler: Handler<CustomerOneOf> =
-            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<CustomerUpdateResponse> =
+            jsonHandler<CustomerUpdateResponse>(clientOptions.jsonMapper)
 
         override suspend fun update(
             params: CustomerUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> {
+        ): HttpResponseFor<CustomerUpdateResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -330,6 +369,41 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
+        private val confirmStatementDeliveryHandler: Handler<StatementDelivery> =
+            jsonHandler<StatementDelivery>(clientOptions.jsonMapper)
+
+        override suspend fun confirmStatementDelivery(
+            params: CustomerConfirmStatementDeliveryParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StatementDelivery> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("internal-accounts", params._pathParam(0), "confirm-statement")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { confirmStatementDeliveryHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
         private val createKycLinkHandler: Handler<KycLinkResponse> =
             jsonHandler<KycLinkResponse>(clientOptions.jsonMapper)
 
@@ -365,13 +439,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val exportHandler: Handler<InternalAccountExportResponse> =
-            jsonHandler<InternalAccountExportResponse>(clientOptions.jsonMapper)
+        private val exportHandler: Handler<CustomerExportResponse> =
+            jsonHandler<CustomerExportResponse>(clientOptions.jsonMapper)
 
         override suspend fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<InternalAccountExportResponse> {
+        ): HttpResponseFor<CustomerExportResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -396,6 +470,78 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+            }
+        }
+
+        private val listAgreementsHandler: Handler<AgreementDocumentListResponse> =
+            jsonHandler<AgreementDocumentListResponse>(clientOptions.jsonMapper)
+
+        override suspend fun listAgreements(
+            params: CustomerListAgreementsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AgreementDocumentListResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("customers", "agreements")
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listAgreementsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val listBalanceChangesHandler: Handler<BalanceChangeListResponse> =
+            jsonHandler<BalanceChangeListResponse>(clientOptions.jsonMapper)
+
+        override suspend fun listBalanceChanges(
+            params: CustomerListBalanceChangesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerListBalanceChangesPageAsync> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("internal-accounts", params._pathParam(0), "balance-changes")
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listBalanceChangesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        CustomerListBalanceChangesPageAsync.builder()
+                            .service(CustomerServiceAsyncImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
@@ -434,6 +580,38 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                             .params(params)
                             .response(it)
                             .build()
+                    }
+            }
+        }
+
+        private val retrieveEndUserTermsHandler: Handler<EndUserTerms> =
+            jsonHandler<EndUserTerms>(clientOptions.jsonMapper)
+
+        @Deprecated("deprecated")
+        override suspend fun retrieveEndUserTerms(
+            params: CustomerRetrieveEndUserTermsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<EndUserTerms> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("customers", "end-user-terms")
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { retrieveEndUserTermsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
                     }
             }
         }

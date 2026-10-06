@@ -26,6 +26,8 @@ import com.lightspark.grid.services.blocking.ExchangeRateService
 import com.lightspark.grid.services.blocking.ExchangeRateServiceImpl
 import com.lightspark.grid.services.blocking.InvitationService
 import com.lightspark.grid.services.blocking.InvitationServiceImpl
+import com.lightspark.grid.services.blocking.PaymentDocumentService
+import com.lightspark.grid.services.blocking.PaymentDocumentServiceImpl
 import com.lightspark.grid.services.blocking.PlatformService
 import com.lightspark.grid.services.blocking.PlatformServiceImpl
 import com.lightspark.grid.services.blocking.QuoteService
@@ -42,8 +44,6 @@ import com.lightspark.grid.services.blocking.TransferInService
 import com.lightspark.grid.services.blocking.TransferInServiceImpl
 import com.lightspark.grid.services.blocking.TransferOutService
 import com.lightspark.grid.services.blocking.TransferOutServiceImpl
-import com.lightspark.grid.services.blocking.UmaProviderService
-import com.lightspark.grid.services.blocking.UmaProviderServiceImpl
 import com.lightspark.grid.services.blocking.VerificationService
 import com.lightspark.grid.services.blocking.VerificationServiceImpl
 import com.lightspark.grid.services.blocking.WebhookService
@@ -90,6 +90,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         ReceiverServiceImpl(clientOptionsWithUserAgent)
     }
 
+    private val paymentDocuments: PaymentDocumentService by lazy {
+        PaymentDocumentServiceImpl(clientOptionsWithUserAgent)
+    }
+
     private val quotes: QuoteService by lazy { QuoteServiceImpl(clientOptionsWithUserAgent) }
 
     private val transactions: TransactionService by lazy {
@@ -101,10 +105,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     }
 
     private val sandbox: SandboxService by lazy { SandboxServiceImpl(clientOptionsWithUserAgent) }
-
-    private val umaProviders: UmaProviderService by lazy {
-        UmaProviderServiceImpl(clientOptionsWithUserAgent)
-    }
 
     private val tokens: TokenService by lazy { TokenServiceImpl(clientOptionsWithUserAgent) }
 
@@ -157,21 +157,35 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     override fun platform(): PlatformService = platform
 
     /**
-     * Endpoints for transferring funds between internal and external accounts with the same
-     * currency
+     * Deprecated endpoints for transferring funds between internal and external accounts with the
+     * same currency. Use the quote endpoints under Cross-Currency Transfers instead, which now
+     * serve same-currency transfers as well.
      */
     override fun transferIn(): TransferInService = transferIn
 
     /**
-     * Endpoints for transferring funds between internal and external accounts with the same
-     * currency
+     * Deprecated endpoints for transferring funds between internal and external accounts with the
+     * same currency. Use the quote endpoints under Cross-Currency Transfers instead, which now
+     * serve same-currency transfers as well.
      */
     override fun transferOut(): TransferOutService = transferOut
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     override fun receiver(): ReceiverService = receiver
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
+    override fun paymentDocuments(): PaymentDocumentService = paymentDocuments
+
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     override fun quotes(): QuoteService = quotes
 
     /** Endpoints for retrieving transaction information */
@@ -182,8 +196,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     /** Endpoints to trigger test cases in sandbox */
     override fun sandbox(): SandboxService = sandbox
-
-    override fun umaProviders(): UmaProviderService = umaProviders
 
     /** Endpoints to programmatically manage API tokens */
     override fun tokens(): TokenService = tokens
@@ -196,7 +208,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     override fun webhooks(): WebhookService = webhooks
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     override fun crypto(): CryptoService = crypto
 
     /**
@@ -235,7 +250,7 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     /**
      * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
-     * close, manage card funding sources, and list card transactions.
+     * close, manage a card's funding source, and list card transactions.
      */
     override fun cards(): CardService = cards
 
@@ -268,6 +283,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
             ReceiverServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val paymentDocuments: PaymentDocumentService.WithRawResponse by lazy {
+            PaymentDocumentServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val quotes: QuoteService.WithRawResponse by lazy {
             QuoteServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -282,10 +301,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         private val sandbox: SandboxService.WithRawResponse by lazy {
             SandboxServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val umaProviders: UmaProviderService.WithRawResponse by lazy {
-            UmaProviderServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val tokens: TokenService.WithRawResponse by lazy {
@@ -351,21 +366,35 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         override fun platform(): PlatformService.WithRawResponse = platform
 
         /**
-         * Endpoints for transferring funds between internal and external accounts with the same
-         * currency
+         * Deprecated endpoints for transferring funds between internal and external accounts with
+         * the same currency. Use the quote endpoints under Cross-Currency Transfers instead, which
+         * now serve same-currency transfers as well.
          */
         override fun transferIn(): TransferInService.WithRawResponse = transferIn
 
         /**
-         * Endpoints for transferring funds between internal and external accounts with the same
-         * currency
+         * Deprecated endpoints for transferring funds between internal and external accounts with
+         * the same currency. Use the quote endpoints under Cross-Currency Transfers instead, which
+         * now serve same-currency transfers as well.
          */
         override fun transferOut(): TransferOutService.WithRawResponse = transferOut
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         override fun receiver(): ReceiverService.WithRawResponse = receiver
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
+        override fun paymentDocuments(): PaymentDocumentService.WithRawResponse = paymentDocuments
+
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         override fun quotes(): QuoteService.WithRawResponse = quotes
 
         /** Endpoints for retrieving transaction information */
@@ -376,8 +405,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         /** Endpoints to trigger test cases in sandbox */
         override fun sandbox(): SandboxService.WithRawResponse = sandbox
-
-        override fun umaProviders(): UmaProviderService.WithRawResponse = umaProviders
 
         /** Endpoints to programmatically manage API tokens */
         override fun tokens(): TokenService.WithRawResponse = tokens
@@ -390,7 +417,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         override fun webhooks(): WebhookService.WithRawResponse = webhooks
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         override fun crypto(): CryptoService.WithRawResponse = crypto
 
         /**
@@ -429,7 +459,7 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         /**
          * Card management endpoints. Issue debit cards against an internal account, freeze /
-         * unfreeze, close, manage card funding sources, and list card transactions.
+         * unfreeze, close, manage a card's funding source, and list card transactions.
          */
         override fun cards(): CardService.WithRawResponse = cards
     }

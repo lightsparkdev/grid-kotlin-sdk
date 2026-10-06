@@ -16,10 +16,10 @@ import java.util.Objects
 
 /**
  * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
- * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the Turnkey
- * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP`, where
- * the credential type alone is sufficient because the OTP is delivered out-of-band. OAuth
- * credentials do not use this endpoint; authenticate or reauthenticate them with `POST
+ * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the session-creation
+ * payload the returned challenge is computed from. Ignored for `EMAIL_OTP` and `SMS_OTP`, where the
+ * credential type alone is sufficient because the OTP is delivered out-of-band. OAuth credentials
+ * do not use this endpoint; authenticate or reauthenticate them with `POST
  * /auth/credentials/{id}/verify`.
  */
 class AuthCredentialChallengeRequest
@@ -37,11 +37,14 @@ private constructor(
     ) : this(clientPublicKey, mutableMapOf())
 
     /**
-     * Required for `PASSKEY` credentials. Client-generated P-256 public key, hex-encoded in
-     * uncompressed SEC1 format (`04` prefix followed by the 32-byte X and 32-byte Y coordinates;
-     * 130 hex characters total). The matching private key must remain on the client. Grid bakes
-     * this key into the Turnkey session-creation payload that the returned `challenge` is computed
-     * from, so the resulting session signing key is sealed to the client. Ignored for `EMAIL_OTP`.
+     * Required for `PASSKEY` credentials; the matching private key is retained on the client. Send
+     * a compressed SEC1 key (`02`/`03` prefix followed by the 32-byte X coordinate; 66 hex
+     * characters) for the recommended client-held-key model, where that private key becomes the
+     * session signing key. Send an uncompressed SEC1 key (`04` prefix followed by the 32-byte X and
+     * 32-byte Y coordinates; 130 hex characters) for the deprecated legacy flow, where Grid seals
+     * the session signing key to it instead. Grid bakes this public key into the session-creation
+     * payload that the returned `challenge` is computed from. Ignored for `EMAIL_OTP` and
+     * `SMS_OTP`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -91,12 +94,14 @@ private constructor(
         }
 
         /**
-         * Required for `PASSKEY` credentials. Client-generated P-256 public key, hex-encoded in
-         * uncompressed SEC1 format (`04` prefix followed by the 32-byte X and 32-byte Y
-         * coordinates; 130 hex characters total). The matching private key must remain on the
-         * client. Grid bakes this key into the Turnkey session-creation payload that the returned
-         * `challenge` is computed from, so the resulting session signing key is sealed to the
-         * client. Ignored for `EMAIL_OTP`.
+         * Required for `PASSKEY` credentials; the matching private key is retained on the client.
+         * Send a compressed SEC1 key (`02`/`03` prefix followed by the 32-byte X coordinate; 66 hex
+         * characters) for the recommended client-held-key model, where that private key becomes the
+         * session signing key. Send an uncompressed SEC1 key (`04` prefix followed by the 32-byte X
+         * and 32-byte Y coordinates; 130 hex characters) for the deprecated legacy flow, where Grid
+         * seals the session signing key to it instead. Grid bakes this public key into the
+         * session-creation payload that the returned `challenge` is computed from. Ignored for
+         * `EMAIL_OTP` and `SMS_OTP`.
          */
         fun clientPublicKey(clientPublicKey: String) =
             clientPublicKey(JsonField.of(clientPublicKey))

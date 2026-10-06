@@ -14,12 +14,12 @@ internal class RefundRequestTest {
         val refundRequest =
             RefundRequest.builder()
                 .amount(1500L)
-                .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .cardTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .build()
 
         assertThat(refundRequest.amount()).isEqualTo(1500L)
         assertThat(refundRequest.cardTransactionId())
-            .isEqualTo("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+            .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000100")
     }
 
     @Test
@@ -28,7 +28,7 @@ internal class RefundRequestTest {
         val refundRequest =
             RefundRequest.builder()
                 .amount(1500L)
-                .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .cardTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .build()
 
         val roundtrippedRefundRequest =

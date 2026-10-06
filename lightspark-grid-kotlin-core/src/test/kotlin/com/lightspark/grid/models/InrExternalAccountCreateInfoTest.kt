@@ -37,6 +37,9 @@ internal class InrExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .accountNumber("000111222333")
+                .ifsc("HDFC0001234")
+                .rail("NEFT")
                 .vpa("user@upi")
                 .build()
 
@@ -66,6 +69,9 @@ internal class InrExternalAccountCreateInfoTest {
                         .build()
                 )
             )
+        assertThat(inrExternalAccountCreateInfo.accountNumber()).isEqualTo("000111222333")
+        assertThat(inrExternalAccountCreateInfo.ifsc()).isEqualTo("HDFC0001234")
+        assertThat(inrExternalAccountCreateInfo.rail()).isEqualTo("NEFT")
         assertThat(inrExternalAccountCreateInfo.vpa()).isEqualTo("user@upi")
     }
 
@@ -96,6 +102,9 @@ internal class InrExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .accountNumber("000111222333")
+                .ifsc("HDFC0001234")
+                .rail("NEFT")
                 .vpa("user@upi")
                 .build()
 
