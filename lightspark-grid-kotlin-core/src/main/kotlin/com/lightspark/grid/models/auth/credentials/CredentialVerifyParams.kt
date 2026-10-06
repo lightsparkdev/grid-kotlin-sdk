@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.models.auth.credentials
 
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
@@ -64,10 +63,10 @@ private constructor(
     fun requestId(): String? = requestId
 
     /**
-     * Verify an SMS-OTP credential via the same secure two-leg flow as email OTP. The client
-     * HPKE-encrypts the OTP code (together with its public key) under the
-     * `otpEncryptionTargetBundle` returned from registration or `POST
-     * /auth/credentials/{id}/challenge`, submits the result here, and receives `202` with a
+     * Verify an email-OTP credential via the secure two-leg flow. The client HPKE-encrypts the OTP
+     * code (together with its public key) under the `otpEncryptionTargetBundle` returned from
+     * registration when present, or from `POST /auth/credentials/{id}/challenge` when registration
+     * omitted it or the OTP must be reissued, submits the result here, and receives `202` with a
      * `payloadToSign` containing a login signing message bound to the client's public key. The
      * client stamps the exact UTF-8 bytes of that string, unchanged, with the matching TEK private
      * key and retries this request with `Grid-Wallet-Signature` + `Request-Id` headers to obtain
@@ -75,9 +74,6 @@ private constructor(
      */
     fun authCredentialVerifyRequest(): AuthCredentialVerifyRequestOneOf =
         authCredentialVerifyRequest
-
-    fun _additionalBodyProperties(): Map<String, JsonValue> =
-        authCredentialVerifyRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -128,18 +124,96 @@ private constructor(
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
         /**
-         * Verify an SMS-OTP credential via the same secure two-leg flow as email OTP. The client
-         * HPKE-encrypts the OTP code (together with its public key) under the
-         * `otpEncryptionTargetBundle` returned from registration or `POST
-         * /auth/credentials/{id}/challenge`, submits the result here, and receives `202` with a
-         * `payloadToSign` containing a login signing message bound to the client's public key. The
-         * client stamps the exact UTF-8 bytes of that string, unchanged, with the matching TEK
-         * private key and retries this request with `Grid-Wallet-Signature` + `Request-Id` headers
-         * to obtain the session. Plaintext OTP codes are never sent over the wire.
+         * Verify an email-OTP credential via the secure two-leg flow. The client HPKE-encrypts the
+         * OTP code (together with its public key) under the `otpEncryptionTargetBundle` returned
+         * from registration when present, or from `POST /auth/credentials/{id}/challenge` when
+         * registration omitted it or the OTP must be reissued, submits the result here, and
+         * receives `202` with a `payloadToSign` containing a login signing message bound to the
+         * client's public key. The client stamps the exact UTF-8 bytes of that string, unchanged,
+         * with the matching TEK private key and retries this request with `Grid-Wallet-Signature` +
+         * `Request-Id` headers to obtain the session. Plaintext OTP codes are never sent over the
+         * wire.
          */
         fun authCredentialVerifyRequest(
             authCredentialVerifyRequest: AuthCredentialVerifyRequestOneOf
         ) = apply { this.authCredentialVerifyRequest = authCredentialVerifyRequest }
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequestOneOf.ofEmailOtp(emailOtp)`.
+         */
+        fun authCredentialVerifyRequest(emailOtp: EmailOtpCredentialVerifyRequest) =
+            authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.ofEmailOtp(emailOtp))
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with the following:
+         * ```kotlin
+         * EmailOtpCredentialVerifyRequest.builder()
+         *     .type(EmailOtpCredentialVerifyRequest.Type.EMAIL_OTP)
+         *     .encryptedOtpBundle(encryptedOtpBundle)
+         *     .build()
+         * ```
+         */
+        fun emailOtpAuthCredentialVerifyRequest(encryptedOtpBundle: String) =
+            authCredentialVerifyRequest(
+                EmailOtpCredentialVerifyRequest.builder()
+                    .type(EmailOtpCredentialVerifyRequest.Type.EMAIL_OTP)
+                    .encryptedOtpBundle(encryptedOtpBundle)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequestOneOf.ofSmsOtp(smsOtp)`.
+         */
+        fun authCredentialVerifyRequest(smsOtp: AuthCredentialVerifyRequestOneOf.SmsOtp) =
+            authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.ofSmsOtp(smsOtp))
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with the following:
+         * ```kotlin
+         * AuthCredentialVerifyRequestOneOf.SmsOtp.builder()
+         *     .encryptedOtpBundle(encryptedOtpBundle)
+         *     .build()
+         * ```
+         */
+        fun smsOtpAuthCredentialVerifyRequest(encryptedOtpBundle: String) =
+            authCredentialVerifyRequest(
+                AuthCredentialVerifyRequestOneOf.SmsOtp.builder()
+                    .encryptedOtpBundle(encryptedOtpBundle)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequestOneOf.ofOAuth(oauth)`.
+         */
+        fun authCredentialVerifyRequest(oauth: OAuthCredentialVerifyRequest) =
+            authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.ofOAuth(oauth))
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequestOneOf.ofPasskey(passkey)`.
+         */
+        fun authCredentialVerifyRequest(passkey: PasskeyCredentialVerifyRequest) =
+            authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.ofPasskey(passkey))
+
+        /**
+         * Alias for calling [authCredentialVerifyRequest] with the following:
+         * ```kotlin
+         * PasskeyCredentialVerifyRequest.builder()
+         *     .type(PasskeyCredentialVerifyRequest.Type.PASSKEY)
+         *     .assertion(assertion)
+         *     .build()
+         * ```
+         */
+        fun passkeyAuthCredentialVerifyRequest(assertion: PasskeyAssertion) =
+            authCredentialVerifyRequest(
+                PasskeyCredentialVerifyRequest.builder()
+                    .type(PasskeyCredentialVerifyRequest.Type.PASSKEY)
+                    .assertion(assertion)
+                    .build()
+            )
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
