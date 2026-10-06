@@ -19,9 +19,29 @@ internal class QuoteRequestTest {
                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                 .source(QuoteSourceOneOf.builder().build())
                 .description("Invoice #1234 payment")
+                .documentIds(
+                    listOf(
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                    )
+                )
                 .immediatelyExecute(false)
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .platformFeeOverride(
+                    QuoteRequest.PlatformFeeOverride.builder()
+                        .platformFixedFee(
+                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
+                                .amount(50L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .platformVariableFeeBps(30L)
+                        .build()
+                )
                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
+                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                 .senderCustomerInfo(
                     QuoteRequest.SenderCustomerInfo.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -36,9 +56,29 @@ internal class QuoteRequestTest {
             .isEqualTo(QuoteRequest.LockedCurrencySide.SENDING)
         assertThat(quoteRequest.source()).isEqualTo(QuoteSourceOneOf.builder().build())
         assertThat(quoteRequest.description()).isEqualTo("Invoice #1234 payment")
+        assertThat(quoteRequest.documentIds())
+            .containsExactly(
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+            )
         assertThat(quoteRequest.immediatelyExecute()).isEqualTo(false)
         assertThat(quoteRequest.lookupId()).isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+        assertThat(quoteRequest.platformFeeOverride())
+            .isEqualTo(
+                QuoteRequest.PlatformFeeOverride.builder()
+                    .platformFixedFee(
+                        QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
+                            .amount(50L)
+                            .currency("USD")
+                            .build()
+                    )
+                    .platformVariableFeeBps(30L)
+                    .build()
+            )
         assertThat(quoteRequest.purposeOfPayment()).isEqualTo(QuoteRequest.PurposeOfPayment.GIFT)
+        assertThat(quoteRequest.remittanceInformation()).isEqualTo("12345")
+        assertThat(quoteRequest.scaFactor()).isEqualTo(QuoteRequest.ScaFactor.SMS_OTP)
         assertThat(quoteRequest.senderCustomerInfo())
             .isEqualTo(
                 QuoteRequest.SenderCustomerInfo.builder()
@@ -58,9 +98,29 @@ internal class QuoteRequestTest {
                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                 .source(QuoteSourceOneOf.builder().build())
                 .description("Invoice #1234 payment")
+                .documentIds(
+                    listOf(
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                    )
+                )
                 .immediatelyExecute(false)
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .platformFeeOverride(
+                    QuoteRequest.PlatformFeeOverride.builder()
+                        .platformFixedFee(
+                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
+                                .amount(50L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .platformVariableFeeBps(30L)
+                        .build()
+                )
                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
+                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                 .senderCustomerInfo(
                     QuoteRequest.SenderCustomerInfo.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

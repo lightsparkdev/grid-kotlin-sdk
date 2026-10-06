@@ -17,7 +17,7 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
-import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.services.blocking.sandbox.CardService
 import com.lightspark.grid.services.blocking.sandbox.CardServiceImpl
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
@@ -64,7 +64,7 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
     override fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions,
-    ): OutgoingTransaction =
+    ): Transaction =
         // post /sandbox/send
         withRawResponse().sendFunds(params, requestOptions).parse()
 
@@ -108,13 +108,13 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
 
         override fun cards(): CardService.WithRawResponse = cards
 
-        private val sendFundsHandler: Handler<OutgoingTransaction> =
-            jsonHandler<OutgoingTransaction>(clientOptions.jsonMapper)
+        private val sendFundsHandler: Handler<Transaction> =
+            jsonHandler<Transaction>(clientOptions.jsonMapper)
 
         override fun sendFunds(
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<OutgoingTransaction> {
+        ): HttpResponseFor<Transaction> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

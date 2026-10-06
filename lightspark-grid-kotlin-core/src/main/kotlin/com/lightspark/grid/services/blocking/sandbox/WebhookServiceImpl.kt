@@ -36,7 +36,7 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
         params: WebhookSendTestParams,
         requestOptions: RequestOptions,
     ): TestWebhookResponse =
-        // post /sandbox/webhooks/test
+        // post /webhooks/test
         withRawResponse().sendTest(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -63,7 +63,7 @@ class WebhookServiceImpl internal constructor(private val clientOptions: ClientO
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sandbox", "webhooks", "test")
+                    .addPathSegments("webhooks", "test")
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepare(

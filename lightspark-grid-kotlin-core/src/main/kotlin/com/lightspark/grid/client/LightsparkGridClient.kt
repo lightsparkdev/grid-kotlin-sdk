@@ -14,6 +14,7 @@ import com.lightspark.grid.services.blocking.DiscoveryService
 import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.ExchangeRateService
 import com.lightspark.grid.services.blocking.InvitationService
+import com.lightspark.grid.services.blocking.PaymentDocumentService
 import com.lightspark.grid.services.blocking.PlatformService
 import com.lightspark.grid.services.blocking.QuoteService
 import com.lightspark.grid.services.blocking.ReceiverService
@@ -22,7 +23,6 @@ import com.lightspark.grid.services.blocking.TokenService
 import com.lightspark.grid.services.blocking.TransactionService
 import com.lightspark.grid.services.blocking.TransferInService
 import com.lightspark.grid.services.blocking.TransferOutService
-import com.lightspark.grid.services.blocking.UmaProviderService
 import com.lightspark.grid.services.blocking.VerificationService
 import com.lightspark.grid.services.blocking.WebhookService
 
@@ -74,21 +74,35 @@ interface LightsparkGridClient {
     fun platform(): PlatformService
 
     /**
-     * Endpoints for transferring funds between internal and external accounts with the same
-     * currency
+     * Deprecated endpoints for transferring funds between internal and external accounts with the
+     * same currency. Use the quote endpoints under Cross-Currency Transfers instead, which now
+     * serve same-currency transfers as well.
      */
     fun transferIn(): TransferInService
 
     /**
-     * Endpoints for transferring funds between internal and external accounts with the same
-     * currency
+     * Deprecated endpoints for transferring funds between internal and external accounts with the
+     * same currency. Use the quote endpoints under Cross-Currency Transfers instead, which now
+     * serve same-currency transfers as well.
      */
     fun transferOut(): TransferOutService
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     fun receiver(): ReceiverService
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
+    fun paymentDocuments(): PaymentDocumentService
+
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     fun quotes(): QuoteService
 
     /** Endpoints for retrieving transaction information */
@@ -99,8 +113,6 @@ interface LightsparkGridClient {
 
     /** Endpoints to trigger test cases in sandbox */
     fun sandbox(): SandboxService
-
-    fun umaProviders(): UmaProviderService
 
     /** Endpoints to programmatically manage API tokens */
     fun tokens(): TokenService
@@ -113,7 +125,10 @@ interface LightsparkGridClient {
 
     fun webhooks(): WebhookService
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     fun crypto(): CryptoService
 
     /**
@@ -152,7 +167,7 @@ interface LightsparkGridClient {
 
     /**
      * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
-     * close, manage card funding sources, and list card transactions.
+     * close, manage a card's funding source, and list card transactions.
      */
     fun cards(): CardService
 
@@ -195,21 +210,35 @@ interface LightsparkGridClient {
         fun platform(): PlatformService.WithRawResponse
 
         /**
-         * Endpoints for transferring funds between internal and external accounts with the same
-         * currency
+         * Deprecated endpoints for transferring funds between internal and external accounts with
+         * the same currency. Use the quote endpoints under Cross-Currency Transfers instead, which
+         * now serve same-currency transfers as well.
          */
         fun transferIn(): TransferInService.WithRawResponse
 
         /**
-         * Endpoints for transferring funds between internal and external accounts with the same
-         * currency
+         * Deprecated endpoints for transferring funds between internal and external accounts with
+         * the same currency. Use the quote endpoints under Cross-Currency Transfers instead, which
+         * now serve same-currency transfers as well.
          */
         fun transferOut(): TransferOutService.WithRawResponse
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         fun receiver(): ReceiverService.WithRawResponse
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
+        fun paymentDocuments(): PaymentDocumentService.WithRawResponse
+
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         fun quotes(): QuoteService.WithRawResponse
 
         /** Endpoints for retrieving transaction information */
@@ -220,8 +249,6 @@ interface LightsparkGridClient {
 
         /** Endpoints to trigger test cases in sandbox */
         fun sandbox(): SandboxService.WithRawResponse
-
-        fun umaProviders(): UmaProviderService.WithRawResponse
 
         /** Endpoints to programmatically manage API tokens */
         fun tokens(): TokenService.WithRawResponse
@@ -234,7 +261,10 @@ interface LightsparkGridClient {
 
         fun webhooks(): WebhookService.WithRawResponse
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         fun crypto(): CryptoService.WithRawResponse
 
         /**
@@ -273,7 +303,7 @@ interface LightsparkGridClient {
 
         /**
          * Card management endpoints. Issue debit cards against an internal account, freeze /
-         * unfreeze, close, manage card funding sources, and list card transactions.
+         * unfreeze, close, manage a card's funding source, and list card transactions.
          */
         fun cards(): CardService.WithRawResponse
     }

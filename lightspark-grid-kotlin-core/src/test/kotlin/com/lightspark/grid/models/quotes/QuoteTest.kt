@@ -49,27 +49,33 @@ internal class QuoteTest {
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                         .build()
                 )
+                .documentIds(
+                    listOf(
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                    )
+                )
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .BANK_TRANSFER
-                                )
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .MOBILE_MONEY
-                                )
-                                .reference("UMA-Q12345-REF")
-                                .accountNumber("1234567890")
-                                .bankAccountType(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                        .BankAccountType
-                                        .CHECKING
-                                )
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                .accountHolderName("Acme Exports Pte Ltd")
                                 .bankName("Chase Bank")
-                                .phoneNumber("+50312345678")
+                                .country("NG")
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                        .SWIFT
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                        .SWIFT
+                                )
+                                .swiftCode("DEUTDEFF")
+                                .accountNumber("1234567890")
+                                .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                .iban("GB29NWBK60161331926819")
+                                .reference("UMA-Q12345-REF")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -79,20 +85,19 @@ internal class QuoteTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                .accountHolderName("Acme Exports Pte Ltd")
+                                .bankName("Deutsche Bank")
+                                .country("NG")
                                 .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .BANK_TRANSFER
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                        .SWIFT
                                 )
+                                .swiftCode("DEUTDEFF")
+                                .accountNumber("1234567890")
+                                .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                .iban("GB29NWBK60161331926819")
                                 .reference("UMA-Q12345-REF")
-                                .accountNumber("0123456789")
-                                .bankAccountType(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                        .BankAccountType
-                                        .CHECKING
-                                )
-                                .bankName("Banco Cuscatlan")
-                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -101,6 +106,8 @@ internal class QuoteTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .platformFeesIncluded(5L)
+                .purposeOfPayment(Quote.PurposeOfPayment.GIFT)
                 .rateDetails(
                     OutgoingRateDetails.builder()
                         .counterpartyFixedFee(10L)
@@ -109,6 +116,21 @@ internal class QuoteTest {
                         .gridApiMultiplier(0.925)
                         .gridApiVariableFeeAmount(30L)
                         .gridApiVariableFeeRate(0.003)
+                        .build()
+                )
+                .scaChallenge(
+                    Quote.ScaChallenge.builder()
+                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                        .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                        .addPasskeyAllowedOrigin("https://app.example.com")
+                        .passkeyAssertionOptions(
+                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .purpose("PAYOUT")
                         .build()
                 )
                 .build()
@@ -151,27 +173,33 @@ internal class QuoteTest {
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                     .build()
             )
+        assertThat(quote.documentIds())
+            .containsExactly(
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+            )
         assertThat(quote.paymentInstructions())
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                    .BANK_TRANSFER
-                            )
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                    .MOBILE_MONEY
-                            )
-                            .reference("UMA-Q12345-REF")
-                            .accountNumber("1234567890")
-                            .bankAccountType(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
-                                    .CHECKING
-                            )
+                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                            .accountHolderName("Acme Exports Pte Ltd")
                             .bankName("Chase Bank")
-                            .phoneNumber("+50312345678")
+                            .country("NG")
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                    .SWIFT
+                            )
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                    .SWIFT
+                            )
+                            .swiftCode("DEUTDEFF")
+                            .accountNumber("1234567890")
+                            .bankAddress("12 Marina Boulevard, Singapore 018982")
+                            .iban("GB29NWBK60161331926819")
+                            .reference("UMA-Q12345-REF")
                             .build()
                     )
                     .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -179,19 +207,19 @@ internal class QuoteTest {
                     .build(),
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                            .accountHolderName("Acme Exports Pte Ltd")
+                            .bankName("Deutsche Bank")
+                            .country("NG")
                             .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                    .BANK_TRANSFER
+                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                    .SWIFT
                             )
+                            .swiftCode("DEUTDEFF")
+                            .accountNumber("1234567890")
+                            .bankAddress("12 Marina Boulevard, Singapore 018982")
+                            .iban("GB29NWBK60161331926819")
                             .reference("UMA-Q12345-REF")
-                            .accountNumber("0123456789")
-                            .bankAccountType(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
-                                    .CHECKING
-                            )
-                            .bankName("Banco Cuscatlan")
-                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .instructionsNotes(
@@ -200,6 +228,8 @@ internal class QuoteTest {
                     .isPlatformAccount(true)
                     .build(),
             )
+        assertThat(quote.platformFeesIncluded()).isEqualTo(5L)
+        assertThat(quote.purposeOfPayment()).isEqualTo(Quote.PurposeOfPayment.GIFT)
         assertThat(quote.rateDetails())
             .isEqualTo(
                 OutgoingRateDetails.builder()
@@ -209,6 +239,22 @@ internal class QuoteTest {
                     .gridApiMultiplier(0.925)
                     .gridApiVariableFeeAmount(30L)
                     .gridApiVariableFeeRate(0.003)
+                    .build()
+            )
+        assertThat(quote.scaChallenge())
+            .isEqualTo(
+                Quote.ScaChallenge.builder()
+                    .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                    .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                    .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                    .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                    .addPasskeyAllowedOrigin("https://app.example.com")
+                    .passkeyAssertionOptions(
+                        Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .purpose("PAYOUT")
                     .build()
             )
     }
@@ -252,27 +298,33 @@ internal class QuoteTest {
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                         .build()
                 )
+                .documentIds(
+                    listOf(
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                    )
+                )
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .BANK_TRANSFER
-                                )
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .MOBILE_MONEY
-                                )
-                                .reference("UMA-Q12345-REF")
-                                .accountNumber("1234567890")
-                                .bankAccountType(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                        .BankAccountType
-                                        .CHECKING
-                                )
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                .accountHolderName("Acme Exports Pte Ltd")
                                 .bankName("Chase Bank")
-                                .phoneNumber("+50312345678")
+                                .country("NG")
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                        .SWIFT
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                        .SWIFT
+                                )
+                                .swiftCode("DEUTDEFF")
+                                .accountNumber("1234567890")
+                                .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                .iban("GB29NWBK60161331926819")
+                                .reference("UMA-Q12345-REF")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -282,20 +334,19 @@ internal class QuoteTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                .accountHolderName("Acme Exports Pte Ltd")
+                                .bankName("Deutsche Bank")
+                                .country("NG")
                                 .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .BANK_TRANSFER
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail
+                                        .SWIFT
                                 )
+                                .swiftCode("DEUTDEFF")
+                                .accountNumber("1234567890")
+                                .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                .iban("GB29NWBK60161331926819")
                                 .reference("UMA-Q12345-REF")
-                                .accountNumber("0123456789")
-                                .bankAccountType(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                        .BankAccountType
-                                        .CHECKING
-                                )
-                                .bankName("Banco Cuscatlan")
-                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -304,6 +355,8 @@ internal class QuoteTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .platformFeesIncluded(5L)
+                .purposeOfPayment(Quote.PurposeOfPayment.GIFT)
                 .rateDetails(
                     OutgoingRateDetails.builder()
                         .counterpartyFixedFee(10L)
@@ -312,6 +365,21 @@ internal class QuoteTest {
                         .gridApiMultiplier(0.925)
                         .gridApiVariableFeeAmount(30L)
                         .gridApiVariableFeeRate(0.003)
+                        .build()
+                )
+                .scaChallenge(
+                    Quote.ScaChallenge.builder()
+                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                        .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                        .addPasskeyAllowedOrigin("https://app.example.com")
+                        .passkeyAssertionOptions(
+                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .purpose("PAYOUT")
                         .build()
                 )
                 .build()

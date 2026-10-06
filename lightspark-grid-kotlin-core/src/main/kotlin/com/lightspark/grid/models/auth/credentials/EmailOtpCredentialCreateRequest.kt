@@ -21,6 +21,7 @@ class EmailOtpCredentialCreateRequest
 private constructor(
     private val accountId: JsonField<String>,
     private val type: JsonValue,
+    private val email: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -28,7 +29,8 @@ private constructor(
     private constructor(
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
-    ) : this(accountId, type, mutableMapOf())
+        @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+    ) : this(accountId, type, email, mutableMapOf())
 
     fun toAuthCredentialCreateRequest(): AuthCredentialCreateRequest =
         AuthCredentialCreateRequest.builder().accountId(accountId).type(type).build()
@@ -50,11 +52,26 @@ private constructor(
     @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
     /**
+     * A new email address to register as a replacement credential.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun email(): String? = email.getNullable("email")
+
+    /**
      * Returns the raw JSON value of [accountId].
      *
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
+
+    /**
+     * Returns the raw JSON value of [email].
+     *
+     * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -88,12 +105,14 @@ private constructor(
 
         private var accountId: JsonField<String>? = null
         private var type: JsonValue? = null
+        private var email: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest) =
             apply {
                 accountId = emailOtpCredentialCreateRequest.accountId
                 type = emailOtpCredentialCreateRequest.type
+                email = emailOtpCredentialCreateRequest.email
                 additionalProperties =
                     emailOtpCredentialCreateRequest.additionalProperties.toMutableMap()
             }
@@ -111,6 +130,17 @@ private constructor(
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
         fun type(type: JsonValue) = apply { this.type = type }
+
+        /** A new email address to register as a replacement credential. */
+        fun email(email: String) = email(JsonField.of(email))
+
+        /**
+         * Sets [Builder.email] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.email] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun email(email: JsonField<String>) = apply { this.email = email }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -148,6 +178,7 @@ private constructor(
             EmailOtpCredentialCreateRequest(
                 checkRequired("accountId", accountId),
                 checkRequired("type", type),
+                email,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -168,6 +199,7 @@ private constructor(
         }
 
         accountId()
+        email()
         validated = true
     }
 
@@ -184,7 +216,8 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (if (accountId.asKnown() == null) 0 else 1)
+    internal fun validity(): Int =
+        (if (accountId.asKnown() == null) 0 else 1) + (if (email.asKnown() == null) 0 else 1)
 
     /** Discriminator value identifying this as an email OTP credential. */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -323,13 +356,14 @@ private constructor(
         return other is EmailOtpCredentialCreateRequest &&
             accountId == other.accountId &&
             type == other.type &&
+            email == other.email &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(accountId, type, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(accountId, type, email, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EmailOtpCredentialCreateRequest{accountId=$accountId, type=$type, additionalProperties=$additionalProperties}"
+        "EmailOtpCredentialCreateRequest{accountId=$accountId, type=$type, email=$email, additionalProperties=$additionalProperties}"
 }
