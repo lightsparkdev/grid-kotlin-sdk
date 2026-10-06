@@ -3,8 +3,14 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsentRequest
+import com.lightspark.grid.models.customers.AgreementType
+import com.lightspark.grid.models.customers.ConfirmStatementDeliveryRequest
+import com.lightspark.grid.models.customers.CustomerConfirmStatementDeliveryParams
 import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerListBalanceChangesParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
@@ -14,6 +20,7 @@ import com.lightspark.grid.models.customers.InternalAccountUpdateRequest
 import com.lightspark.grid.models.customers.KycLinkCreateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -45,15 +52,64 @@ internal class CustomerServiceTest {
                             .state("CA")
                             .build()
                     )
+                    .addAgreementConsent(
+                        AgreementConsentRequest.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
+                    .annualIncomeRange(
+                        IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                    )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
+                    .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
+                    .purposeOfAccount(
+                        IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
                     .region("US")
+                    .addSourceOfFundsCategory(
+                        IndividualCustomerCreateRequest.SourceOfFundsCategory.SALARY
+                    )
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.SALARY
+                    )
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -90,7 +146,7 @@ internal class CustomerServiceTest {
                 .build()
         val customerService = client.customers()
 
-        val customerOneOf =
+        val customer =
             customerService.update(
                 CustomerUpdateParams.builder()
                     .customerId("customerId")
@@ -111,19 +167,70 @@ internal class CustomerServiceTest {
                                     .state("CA")
                                     .build()
                             )
+                            .addAgreementConsent(
+                                AgreementConsentRequest.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("2025-10-13")
+                                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                    .build()
+                            )
+                            .annualIncomeRange(
+                                IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                            )
                             .birthDate(LocalDate.parse("1990-01-15"))
+                            .countryOfIssuance("US")
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
+                            .endUserTermsConsent(
+                                IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("V1")
+                                    .build()
+                            )
+                            .expectedMonthlyTransactionCount(
+                                IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
+                                    .COUNT_100_TO_500
+                            )
+                            .expectedMonthlyTransactionVolume(
+                                IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
+                                    .VOLUME_100_K_TO_1_M
+                            )
                             .fullName("John Michael Doe")
+                            .identifier("123-45-6789")
+                            .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                             .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                             .nationality("US")
+                            .netWorthRange(
+                                IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M
+                            )
+                            .pepStatus(IndividualCustomerUpdateRequest.PepStatus.NONE)
+                            .phoneNumber("+14155551234")
+                            .purposeOfAccount(
+                                IndividualCustomerUpdateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                            )
+                            .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                            .addSourceOfFundsCategory(
+                                IndividualCustomerUpdateRequest.SourceOfFundsCategory.SALARY
+                            )
+                            .sourceOfFundsOtherDescription("Contest winnings")
+                            .addSourceOfWealthCategory(
+                                IndividualCustomerUpdateRequest.SourceOfWealthCategory.SALARY
+                            )
+                            .addSourceOfWealthCategory(
+                                IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
+                            )
+                            .sourceOfWealthOtherDescription("Royalty income from published works")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .build()
                     )
                     .build()
             )
 
-        customerOneOf.validate()
+        customer.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -162,6 +269,34 @@ internal class CustomerServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
+    fun confirmStatementDelivery() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerService = client.customers()
+
+        val statementDelivery =
+            customerService.confirmStatementDelivery(
+                CustomerConfirmStatementDeliveryParams.builder()
+                    .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .confirmStatementDeliveryRequest(
+                        ConfirmStatementDeliveryRequest.builder()
+                            .periodStart(LocalDate.parse("2026-09-01"))
+                            .statementDeliveredAt(OffsetDateTime.parse("2026-10-03T14:31:00Z"))
+                            .build()
+                    )
+                    .build()
+            )
+
+        statementDelivery.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
     fun createKycLink() {
         val client =
             LightsparkGridOkHttpClient.builder()
@@ -176,7 +311,6 @@ internal class CustomerServiceTest {
             customerService.createKycLink(
                 CustomerCreateKycLinkParams.builder()
                     .customerId("customerId")
-                    .idempotencyKey("<uuid>")
                     .kycLinkCreateRequest(
                         KycLinkCreateRequest.builder()
                             .redirectUri("https://app.example.com/onboarding/completed")
@@ -200,7 +334,7 @@ internal class CustomerServiceTest {
                 .build()
         val customerService = client.customers()
 
-        val internalAccountExportResponse =
+        val response =
             customerService.export(
                 CustomerExportParams.builder()
                     .id("id")
@@ -218,7 +352,48 @@ internal class CustomerServiceTest {
                     .build()
             )
 
-        internalAccountExportResponse.validate()
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listAgreements() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerService = client.customers()
+
+        val agreementDocumentListResponse = customerService.listAgreements()
+
+        agreementDocumentListResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listBalanceChanges() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerService = client.customers()
+
+        val page =
+            customerService.listBalanceChanges(
+                CustomerListBalanceChangesParams.builder()
+                    .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .build()
+            )
+
+        page.response().validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -236,6 +411,23 @@ internal class CustomerServiceTest {
         val page = customerService.listInternalAccounts()
 
         page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun retrieveEndUserTerms() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerService = client.customers()
+
+        val endUserTerms = customerService.retrieveEndUserTerms()
+
+        endUserTerms.validate()
     }
 
     @Disabled("Mock server tests are disabled")

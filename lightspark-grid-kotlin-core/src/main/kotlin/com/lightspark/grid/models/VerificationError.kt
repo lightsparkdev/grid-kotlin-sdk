@@ -427,6 +427,10 @@ private constructor(
 
             val MISSING_BENEFICIAL_OWNER = of("MISSING_BENEFICIAL_OWNER")
 
+            val MISSING_CONTROL_PERSON = of("MISSING_CONTROL_PERSON")
+
+            val MISSING_GOOD_STANDING_DOCUMENT = of("MISSING_GOOD_STANDING_DOCUMENT")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -452,6 +456,8 @@ private constructor(
             APPLICANT_CRIMINAL_RECORD,
             APPLICANT_REJECTED,
             MISSING_BENEFICIAL_OWNER,
+            MISSING_CONTROL_PERSON,
+            MISSING_GOOD_STANDING_DOCUMENT,
         }
 
         /**
@@ -484,6 +490,8 @@ private constructor(
             APPLICANT_CRIMINAL_RECORD,
             APPLICANT_REJECTED,
             MISSING_BENEFICIAL_OWNER,
+            MISSING_CONTROL_PERSON,
+            MISSING_GOOD_STANDING_DOCUMENT,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -517,6 +525,8 @@ private constructor(
                 APPLICANT_CRIMINAL_RECORD -> Value.APPLICANT_CRIMINAL_RECORD
                 APPLICANT_REJECTED -> Value.APPLICANT_REJECTED
                 MISSING_BENEFICIAL_OWNER -> Value.MISSING_BENEFICIAL_OWNER
+                MISSING_CONTROL_PERSON -> Value.MISSING_CONTROL_PERSON
+                MISSING_GOOD_STANDING_DOCUMENT -> Value.MISSING_GOOD_STANDING_DOCUMENT
                 else -> Value._UNKNOWN
             }
 
@@ -551,6 +561,8 @@ private constructor(
                 APPLICANT_CRIMINAL_RECORD -> Known.APPLICANT_CRIMINAL_RECORD
                 APPLICANT_REJECTED -> Known.APPLICANT_REJECTED
                 MISSING_BENEFICIAL_OWNER -> Known.MISSING_BENEFICIAL_OWNER
+                MISSING_CONTROL_PERSON -> Known.MISSING_CONTROL_PERSON
+                MISSING_GOOD_STANDING_DOCUMENT -> Known.MISSING_GOOD_STANDING_DOCUMENT
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 

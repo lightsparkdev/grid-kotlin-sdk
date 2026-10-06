@@ -16,6 +16,14 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /**
+     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
+     * as top-level optional fields on the customer resource itself; there is no separate EDD
+     * resource. The specific set required for a given customer is driven by the KYC provider's
+     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
+     * on `POST /verifications`).
+     */
     fun createCustomerRequest(): CustomerCreateRequestOneOf = createCustomerRequest
 
     /** Additional headers to send with the request. */
@@ -52,6 +60,14 @@ private constructor(
             additionalQueryParams = customerCreateParams.additionalQueryParams.toBuilder()
         }
 
+        /**
+         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
+         * appear as top-level optional fields on the customer resource itself; there is no separate
+         * EDD resource. The specific set required for a given customer is driven by the KYC
+         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
+         * `MISSING_FIELD` errors on `POST /verifications`).
+         */
         fun createCustomerRequest(createCustomerRequest: CustomerCreateRequestOneOf) = apply {
             this.createCustomerRequest = createCustomerRequest
         }
@@ -69,6 +85,25 @@ private constructor(
          */
         fun createCustomerRequest(business: BusinessCustomerCreateRequest) =
             createCustomerRequest(CustomerCreateRequestOneOf.ofBusiness(business))
+
+        /**
+         * Alias for calling [createCustomerRequest] with the following:
+         * ```kotlin
+         * BusinessCustomerCreateRequest.builder()
+         *     .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+         *     .businessInfo(businessInfo)
+         *     .build()
+         * ```
+         */
+        fun businessCreateCustomerRequest(
+            businessInfo: BusinessCustomerCreateRequest.BusinessInfo
+        ) =
+            createCustomerRequest(
+                BusinessCustomerCreateRequest.builder()
+                    .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+                    .businessInfo(businessInfo)
+                    .build()
+            )
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()

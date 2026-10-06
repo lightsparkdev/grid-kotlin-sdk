@@ -15,7 +15,7 @@ internal class GhsExternalAccountCreateInfoTest {
         val ghsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo.builder()
                 .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Gcb Bank Ltd")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -43,7 +43,7 @@ internal class GhsExternalAccountCreateInfoTest {
 
         assertThat(ghsExternalAccountCreateInfo.accountType())
             .isEqualTo(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-        assertThat(ghsExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(ghsExternalAccountCreateInfo.bankName()).isEqualTo("Gcb Bank Ltd")
         assertThat(ghsExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -78,7 +78,7 @@ internal class GhsExternalAccountCreateInfoTest {
         val ghsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo.builder()
                 .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Gcb Bank Ltd")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)

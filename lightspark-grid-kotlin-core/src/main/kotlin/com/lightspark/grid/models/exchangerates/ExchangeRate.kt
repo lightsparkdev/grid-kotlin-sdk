@@ -98,7 +98,9 @@ private constructor(
     fun _destinationPaymentRail(): JsonValue = destinationPaymentRail
 
     /**
-     * Number of sending currency units per receiving currency unit.
+     * Number of sending currency units per receiving currency unit. The rate is fee-exclusive: it
+     * covers the currency conversion only, and Grid charges `fees` separately rather than pricing
+     * them into the rate.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -327,7 +329,11 @@ private constructor(
             this.destinationPaymentRail = destinationPaymentRail
         }
 
-        /** Number of sending currency units per receiving currency unit. */
+        /**
+         * Number of sending currency units per receiving currency unit. The rate is fee-exclusive:
+         * it covers the currency conversion only, and Grid charges `fees` separately rather than
+         * pricing them into the rate.
+         */
         fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
 
         /**

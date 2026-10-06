@@ -17,11 +17,16 @@ import java.util.Objects
  *
  * The decisioning outcome is controlled by the last three characters of `merchant.descriptor`:
  *
- * | Suffix | Outcome | | ------ | ------- | | `002` | Decline — `INSUFFICIENT_FUNDS` (the pull on
- * the funding source fails) | | `003` | Decline — `CARD_PAUSED` (intended to verify a frozen card
- * refuses auths) | | `005` | Delayed pull (~30s) — exercises the `PENDING → CONFIRMED` path | |
- * `006` | Pull succeeds but the confirmation event reports `FAILED` — exercises the high-urgency
- * `EXCEPTION` alert | | any other | Approved |
+ * | Suffix | Outcome | | ------ | ------- | | `002` | Declined, `cardDeclinedReason:
+ * INSUFFICIENT_FUNDS`. Sandbox only: production approves an underfunded authorization and resolves
+ * it as `EXCEPTION` when the pull fails | | `003` | Declined, `cardDeclinedReason:
+ * CARD_NOT_ACTIVE`. Use against a `FROZEN` card to verify it refuses authorizations | | `005` |
+ * Delayed pull (~30s) — exercises the `PENDING → CONFIRMED` path | | `006` | Pull succeeds but the
+ * confirmation event reports `FAILED` — exercises the high-urgency `EXCEPTION` alert | | any other
+ * | Approved |
+ *
+ * `merchant.descriptor` must be 1–25 characters — the width of the card network's acceptor-name
+ * field. A longer one is rejected with `400` `INVALID_INPUT`.
  *
  * Production returns `404` on this path.
  */
@@ -36,10 +41,13 @@ private constructor(
     fun id(): String? = id
 
     /**
-     * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives the
-     * same internal authorization + reconcile paths that the issuer would call in production. The
-     * decisioning outcome is controlled by the last three characters of `merchant.descriptor` — see
-     * the endpoint documentation for the suffix table.
+     * Sandbox-only request body shared by the card authorization-family simulate endpoints:
+     * `simulate/authorization`, `simulate/credit_authorization`,
+     * `simulate/financial_authorization`, `simulate/financial_credit_authorization`, and
+     * `simulate/credit_authorization_advice`. Drives the same internal authorization + reconcile
+     * paths that the issuer would call in production. The decisioning outcome is controlled by the
+     * last three characters of `merchant.descriptor` — see the `simulate/authorization`
+     * documentation for the suffix table. `merchant.descriptor` must be 1–25 characters.
      */
     fun authorizationRequest(): AuthorizationRequest = authorizationRequest
 
@@ -85,10 +93,14 @@ private constructor(
         fun id(id: String?) = apply { this.id = id }
 
         /**
-         * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives
-         * the same internal authorization + reconcile paths that the issuer would call in
-         * production. The decisioning outcome is controlled by the last three characters of
-         * `merchant.descriptor` — see the endpoint documentation for the suffix table.
+         * Sandbox-only request body shared by the card authorization-family simulate endpoints:
+         * `simulate/authorization`, `simulate/credit_authorization`,
+         * `simulate/financial_authorization`, `simulate/financial_credit_authorization`, and
+         * `simulate/credit_authorization_advice`. Drives the same internal authorization +
+         * reconcile paths that the issuer would call in production. The decisioning outcome is
+         * controlled by the last three characters of `merchant.descriptor` — see the
+         * `simulate/authorization` documentation for the suffix table. `merchant.descriptor` must
+         * be 1–25 characters.
          */
         fun authorizationRequest(authorizationRequest: AuthorizationRequest) = apply {
             this.authorizationRequest = authorizationRequest
