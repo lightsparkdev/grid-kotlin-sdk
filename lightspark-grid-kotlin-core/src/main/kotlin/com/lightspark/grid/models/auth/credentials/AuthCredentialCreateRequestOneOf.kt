@@ -302,7 +302,44 @@ private constructor(
             val json = JsonValue.fromJsonNode(node)
             val type = json.asObject()?.get("type")?.asString()
 
-            when (type) {}
+            when (type) {
+                "EMAIL_OTP" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailOtpCredentialCreateRequest>())
+                        ?.let {
+                            AuthCredentialCreateRequestOneOf(
+                                emailOtpCredentialCreateRequest = it,
+                                _json = json,
+                            )
+                        } ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
+                "SMS_OTP" -> {
+                    return tryDeserialize(node, jacksonTypeRef<SmsOtpCredentialCreateRequest>())
+                        ?.let {
+                            AuthCredentialCreateRequestOneOf(
+                                smsOtpCredentialCreateRequest = it,
+                                _json = json,
+                            )
+                        } ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
+                "OAUTH" -> {
+                    return tryDeserialize(node, jacksonTypeRef<OAuthCredentialCreateRequest>())
+                        ?.let {
+                            AuthCredentialCreateRequestOneOf(
+                                oauthCredentialCreateRequest = it,
+                                _json = json,
+                            )
+                        } ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
+                "PASSKEY" -> {
+                    return tryDeserialize(node, jacksonTypeRef<PasskeyCredentialCreateRequest>())
+                        ?.let {
+                            AuthCredentialCreateRequestOneOf(
+                                passkeyCredentialCreateRequest = it,
+                                _json = json,
+                            )
+                        } ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
+            }
 
             val bestMatches =
                 sequenceOf(
