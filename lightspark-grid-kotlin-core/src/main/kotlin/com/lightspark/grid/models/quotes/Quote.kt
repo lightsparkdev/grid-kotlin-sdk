@@ -36,8 +36,12 @@ private constructor(
     private val totalSendingAmount: JsonField<Long>,
     private val transactionId: JsonField<String>,
     private val counterpartyInformation: JsonField<CounterpartyInformation>,
+    private val documentIds: JsonField<List<String>>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
+    private val platformFeesIncluded: JsonField<Long>,
+    private val purposeOfPayment: JsonField<PurposeOfPayment>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
+    private val scaChallenge: JsonField<ScaChallenge>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -81,12 +85,24 @@ private constructor(
         @JsonProperty("counterpartyInformation")
         @ExcludeMissing
         counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of(),
+        @JsonProperty("documentIds")
+        @ExcludeMissing
+        documentIds: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("paymentInstructions")
         @ExcludeMissing
         paymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
+        @JsonProperty("platformFeesIncluded")
+        @ExcludeMissing
+        platformFeesIncluded: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("purposeOfPayment")
+        @ExcludeMissing
+        purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of(),
         @JsonProperty("rateDetails")
         @ExcludeMissing
         rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
+        @JsonProperty("scaChallenge")
+        @ExcludeMissing
+        scaChallenge: JsonField<ScaChallenge> = JsonMissing.of(),
     ) : this(
         id,
         createdAt,
@@ -102,8 +118,12 @@ private constructor(
         totalSendingAmount,
         transactionId,
         counterpartyInformation,
+        documentIds,
         paymentInstructions,
+        platformFeesIncluded,
+        purposeOfPayment,
         rateDetails,
+        scaChallenge,
         mutableMapOf(),
     )
 
@@ -130,7 +150,9 @@ private constructor(
     fun destination(): QuoteDestinationOneOf = destination.getRequired("destination")
 
     /**
-     * Number of sending currency units per receiving currency unit.
+     * Number of sending currency units per receiving currency unit. The rate is fee-exclusive: Grid
+     * deducts `feesIncluded` from `totalSendingAmount` first, then converts the remainder at this
+     * rate to reach `totalReceivingAmount`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -183,7 +205,10 @@ private constructor(
     fun source(): QuoteSourceOneOf = source.getRequired("source")
 
     /**
-     * Current status of the quote
+     * Current status of the quote. `PENDING_AUTHORIZATION` occurs only for customers in a region
+     * where Strong Customer Authentication is required (e.g. EU): the quote carries an
+     * `scaChallenge` that must be authorized before execution, and for realtime-funding sources
+     * `paymentInstructions` are withheld until it is satisfied.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -226,6 +251,18 @@ private constructor(
         counterpartyInformation.getNullable("counterpartyInformation")
 
     /**
+     * IDs of the supporting documents attached to the payment behind this quote, as passed in
+     * `documentIds` on `POST /quotes`. Present only when the quote was created with `documentIds`.
+     * Grid returns such a quote only after it has attached every document. Call `GET
+     * /payment-documents/{paymentDocumentId}` for each document's details, such as its
+     * `documentType` and its `ATTACHED` status.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun documentIds(): List<String>? = documentIds.getNullable("documentIds")
+
+    /**
      * Payment instructions for executing the payment. This is not required when using an internal
      * account source.
      *
@@ -236,12 +273,43 @@ private constructor(
         paymentInstructions.getNullable("paymentInstructions")
 
     /**
+     * The portion of `feesIncluded` collected by the platform (platform-configured transaction
+     * fees), in the smallest unit of the sending currency. 0 when the platform has no applicable
+     * fee configured. Already included in `feesIncluded`. May be omitted from payloads produced
+     * before platform fees existed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun platformFeesIncluded(): Long? = platformFeesIncluded.getNullable("platformFeesIncluded")
+
+    /**
+     * The purpose of payment the quote was created with. Present only when the quote request set
+     * `purposeOfPayment`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun purposeOfPayment(): PurposeOfPayment? = purposeOfPayment.getNullable("purposeOfPayment")
+
+    /**
      * Details about the rate and fees for the transaction.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
     fun rateDetails(): OutgoingRateDetails? = rateDetails.getNullable("rateDetails")
+
+    /**
+     * Present only while `status` is `PENDING_AUTHORIZATION`: the Strong Customer Authentication
+     * challenge to satisfy before this quote can be executed (or, for realtime-funding sources,
+     * before `paymentInstructions` are issued). Omitted for customers outside SCA-regulated regions
+     * (non-EU).
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun scaChallenge(): ScaChallenge? = scaChallenge.getNullable("scaChallenge")
 
     /**
      * Returns the raw JSON value of [id].
@@ -368,6 +436,15 @@ private constructor(
     fun _counterpartyInformation(): JsonField<CounterpartyInformation> = counterpartyInformation
 
     /**
+     * Returns the raw JSON value of [documentIds].
+     *
+     * Unlike [documentIds], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("documentIds")
+    @ExcludeMissing
+    fun _documentIds(): JsonField<List<String>> = documentIds
+
+    /**
      * Returns the raw JSON value of [paymentInstructions].
      *
      * Unlike [paymentInstructions], this method doesn't throw if the JSON field has an unexpected
@@ -378,6 +455,26 @@ private constructor(
     fun _paymentInstructions(): JsonField<List<PaymentInstructions>> = paymentInstructions
 
     /**
+     * Returns the raw JSON value of [platformFeesIncluded].
+     *
+     * Unlike [platformFeesIncluded], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("platformFeesIncluded")
+    @ExcludeMissing
+    fun _platformFeesIncluded(): JsonField<Long> = platformFeesIncluded
+
+    /**
+     * Returns the raw JSON value of [purposeOfPayment].
+     *
+     * Unlike [purposeOfPayment], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("purposeOfPayment")
+    @ExcludeMissing
+    fun _purposeOfPayment(): JsonField<PurposeOfPayment> = purposeOfPayment
+
+    /**
      * Returns the raw JSON value of [rateDetails].
      *
      * Unlike [rateDetails], this method doesn't throw if the JSON field has an unexpected type.
@@ -385,6 +482,15 @@ private constructor(
     @JsonProperty("rateDetails")
     @ExcludeMissing
     fun _rateDetails(): JsonField<OutgoingRateDetails> = rateDetails
+
+    /**
+     * Returns the raw JSON value of [scaChallenge].
+     *
+     * Unlike [scaChallenge], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("scaChallenge")
+    @ExcludeMissing
+    fun _scaChallenge(): JsonField<ScaChallenge> = scaChallenge
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -440,8 +546,12 @@ private constructor(
         private var totalSendingAmount: JsonField<Long>? = null
         private var transactionId: JsonField<String>? = null
         private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
+        private var documentIds: JsonField<MutableList<String>>? = null
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
+        private var platformFeesIncluded: JsonField<Long> = JsonMissing.of()
+        private var purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
+        private var scaChallenge: JsonField<ScaChallenge> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(quote: Quote) = apply {
@@ -459,8 +569,12 @@ private constructor(
             totalSendingAmount = quote.totalSendingAmount
             transactionId = quote.transactionId
             counterpartyInformation = quote.counterpartyInformation
+            documentIds = quote.documentIds.map { it.toMutableList() }
             paymentInstructions = quote.paymentInstructions.map { it.toMutableList() }
+            platformFeesIncluded = quote.platformFeesIncluded
+            purposeOfPayment = quote.purposeOfPayment
             rateDetails = quote.rateDetails
+            scaChallenge = quote.scaChallenge
             additionalProperties = quote.additionalProperties.toMutableMap()
         }
 
@@ -500,7 +614,11 @@ private constructor(
             this.destination = destination
         }
 
-        /** Number of sending currency units per receiving currency unit. */
+        /**
+         * Number of sending currency units per receiving currency unit. The rate is fee-exclusive:
+         * Grid deducts `feesIncluded` from `totalSendingAmount` first, then converts the remainder
+         * at this rate to reach `totalReceivingAmount`.
+         */
         fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
 
         /**
@@ -590,7 +708,12 @@ private constructor(
          */
         fun source(source: JsonField<QuoteSourceOneOf>) = apply { this.source = source }
 
-        /** Current status of the quote */
+        /**
+         * Current status of the quote. `PENDING_AUTHORIZATION` occurs only for customers in a
+         * region where Strong Customer Authentication is required (e.g. EU): the quote carries an
+         * `scaChallenge` that must be authorized before execution, and for realtime-funding sources
+         * `paymentInstructions` are withheld until it is satisfied.
+         */
         fun status(status: Status) = status(JsonField.of(status))
 
         /**
@@ -671,6 +794,38 @@ private constructor(
             }
 
         /**
+         * IDs of the supporting documents attached to the payment behind this quote, as passed in
+         * `documentIds` on `POST /quotes`. Present only when the quote was created with
+         * `documentIds`. Grid returns such a quote only after it has attached every document. Call
+         * `GET /payment-documents/{paymentDocumentId}` for each document's details, such as its
+         * `documentType` and its `ATTACHED` status.
+         */
+        fun documentIds(documentIds: List<String>) = documentIds(JsonField.of(documentIds))
+
+        /**
+         * Sets [Builder.documentIds] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.documentIds] with a well-typed `List<String>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun documentIds(documentIds: JsonField<List<String>>) = apply {
+            this.documentIds = documentIds.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [String] to [documentIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addDocumentId(documentId: String) = apply {
+            documentIds =
+                (documentIds ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("documentIds", it).add(documentId)
+                }
+        }
+
+        /**
          * Payment instructions for executing the payment. This is not required when using an
          * internal account source.
          */
@@ -700,6 +855,44 @@ private constructor(
                 }
         }
 
+        /**
+         * The portion of `feesIncluded` collected by the platform (platform-configured transaction
+         * fees), in the smallest unit of the sending currency. 0 when the platform has no
+         * applicable fee configured. Already included in `feesIncluded`. May be omitted from
+         * payloads produced before platform fees existed.
+         */
+        fun platformFeesIncluded(platformFeesIncluded: Long) =
+            platformFeesIncluded(JsonField.of(platformFeesIncluded))
+
+        /**
+         * Sets [Builder.platformFeesIncluded] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.platformFeesIncluded] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun platformFeesIncluded(platformFeesIncluded: JsonField<Long>) = apply {
+            this.platformFeesIncluded = platformFeesIncluded
+        }
+
+        /**
+         * The purpose of payment the quote was created with. Present only when the quote request
+         * set `purposeOfPayment`.
+         */
+        fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) =
+            purposeOfPayment(JsonField.of(purposeOfPayment))
+
+        /**
+         * Sets [Builder.purposeOfPayment] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.purposeOfPayment] with a well-typed [PurposeOfPayment]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun purposeOfPayment(purposeOfPayment: JsonField<PurposeOfPayment>) = apply {
+            this.purposeOfPayment = purposeOfPayment
+        }
+
         /** Details about the rate and fees for the transaction. */
         fun rateDetails(rateDetails: OutgoingRateDetails) = rateDetails(JsonField.of(rateDetails))
 
@@ -712,6 +905,25 @@ private constructor(
          */
         fun rateDetails(rateDetails: JsonField<OutgoingRateDetails>) = apply {
             this.rateDetails = rateDetails
+        }
+
+        /**
+         * Present only while `status` is `PENDING_AUTHORIZATION`: the Strong Customer
+         * Authentication challenge to satisfy before this quote can be executed (or, for
+         * realtime-funding sources, before `paymentInstructions` are issued). Omitted for customers
+         * outside SCA-regulated regions (non-EU).
+         */
+        fun scaChallenge(scaChallenge: ScaChallenge) = scaChallenge(JsonField.of(scaChallenge))
+
+        /**
+         * Sets [Builder.scaChallenge] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.scaChallenge] with a well-typed [ScaChallenge] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun scaChallenge(scaChallenge: JsonField<ScaChallenge>) = apply {
+            this.scaChallenge = scaChallenge
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -773,8 +985,12 @@ private constructor(
                 checkRequired("totalSendingAmount", totalSendingAmount),
                 checkRequired("transactionId", transactionId),
                 counterpartyInformation,
+                (documentIds ?: JsonMissing.of()).map { it.toImmutable() },
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
+                platformFeesIncluded,
+                purposeOfPayment,
                 rateDetails,
+                scaChallenge,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -806,8 +1022,12 @@ private constructor(
         totalSendingAmount()
         transactionId()
         counterpartyInformation()?.validate()
+        documentIds()
         paymentInstructions()?.forEach { it.validate() }
+        platformFeesIncluded()
+        purposeOfPayment()?.validate()
         rateDetails()?.validate()
+        scaChallenge()?.validate()
         validated = true
     }
 
@@ -837,10 +1057,19 @@ private constructor(
             (if (totalSendingAmount.asKnown() == null) 0 else 1) +
             (if (transactionId.asKnown() == null) 0 else 1) +
             (counterpartyInformation.asKnown()?.validity() ?: 0) +
+            (documentIds.asKnown()?.size ?: 0) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (rateDetails.asKnown()?.validity() ?: 0)
+            (if (platformFeesIncluded.asKnown() == null) 0 else 1) +
+            (purposeOfPayment.asKnown()?.validity() ?: 0) +
+            (rateDetails.asKnown()?.validity() ?: 0) +
+            (scaChallenge.asKnown()?.validity() ?: 0)
 
-    /** Current status of the quote */
+    /**
+     * Current status of the quote. `PENDING_AUTHORIZATION` occurs only for customers in a region
+     * where Strong Customer Authentication is required (e.g. EU): the quote carries an
+     * `scaChallenge` that must be authorized before execution, and for realtime-funding sources
+     * `paymentInstructions` are withheld until it is satisfied.
+     */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -857,6 +1086,8 @@ private constructor(
 
             val PENDING = of("PENDING")
 
+            val PENDING_AUTHORIZATION = of("PENDING_AUTHORIZATION")
+
             val PROCESSING = of("PROCESSING")
 
             val COMPLETED = of("COMPLETED")
@@ -871,6 +1102,7 @@ private constructor(
         /** An enum containing [Status]'s known values. */
         enum class Known {
             PENDING,
+            PENDING_AUTHORIZATION,
             PROCESSING,
             COMPLETED,
             FAILED,
@@ -888,6 +1120,7 @@ private constructor(
          */
         enum class Value {
             PENDING,
+            PENDING_AUTHORIZATION,
             PROCESSING,
             COMPLETED,
             FAILED,
@@ -906,6 +1139,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 PENDING -> Value.PENDING
+                PENDING_AUTHORIZATION -> Value.PENDING_AUTHORIZATION
                 PROCESSING -> Value.PROCESSING
                 COMPLETED -> Value.COMPLETED
                 FAILED -> Value.FAILED
@@ -925,6 +1159,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 PENDING -> Known.PENDING
+                PENDING_AUTHORIZATION -> Known.PENDING_AUTHORIZATION
                 PROCESSING -> Known.PROCESSING
                 COMPLETED -> Known.COMPLETED
                 FAILED -> Known.FAILED
@@ -1108,6 +1343,1210 @@ private constructor(
             "CounterpartyInformation{additionalProperties=$additionalProperties}"
     }
 
+    /**
+     * The purpose of payment the quote was created with. Present only when the quote request set
+     * `purposeOfPayment`.
+     */
+    class PurposeOfPayment @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val GIFT = of("GIFT")
+
+            val SELF = of("SELF")
+
+            val GOODS_OR_SERVICES = of("GOODS_OR_SERVICES")
+
+            val EDUCATION = of("EDUCATION")
+
+            val HEALTH_OR_MEDICAL = of("HEALTH_OR_MEDICAL")
+
+            val REAL_ESTATE_PURCHASE = of("REAL_ESTATE_PURCHASE")
+
+            val TAX_PAYMENT = of("TAX_PAYMENT")
+
+            val LOAN_PAYMENT = of("LOAN_PAYMENT")
+
+            val UTILITY_BILL = of("UTILITY_BILL")
+
+            val DONATION = of("DONATION")
+
+            val TRAVEL = of("TRAVEL")
+
+            val FAMILY_SUPPORT = of("FAMILY_SUPPORT")
+
+            val SALARY_PAYMENT = of("SALARY_PAYMENT")
+
+            val EXPORTED_GOODS_PREPAYMENT = of("EXPORTED_GOODS_PREPAYMENT")
+
+            val EXPORTED_GOODS_POSTPAYMENT = of("EXPORTED_GOODS_POSTPAYMENT")
+
+            val SERVICE_CHARGES = of("SERVICE_CHARGES")
+
+            val OFFICE_EXPENSES = of("OFFICE_EXPENSES")
+
+            val DELIVERY_FEES = of("DELIVERY_FEES")
+
+            val HOTEL_ACCOMMODATION = of("HOTEL_ACCOMMODATION")
+
+            val COMMISSION_ON_GOODS = of("COMMISSION_ON_GOODS")
+
+            val COMMISSION_ON_SERVICES = of("COMMISSION_ON_SERVICES")
+
+            val ACCOUNTING_SERVICES = of("ACCOUNTING_SERVICES")
+
+            val EXHIBITION_SERVICES = of("EXHIBITION_SERVICES")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = PurposeOfPayment(JsonField.of(value))
+        }
+
+        /** An enum containing [PurposeOfPayment]'s known values. */
+        enum class Known {
+            GIFT,
+            SELF,
+            GOODS_OR_SERVICES,
+            EDUCATION,
+            HEALTH_OR_MEDICAL,
+            REAL_ESTATE_PURCHASE,
+            TAX_PAYMENT,
+            LOAN_PAYMENT,
+            UTILITY_BILL,
+            DONATION,
+            TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
+            EXPORTED_GOODS_PREPAYMENT,
+            EXPORTED_GOODS_POSTPAYMENT,
+            SERVICE_CHARGES,
+            OFFICE_EXPENSES,
+            DELIVERY_FEES,
+            HOTEL_ACCOMMODATION,
+            COMMISSION_ON_GOODS,
+            COMMISSION_ON_SERVICES,
+            ACCOUNTING_SERVICES,
+            EXHIBITION_SERVICES,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [PurposeOfPayment]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [PurposeOfPayment] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            GIFT,
+            SELF,
+            GOODS_OR_SERVICES,
+            EDUCATION,
+            HEALTH_OR_MEDICAL,
+            REAL_ESTATE_PURCHASE,
+            TAX_PAYMENT,
+            LOAN_PAYMENT,
+            UTILITY_BILL,
+            DONATION,
+            TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
+            EXPORTED_GOODS_PREPAYMENT,
+            EXPORTED_GOODS_POSTPAYMENT,
+            SERVICE_CHARGES,
+            OFFICE_EXPENSES,
+            DELIVERY_FEES,
+            HOTEL_ACCOMMODATION,
+            COMMISSION_ON_GOODS,
+            COMMISSION_ON_SERVICES,
+            ACCOUNTING_SERVICES,
+            EXHIBITION_SERVICES,
+            OTHER,
+            /**
+             * An enum member indicating that [PurposeOfPayment] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                GIFT -> Value.GIFT
+                SELF -> Value.SELF
+                GOODS_OR_SERVICES -> Value.GOODS_OR_SERVICES
+                EDUCATION -> Value.EDUCATION
+                HEALTH_OR_MEDICAL -> Value.HEALTH_OR_MEDICAL
+                REAL_ESTATE_PURCHASE -> Value.REAL_ESTATE_PURCHASE
+                TAX_PAYMENT -> Value.TAX_PAYMENT
+                LOAN_PAYMENT -> Value.LOAN_PAYMENT
+                UTILITY_BILL -> Value.UTILITY_BILL
+                DONATION -> Value.DONATION
+                TRAVEL -> Value.TRAVEL
+                FAMILY_SUPPORT -> Value.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Value.SALARY_PAYMENT
+                EXPORTED_GOODS_PREPAYMENT -> Value.EXPORTED_GOODS_PREPAYMENT
+                EXPORTED_GOODS_POSTPAYMENT -> Value.EXPORTED_GOODS_POSTPAYMENT
+                SERVICE_CHARGES -> Value.SERVICE_CHARGES
+                OFFICE_EXPENSES -> Value.OFFICE_EXPENSES
+                DELIVERY_FEES -> Value.DELIVERY_FEES
+                HOTEL_ACCOMMODATION -> Value.HOTEL_ACCOMMODATION
+                COMMISSION_ON_GOODS -> Value.COMMISSION_ON_GOODS
+                COMMISSION_ON_SERVICES -> Value.COMMISSION_ON_SERVICES
+                ACCOUNTING_SERVICES -> Value.ACCOUNTING_SERVICES
+                EXHIBITION_SERVICES -> Value.EXHIBITION_SERVICES
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                GIFT -> Known.GIFT
+                SELF -> Known.SELF
+                GOODS_OR_SERVICES -> Known.GOODS_OR_SERVICES
+                EDUCATION -> Known.EDUCATION
+                HEALTH_OR_MEDICAL -> Known.HEALTH_OR_MEDICAL
+                REAL_ESTATE_PURCHASE -> Known.REAL_ESTATE_PURCHASE
+                TAX_PAYMENT -> Known.TAX_PAYMENT
+                LOAN_PAYMENT -> Known.LOAN_PAYMENT
+                UTILITY_BILL -> Known.UTILITY_BILL
+                DONATION -> Known.DONATION
+                TRAVEL -> Known.TRAVEL
+                FAMILY_SUPPORT -> Known.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Known.SALARY_PAYMENT
+                EXPORTED_GOODS_PREPAYMENT -> Known.EXPORTED_GOODS_PREPAYMENT
+                EXPORTED_GOODS_POSTPAYMENT -> Known.EXPORTED_GOODS_POSTPAYMENT
+                SERVICE_CHARGES -> Known.SERVICE_CHARGES
+                OFFICE_EXPENSES -> Known.OFFICE_EXPENSES
+                DELIVERY_FEES -> Known.DELIVERY_FEES
+                HOTEL_ACCOMMODATION -> Known.HOTEL_ACCOMMODATION
+                COMMISSION_ON_GOODS -> Known.COMMISSION_ON_GOODS
+                COMMISSION_ON_SERVICES -> Known.COMMISSION_ON_SERVICES
+                ACCOUNTING_SERVICES -> Known.ACCOUNTING_SERVICES
+                EXHIBITION_SERVICES -> Known.EXHIBITION_SERVICES
+                OTHER -> Known.OTHER
+                else -> throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PurposeOfPayment = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PurposeOfPayment && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Present only while `status` is `PENDING_AUTHORIZATION`: the Strong Customer Authentication
+     * challenge to satisfy before this quote can be executed (or, for realtime-funding sources,
+     * before `paymentInstructions` are issued). Omitted for customers outside SCA-regulated regions
+     * (non-EU).
+     */
+    class ScaChallenge
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val id: JsonField<String>,
+        private val availableFactors: JsonField<List<AvailableFactor>>,
+        private val expiresAt: JsonField<OffsetDateTime>,
+        private val factor: JsonField<Factor>,
+        private val passkeyAllowedOrigins: JsonField<List<String>>,
+        private val passkeyAssertionOptions: JsonField<PasskeyAssertionOptions>,
+        private val purpose: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("availableFactors")
+            @ExcludeMissing
+            availableFactors: JsonField<List<AvailableFactor>> = JsonMissing.of(),
+            @JsonProperty("expiresAt")
+            @ExcludeMissing
+            expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("factor") @ExcludeMissing factor: JsonField<Factor> = JsonMissing.of(),
+            @JsonProperty("passkeyAllowedOrigins")
+            @ExcludeMissing
+            passkeyAllowedOrigins: JsonField<List<String>> = JsonMissing.of(),
+            @JsonProperty("passkeyAssertionOptions")
+            @ExcludeMissing
+            passkeyAssertionOptions: JsonField<PasskeyAssertionOptions> = JsonMissing.of(),
+            @JsonProperty("purpose") @ExcludeMissing purpose: JsonField<String> = JsonMissing.of(),
+        ) : this(
+            id,
+            availableFactors,
+            expiresAt,
+            factor,
+            passkeyAllowedOrigins,
+            passkeyAssertionOptions,
+            purpose,
+            mutableMapOf(),
+        )
+
+        /**
+         * Unique identifier for this challenge. The server resolves the active challenge from the
+         * quote or transaction being authorized, so this field need not be supplied back; it is
+         * informational (e.g. for logging or correlation).
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun id(): String = id.getRequired("id")
+
+        /**
+         * The factors the customer may use to satisfy this challenge.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun availableFactors(): List<AvailableFactor> =
+            availableFactors.getRequired("availableFactors")
+
+        /**
+         * Absolute UTC timestamp after which this challenge can no longer be authorized.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
+
+        /**
+         * The factor this challenge was issued for. Defaults to `SMS_OTP`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun factor(): Factor = factor.getRequired("factor")
+
+        /**
+         * The origins the WebAuthn ceremony may run against. Populated for enrollment and login
+         * passkey challenges; the origin the assertion is produced against must be one of these and
+         * echoed back as `ScaAuthorization.origin`. Per-transaction passkey challenges omit this
+         * (they carry `passkeyAssertionOptions` only) — see `ScaAuthorization.origin` for how to
+         * source the origin in that case.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun passkeyAllowedOrigins(): List<String>? =
+            passkeyAllowedOrigins.getNullable("passkeyAllowedOrigins")
+
+        /**
+         * Opaque WebAuthn assertion request options (including the relying-party id, challenge, and
+         * allowed credentials), present only when `factor` is `PASSKEY`. Pass to the device's
+         * WebAuthn API to produce the assertion submitted back in
+         * `ScaAuthorization.passkeyAssertion`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun passkeyAssertionOptions(): PasskeyAssertionOptions? =
+            passkeyAssertionOptions.getNullable("passkeyAssertionOptions")
+
+        /**
+         * Optional, informational label for what this particular challenge in the sequence
+         * authorizes — useful for step UX (e.g. "Authorize the currency conversion" vs "Authorize
+         * the payout"). Known values include `CURRENCY_CONVERSION`, `PAYOUT`, and `TRANSFER`, but
+         * the set is **non-exhaustive and may grow** — treat unrecognized values as a generic
+         * authorization step and do not branch program logic on it. Omitted when steps are not
+         * distinguished (e.g. a single-authorization flow).
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun purpose(): String? = purpose.getNullable("purpose")
+
+        /**
+         * Returns the raw JSON value of [id].
+         *
+         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+        /**
+         * Returns the raw JSON value of [availableFactors].
+         *
+         * Unlike [availableFactors], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("availableFactors")
+        @ExcludeMissing
+        fun _availableFactors(): JsonField<List<AvailableFactor>> = availableFactors
+
+        /**
+         * Returns the raw JSON value of [expiresAt].
+         *
+         * Unlike [expiresAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("expiresAt")
+        @ExcludeMissing
+        fun _expiresAt(): JsonField<OffsetDateTime> = expiresAt
+
+        /**
+         * Returns the raw JSON value of [factor].
+         *
+         * Unlike [factor], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("factor") @ExcludeMissing fun _factor(): JsonField<Factor> = factor
+
+        /**
+         * Returns the raw JSON value of [passkeyAllowedOrigins].
+         *
+         * Unlike [passkeyAllowedOrigins], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("passkeyAllowedOrigins")
+        @ExcludeMissing
+        fun _passkeyAllowedOrigins(): JsonField<List<String>> = passkeyAllowedOrigins
+
+        /**
+         * Returns the raw JSON value of [passkeyAssertionOptions].
+         *
+         * Unlike [passkeyAssertionOptions], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("passkeyAssertionOptions")
+        @ExcludeMissing
+        fun _passkeyAssertionOptions(): JsonField<PasskeyAssertionOptions> = passkeyAssertionOptions
+
+        /**
+         * Returns the raw JSON value of [purpose].
+         *
+         * Unlike [purpose], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("purpose") @ExcludeMissing fun _purpose(): JsonField<String> = purpose
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [ScaChallenge].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .id()
+             * .availableFactors()
+             * .expiresAt()
+             * .factor()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [ScaChallenge]. */
+        class Builder internal constructor() {
+
+            private var id: JsonField<String>? = null
+            private var availableFactors: JsonField<MutableList<AvailableFactor>>? = null
+            private var expiresAt: JsonField<OffsetDateTime>? = null
+            private var factor: JsonField<Factor>? = null
+            private var passkeyAllowedOrigins: JsonField<MutableList<String>>? = null
+            private var passkeyAssertionOptions: JsonField<PasskeyAssertionOptions> =
+                JsonMissing.of()
+            private var purpose: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(scaChallenge: ScaChallenge) = apply {
+                id = scaChallenge.id
+                availableFactors = scaChallenge.availableFactors.map { it.toMutableList() }
+                expiresAt = scaChallenge.expiresAt
+                factor = scaChallenge.factor
+                passkeyAllowedOrigins =
+                    scaChallenge.passkeyAllowedOrigins.map { it.toMutableList() }
+                passkeyAssertionOptions = scaChallenge.passkeyAssertionOptions
+                purpose = scaChallenge.purpose
+                additionalProperties = scaChallenge.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Unique identifier for this challenge. The server resolves the active challenge from
+             * the quote or transaction being authorized, so this field need not be supplied back;
+             * it is informational (e.g. for logging or correlation).
+             */
+            fun id(id: String) = id(JsonField.of(id))
+
+            /**
+             * Sets [Builder.id] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.id] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun id(id: JsonField<String>) = apply { this.id = id }
+
+            /** The factors the customer may use to satisfy this challenge. */
+            fun availableFactors(availableFactors: List<AvailableFactor>) =
+                availableFactors(JsonField.of(availableFactors))
+
+            /**
+             * Sets [Builder.availableFactors] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.availableFactors] with a well-typed
+             * `List<AvailableFactor>` value instead. This method is primarily for setting the field
+             * to an undocumented or not yet supported value.
+             */
+            fun availableFactors(availableFactors: JsonField<List<AvailableFactor>>) = apply {
+                this.availableFactors = availableFactors.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [AvailableFactor] to [availableFactors].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addAvailableFactor(availableFactor: AvailableFactor) = apply {
+                availableFactors =
+                    (availableFactors ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("availableFactors", it).add(availableFactor)
+                    }
+            }
+
+            /** Absolute UTC timestamp after which this challenge can no longer be authorized. */
+            fun expiresAt(expiresAt: OffsetDateTime) = expiresAt(JsonField.of(expiresAt))
+
+            /**
+             * Sets [Builder.expiresAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.expiresAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun expiresAt(expiresAt: JsonField<OffsetDateTime>) = apply {
+                this.expiresAt = expiresAt
+            }
+
+            /** The factor this challenge was issued for. Defaults to `SMS_OTP`. */
+            fun factor(factor: Factor) = factor(JsonField.of(factor))
+
+            /**
+             * Sets [Builder.factor] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.factor] with a well-typed [Factor] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun factor(factor: JsonField<Factor>) = apply { this.factor = factor }
+
+            /**
+             * The origins the WebAuthn ceremony may run against. Populated for enrollment and login
+             * passkey challenges; the origin the assertion is produced against must be one of these
+             * and echoed back as `ScaAuthorization.origin`. Per-transaction passkey challenges omit
+             * this (they carry `passkeyAssertionOptions` only) — see `ScaAuthorization.origin` for
+             * how to source the origin in that case.
+             */
+            fun passkeyAllowedOrigins(passkeyAllowedOrigins: List<String>) =
+                passkeyAllowedOrigins(JsonField.of(passkeyAllowedOrigins))
+
+            /**
+             * Sets [Builder.passkeyAllowedOrigins] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.passkeyAllowedOrigins] with a well-typed
+             * `List<String>` value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun passkeyAllowedOrigins(passkeyAllowedOrigins: JsonField<List<String>>) = apply {
+                this.passkeyAllowedOrigins = passkeyAllowedOrigins.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [passkeyAllowedOrigins].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addPasskeyAllowedOrigin(passkeyAllowedOrigin: String) = apply {
+                passkeyAllowedOrigins =
+                    (passkeyAllowedOrigins ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("passkeyAllowedOrigins", it).add(passkeyAllowedOrigin)
+                    }
+            }
+
+            /**
+             * Opaque WebAuthn assertion request options (including the relying-party id, challenge,
+             * and allowed credentials), present only when `factor` is `PASSKEY`. Pass to the
+             * device's WebAuthn API to produce the assertion submitted back in
+             * `ScaAuthorization.passkeyAssertion`.
+             */
+            fun passkeyAssertionOptions(passkeyAssertionOptions: PasskeyAssertionOptions) =
+                passkeyAssertionOptions(JsonField.of(passkeyAssertionOptions))
+
+            /**
+             * Sets [Builder.passkeyAssertionOptions] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.passkeyAssertionOptions] with a well-typed
+             * [PasskeyAssertionOptions] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
+             */
+            fun passkeyAssertionOptions(
+                passkeyAssertionOptions: JsonField<PasskeyAssertionOptions>
+            ) = apply { this.passkeyAssertionOptions = passkeyAssertionOptions }
+
+            /**
+             * Optional, informational label for what this particular challenge in the sequence
+             * authorizes — useful for step UX (e.g. "Authorize the currency conversion" vs
+             * "Authorize the payout"). Known values include `CURRENCY_CONVERSION`, `PAYOUT`, and
+             * `TRANSFER`, but the set is **non-exhaustive and may grow** — treat unrecognized
+             * values as a generic authorization step and do not branch program logic on it. Omitted
+             * when steps are not distinguished (e.g. a single-authorization flow).
+             */
+            fun purpose(purpose: String?) = purpose(JsonField.ofNullable(purpose))
+
+            /**
+             * Sets [Builder.purpose] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.purpose] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun purpose(purpose: JsonField<String>) = apply { this.purpose = purpose }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [ScaChallenge].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .id()
+             * .availableFactors()
+             * .expiresAt()
+             * .factor()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): ScaChallenge =
+                ScaChallenge(
+                    checkRequired("id", id),
+                    checkRequired("availableFactors", availableFactors).map { it.toImmutable() },
+                    checkRequired("expiresAt", expiresAt),
+                    checkRequired("factor", factor),
+                    (passkeyAllowedOrigins ?: JsonMissing.of()).map { it.toImmutable() },
+                    passkeyAssertionOptions,
+                    purpose,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): ScaChallenge = apply {
+            if (validated) {
+                return@apply
+            }
+
+            id()
+            availableFactors().forEach { it.validate() }
+            expiresAt()
+            factor().validate()
+            passkeyAllowedOrigins()
+            passkeyAssertionOptions()?.validate()
+            purpose()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (id.asKnown() == null) 0 else 1) +
+                (availableFactors.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+                (if (expiresAt.asKnown() == null) 0 else 1) +
+                (factor.asKnown()?.validity() ?: 0) +
+                (passkeyAllowedOrigins.asKnown()?.size ?: 0) +
+                (passkeyAssertionOptions.asKnown()?.validity() ?: 0) +
+                (if (purpose.asKnown() == null) 0 else 1)
+
+        /**
+         * A Strong Customer Authentication factor.
+         *
+         * |Factor   |Description                                                                                                                                      |
+         * |---------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`SMS_OTP`|One-time code sent by SMS to the customer's verified phone. Requires no prior enrollment.                                                        |
+         * |`TOTP`   |Time-based one-time code from an authenticator app. Requires enrollment. Not valid for per-transaction challenges (cannot carry dynamic linking).|
+         * |`PASSKEY`|WebAuthn passkey assertion. Requires enrollment.                                                                                                 |
+         */
+        class AvailableFactor
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val SMS_OTP = of("SMS_OTP")
+
+                val TOTP = of("TOTP")
+
+                val PASSKEY = of("PASSKEY")
+
+                fun of(value: String) = AvailableFactor(JsonField.of(value))
+            }
+
+            /** An enum containing [AvailableFactor]'s known values. */
+            enum class Known {
+                SMS_OTP,
+                TOTP,
+                PASSKEY,
+            }
+
+            /**
+             * An enum containing [AvailableFactor]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AvailableFactor] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                SMS_OTP,
+                TOTP,
+                PASSKEY,
+                /**
+                 * An enum member indicating that [AvailableFactor] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    SMS_OTP -> Value.SMS_OTP
+                    TOTP -> Value.TOTP
+                    PASSKEY -> Value.PASSKEY
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    SMS_OTP -> Known.SMS_OTP
+                    TOTP -> Known.TOTP
+                    PASSKEY -> Known.PASSKEY
+                    else ->
+                        throw LightsparkGridInvalidDataException("Unknown AvailableFactor: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): AvailableFactor = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AvailableFactor && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** The factor this challenge was issued for. Defaults to `SMS_OTP`. */
+        class Factor @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val SMS_OTP = of("SMS_OTP")
+
+                val TOTP = of("TOTP")
+
+                val PASSKEY = of("PASSKEY")
+
+                fun of(value: String) = Factor(JsonField.of(value))
+            }
+
+            /** An enum containing [Factor]'s known values. */
+            enum class Known {
+                SMS_OTP,
+                TOTP,
+                PASSKEY,
+            }
+
+            /**
+             * An enum containing [Factor]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Factor] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                SMS_OTP,
+                TOTP,
+                PASSKEY,
+                /**
+                 * An enum member indicating that [Factor] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    SMS_OTP -> Value.SMS_OTP
+                    TOTP -> Value.TOTP
+                    PASSKEY -> Value.PASSKEY
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    SMS_OTP -> Known.SMS_OTP
+                    TOTP -> Known.TOTP
+                    PASSKEY -> Known.PASSKEY
+                    else -> throw LightsparkGridInvalidDataException("Unknown Factor: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Factor = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Factor && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /**
+         * Opaque WebAuthn assertion request options (including the relying-party id, challenge, and
+         * allowed credentials), present only when `factor` is `PASSKEY`. Pass to the device's
+         * WebAuthn API to produce the assertion submitted back in
+         * `ScaAuthorization.passkeyAssertion`.
+         */
+        class PasskeyAssertionOptions
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [PasskeyAssertionOptions].
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [PasskeyAssertionOptions]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(passkeyAssertionOptions: PasskeyAssertionOptions) = apply {
+                    additionalProperties =
+                        passkeyAssertionOptions.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [PasskeyAssertionOptions].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): PasskeyAssertionOptions =
+                    PasskeyAssertionOptions(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): PasskeyAssertionOptions = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is PasskeyAssertionOptions &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "PasskeyAssertionOptions{additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ScaChallenge &&
+                id == other.id &&
+                availableFactors == other.availableFactors &&
+                expiresAt == other.expiresAt &&
+                factor == other.factor &&
+                passkeyAllowedOrigins == other.passkeyAllowedOrigins &&
+                passkeyAssertionOptions == other.passkeyAssertionOptions &&
+                purpose == other.purpose &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                id,
+                availableFactors,
+                expiresAt,
+                factor,
+                passkeyAllowedOrigins,
+                passkeyAssertionOptions,
+                purpose,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "ScaChallenge{id=$id, availableFactors=$availableFactors, expiresAt=$expiresAt, factor=$factor, passkeyAllowedOrigins=$passkeyAllowedOrigins, passkeyAssertionOptions=$passkeyAssertionOptions, purpose=$purpose, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -1128,8 +2567,12 @@ private constructor(
             totalSendingAmount == other.totalSendingAmount &&
             transactionId == other.transactionId &&
             counterpartyInformation == other.counterpartyInformation &&
+            documentIds == other.documentIds &&
             paymentInstructions == other.paymentInstructions &&
+            platformFeesIncluded == other.platformFeesIncluded &&
+            purposeOfPayment == other.purposeOfPayment &&
             rateDetails == other.rateDetails &&
+            scaChallenge == other.scaChallenge &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1149,8 +2592,12 @@ private constructor(
             totalSendingAmount,
             transactionId,
             counterpartyInformation,
+            documentIds,
             paymentInstructions,
+            platformFeesIncluded,
+            purposeOfPayment,
             rateDetails,
+            scaChallenge,
             additionalProperties,
         )
     }
@@ -1158,5 +2605,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
+        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, documentIds=$documentIds, paymentInstructions=$paymentInstructions, platformFeesIncluded=$platformFeesIncluded, purposeOfPayment=$purposeOfPayment, rateDetails=$rateDetails, scaChallenge=$scaChallenge, additionalProperties=$additionalProperties}"
 }

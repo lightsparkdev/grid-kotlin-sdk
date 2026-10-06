@@ -15,7 +15,7 @@ internal class IdrExternalAccountInfoTest {
         val idrExternalAccountInfo =
             IdrExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("IDR_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Bank Central Asia"))
+                .putAdditionalProperty("bankName", JsonValue.from("Bank Central Asia (BCA)"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("CENAIDJA"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+6281234567890"))
@@ -28,7 +28,7 @@ internal class IdrExternalAccountInfoTest {
         val idrExternalAccountInfo =
             IdrExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("IDR_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Bank Central Asia"))
+                .putAdditionalProperty("bankName", JsonValue.from("Bank Central Asia (BCA)"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("CENAIDJA"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+6281234567890"))

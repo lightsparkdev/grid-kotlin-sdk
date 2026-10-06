@@ -15,6 +15,40 @@ internal class PlatformConfigUpdateRequestTest {
     fun create() {
         val platformConfigUpdateRequest =
             PlatformConfigUpdateRequest.builder()
+                .cardConfigs(
+                    PlatformConfigUpdateRequest.CardConfigs.builder()
+                        .maxSpendPerDay(50000L)
+                        .maxSpendPerTransaction(10000L)
+                        .maxTransactionsPerDay(50)
+                        .panRevealCssUrl("https://acme.com/card-reveal.css")
+                        .pinTargetOrigin("https://app.example.com")
+                        .build()
+                )
+                .cardTokenization2faConfig(
+                    PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                        .displayName("Acme")
+                        .email(
+                            PlatformConfigUpdateRequest.CardTokenization2faConfig.Email.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .fromAddress("cards@acme.com")
+                                .fromName("Acme Cards")
+                                .replyToAddress("support@acme.com")
+                                .subject("Your Acme card verification code")
+                                .build()
+                        )
+                        .logoUrl("https://acme.com/card-email-logo.png")
+                        .sms(
+                            PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                .build()
+                        )
+                        .build()
+                )
                 .embeddedWalletConfig(
                     EmbeddedWalletConfig.builder()
                         .alphanumeric(false)
@@ -25,6 +59,19 @@ internal class PlatformConfigUpdateRequestTest {
                         .replyToEmailAddress("support@acme.com")
                         .sendFromEmailAddress("noreply@acme.com")
                         .sendFromEmailSenderName("Acme Notifications")
+                        .build()
+                )
+                .addFeeConfig(
+                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                        .fixedFee(
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.FixedFee
+                                .builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
                         .build()
                 )
                 .addSupportedCurrency(
@@ -64,6 +111,42 @@ internal class PlatformConfigUpdateRequestTest {
                 .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
                 .build()
 
+        assertThat(platformConfigUpdateRequest.cardConfigs())
+            .isEqualTo(
+                PlatformConfigUpdateRequest.CardConfigs.builder()
+                    .maxSpendPerDay(50000L)
+                    .maxSpendPerTransaction(10000L)
+                    .maxTransactionsPerDay(50)
+                    .panRevealCssUrl("https://acme.com/card-reveal.css")
+                    .pinTargetOrigin("https://app.example.com")
+                    .build()
+            )
+        assertThat(platformConfigUpdateRequest.cardTokenization2faConfig())
+            .isEqualTo(
+                PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                    .displayName("Acme")
+                    .email(
+                        PlatformConfigUpdateRequest.CardTokenization2faConfig.Email.builder()
+                            .bodyText(
+                                "Use this code to finish adding your Acme card to your digital wallet."
+                            )
+                            .fromAddress("cards@acme.com")
+                            .fromName("Acme Cards")
+                            .replyToAddress("support@acme.com")
+                            .subject("Your Acme card verification code")
+                            .build()
+                    )
+                    .logoUrl("https://acme.com/card-email-logo.png")
+                    .sms(
+                        PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms.builder()
+                            .bodyText(
+                                "Use this code to finish adding your Acme card to your digital wallet."
+                            )
+                            .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(platformConfigUpdateRequest.embeddedWalletConfig())
             .isEqualTo(
                 EmbeddedWalletConfig.builder()
@@ -76,6 +159,22 @@ internal class PlatformConfigUpdateRequestTest {
                     .sendFromEmailAddress("noreply@acme.com")
                     .sendFromEmailSenderName("Acme Notifications")
                     .build()
+            )
+        assertThat(platformConfigUpdateRequest.feeConfigs())
+            .containsExactly(
+                PlatformConfigUpdateRequest.FeeConfig.ofCrossCurrencyTransaction(
+                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                        .fixedFee(
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.FixedFee
+                                .builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
+                        .build()
+                )
             )
         assertThat(platformConfigUpdateRequest.supportedCurrencies())
             .containsExactly(
@@ -119,6 +218,40 @@ internal class PlatformConfigUpdateRequestTest {
         val jsonMapper = jsonMapper()
         val platformConfigUpdateRequest =
             PlatformConfigUpdateRequest.builder()
+                .cardConfigs(
+                    PlatformConfigUpdateRequest.CardConfigs.builder()
+                        .maxSpendPerDay(50000L)
+                        .maxSpendPerTransaction(10000L)
+                        .maxTransactionsPerDay(50)
+                        .panRevealCssUrl("https://acme.com/card-reveal.css")
+                        .pinTargetOrigin("https://app.example.com")
+                        .build()
+                )
+                .cardTokenization2faConfig(
+                    PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                        .displayName("Acme")
+                        .email(
+                            PlatformConfigUpdateRequest.CardTokenization2faConfig.Email.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .fromAddress("cards@acme.com")
+                                .fromName("Acme Cards")
+                                .replyToAddress("support@acme.com")
+                                .subject("Your Acme card verification code")
+                                .build()
+                        )
+                        .logoUrl("https://acme.com/card-email-logo.png")
+                        .sms(
+                            PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                .build()
+                        )
+                        .build()
+                )
                 .embeddedWalletConfig(
                     EmbeddedWalletConfig.builder()
                         .alphanumeric(false)
@@ -129,6 +262,19 @@ internal class PlatformConfigUpdateRequestTest {
                         .replyToEmailAddress("support@acme.com")
                         .sendFromEmailAddress("noreply@acme.com")
                         .sendFromEmailSenderName("Acme Notifications")
+                        .build()
+                )
+                .addFeeConfig(
+                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                        .fixedFee(
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.FixedFee
+                                .builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
                         .build()
                 )
                 .addSupportedCurrency(

@@ -11,8 +11,9 @@ import java.util.Objects
 
 /**
  * Simulate a merchant-initiated `RETURN` against an existing settled card transaction in the
- * sandbox environment. Creates a `CardRefund` on the parent and either flips the parent to
- * `REFUNDED` (full refund) or keeps it `SETTLED` with a non-zero `refundedAmount` (partial refund).
+ * sandbox environment. Creates a `CardRefund` and posts the return as its own dated `CREDIT`
+ * `CardTransaction` linked to the purchase via `originalTransactionId`; the purchase keeps its
+ * `SETTLED` status, whether the return is full or partial.
  *
  * Production returns `404` on this path.
  */
@@ -28,8 +29,9 @@ private constructor(
 
     /**
      * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/return`. Drives a `RETURN`
-     * event against an existing settled `CardTransaction`, which creates a `CardRefund` and pushes
-     * the parent transaction towards `REFUNDED` (full) or keeps it `SETTLED` (partial).
+     * event against an existing settled `CardTransaction`, which creates a `CardRefund` and posts
+     * the return as its own dated `CREDIT` `CardTransaction` linked to the purchase via
+     * `originalTransactionId`.
      */
     fun refundRequest(): RefundRequest = refundRequest
 
@@ -76,8 +78,8 @@ private constructor(
         /**
          * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/return`. Drives a
          * `RETURN` event against an existing settled `CardTransaction`, which creates a
-         * `CardRefund` and pushes the parent transaction towards `REFUNDED` (full) or keeps it
-         * `SETTLED` (partial).
+         * `CardRefund` and posts the return as its own dated `CREDIT` `CardTransaction` linked to
+         * the purchase via `originalTransactionId`.
          */
         fun refundRequest(refundRequest: RefundRequest) = apply {
             this.refundRequest = refundRequest

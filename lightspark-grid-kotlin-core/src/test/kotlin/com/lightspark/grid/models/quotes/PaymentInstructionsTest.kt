@@ -14,19 +14,18 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                        .accountHolderName("Acme Exports Pte Ltd")
+                        .bankName("Deutsche Bank")
+                        .country("NG")
                         .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                .BANK_TRANSFER
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail.SWIFT
                         )
+                        .swiftCode("DEUTDEFF")
+                        .accountNumber("1234567890")
+                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                        .iban("GB29NWBK60161331926819")
                         .reference("UMA-Q12345-REF")
-                        .accountNumber("0123456789")
-                        .bankAccountType(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
-                                .CHECKING
-                        )
-                        .bankName("Banco Cuscatlan")
-                        .phoneNumber("+50312345678")
                         .build()
                 )
                 .instructionsNotes(
@@ -37,20 +36,19 @@ internal class PaymentInstructionsTest {
 
         assertThat(paymentInstructions.accountOrWalletInfo())
             .isEqualTo(
-                PaymentInstructions.AccountOrWalletInfo.ofSlvAccount(
-                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                PaymentInstructions.AccountOrWalletInfo.ofSwiftAccount(
+                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                        .accountHolderName("Acme Exports Pte Ltd")
+                        .bankName("Deutsche Bank")
+                        .country("NG")
                         .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                .BANK_TRANSFER
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail.SWIFT
                         )
+                        .swiftCode("DEUTDEFF")
+                        .accountNumber("1234567890")
+                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                        .iban("GB29NWBK60161331926819")
                         .reference("UMA-Q12345-REF")
-                        .accountNumber("0123456789")
-                        .bankAccountType(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
-                                .CHECKING
-                        )
-                        .bankName("Banco Cuscatlan")
-                        .phoneNumber("+50312345678")
                         .build()
                 )
             )
@@ -67,19 +65,18 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                        .accountHolderName("Acme Exports Pte Ltd")
+                        .bankName("Deutsche Bank")
+                        .country("NG")
                         .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                .BANK_TRANSFER
+                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail.SWIFT
                         )
+                        .swiftCode("DEUTDEFF")
+                        .accountNumber("1234567890")
+                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                        .iban("GB29NWBK60161331926819")
                         .reference("UMA-Q12345-REF")
-                        .accountNumber("0123456789")
-                        .bankAccountType(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
-                                .CHECKING
-                        )
-                        .bankName("Banco Cuscatlan")
-                        .phoneNumber("+50312345678")
                         .build()
                 )
                 .instructionsNotes(

@@ -51,7 +51,7 @@ private constructor(
 
     /**
      * The blockchain network for the withdrawal. Example values: SOLANA, ETHEREUM, BASE, POLYGON,
-     * SPARK, LIGHTNING, BITCOIN.
+     * ARBITRUM, SPARK, LIGHTNING, BITCOIN.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -189,7 +189,7 @@ private constructor(
 
         /**
          * The blockchain network for the withdrawal. Example values: SOLANA, ETHEREUM, BASE,
-         * POLYGON, SPARK, LIGHTNING, BITCOIN.
+         * POLYGON, ARBITRUM, SPARK, LIGHTNING, BITCOIN.
          */
         fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
 

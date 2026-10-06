@@ -17,10 +17,16 @@ import java.util.Objects
  * Retrieve a paginated list of transactions with optional filtering. The transactions can be
  * filtered by customer ID, platform customer ID, UMA address, date range, status, and transaction
  * type.
+ *
+ * Card transactions are included and identified by `type: CARD`. In Sandbox this is how you
+ * discover a `CardTransaction` id after simulating an authorization — list the transactions, take
+ * the card transaction's `id`, and pass it as the `cardTransactionId` to the clearing and return
+ * simulate endpoints.
  */
 class TransactionListParams
 private constructor(
     private val accountIdentifier: String?,
+    private val cardId: String?,
     private val cursor: String?,
     private val customerId: String?,
     private val endDate: OffsetDateTime?,
@@ -39,6 +45,13 @@ private constructor(
 
     /** Filter by account identifier (matches either sender or receiver) */
     fun accountIdentifier(): String? = accountIdentifier
+
+    /**
+     * Filter to card transactions made on a single card. Accepts a `Card:` LSID or a bare UUID.
+     * Only card transactions match, so this implies `type=CARD` and can be combined with
+     * `customerId` to list one card of a multi-card cardholder.
+     */
+    fun cardId(): String? = cardId
 
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
@@ -76,20 +89,21 @@ private constructor(
     /**
      * Status of a payment transaction.
      *
-     * |Status      |Description                                                                                       |
-     * |------------|--------------------------------------------------------------------------------------------------|
-     * |`CREATED`   |Initial lookup has been created                                                                   |
-     * |`PENDING`   |Quote has been created                                                                            |
-     * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-     * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
-     * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
-     * |`FAILED`    |An error occurred during payment                                                                  |
-     * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
-     * |`EXPIRED`   |Quote has expired                                                                                 |
+     * |Status                 |Description                                                                                                                                                                                                                                                                                                            |
+     * |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`CREATED`              |Initial lookup has been created                                                                                                                                                                                                                                                                                        |
+     * |`PENDING`              |Quote has been created                                                                                                                                                                                                                                                                                                 |
+     * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU). The challenge is carried by the quote, not the transaction — fetch `GET /quotes/{quoteId}` using the transaction's `quoteId`, then authorize its `scaChallenge` via `POST /quotes/{quoteId}/authorize`.|
+     * |`PROCESSING`           |Funding has been received and payment initiated                                                                                                                                                                                                                                                                        |
+     * |`COMPLETED`            |Cross border payment has been received, converted and payment has been sent to the offramp network                                                                                                                                                                                                                     |
+     * |`REJECTED`             |Receiving institution or wallet rejected payment, payment has been refunded                                                                                                                                                                                                                                            |
+     * |`FAILED`               |An error occurred during payment                                                                                                                                                                                                                                                                                       |
+     * |`REFUNDED`             |Payment was unable to complete and refunded                                                                                                                                                                                                                                                                            |
+     * |`EXPIRED`              |Quote has expired                                                                                                                                                                                                                                                                                                      |
      */
     fun status(): TransactionStatus? = status
 
-    /** Type of transaction (incoming payment or outgoing payment) */
+    /** Type of transaction */
     fun type(): TransactionType? = type
 
     /** Additional headers to send with the request. */
@@ -112,6 +126,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountIdentifier: String? = null
+        private var cardId: String? = null
         private var cursor: String? = null
         private var customerId: String? = null
         private var endDate: OffsetDateTime? = null
@@ -129,6 +144,7 @@ private constructor(
 
         internal fun from(transactionListParams: TransactionListParams) = apply {
             accountIdentifier = transactionListParams.accountIdentifier
+            cardId = transactionListParams.cardId
             cursor = transactionListParams.cursor
             customerId = transactionListParams.customerId
             endDate = transactionListParams.endDate
@@ -149,6 +165,13 @@ private constructor(
         fun accountIdentifier(accountIdentifier: String?) = apply {
             this.accountIdentifier = accountIdentifier
         }
+
+        /**
+         * Filter to card transactions made on a single card. Accepts a `Card:` LSID or a bare UUID.
+         * Only card transactions match, so this implies `type=CARD` and can be combined with
+         * `customerId` to list one card of a multi-card cardholder.
+         */
+        fun cardId(cardId: String?) = apply { this.cardId = cardId }
 
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
@@ -199,20 +222,21 @@ private constructor(
         /**
          * Status of a payment transaction.
          *
-         * |Status      |Description                                                                                       |
-         * |------------|--------------------------------------------------------------------------------------------------|
-         * |`CREATED`   |Initial lookup has been created                                                                   |
-         * |`PENDING`   |Quote has been created                                                                            |
-         * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-         * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
-         * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
-         * |`FAILED`    |An error occurred during payment                                                                  |
-         * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
-         * |`EXPIRED`   |Quote has expired                                                                                 |
+         * |Status                 |Description                                                                                                                                                                                                                                                                                                            |
+         * |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`CREATED`              |Initial lookup has been created                                                                                                                                                                                                                                                                                        |
+         * |`PENDING`              |Quote has been created                                                                                                                                                                                                                                                                                                 |
+         * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU). The challenge is carried by the quote, not the transaction — fetch `GET /quotes/{quoteId}` using the transaction's `quoteId`, then authorize its `scaChallenge` via `POST /quotes/{quoteId}/authorize`.|
+         * |`PROCESSING`           |Funding has been received and payment initiated                                                                                                                                                                                                                                                                        |
+         * |`COMPLETED`            |Cross border payment has been received, converted and payment has been sent to the offramp network                                                                                                                                                                                                                     |
+         * |`REJECTED`             |Receiving institution or wallet rejected payment, payment has been refunded                                                                                                                                                                                                                                            |
+         * |`FAILED`               |An error occurred during payment                                                                                                                                                                                                                                                                                       |
+         * |`REFUNDED`             |Payment was unable to complete and refunded                                                                                                                                                                                                                                                                            |
+         * |`EXPIRED`              |Quote has expired                                                                                                                                                                                                                                                                                                      |
          */
         fun status(status: TransactionStatus?) = apply { this.status = status }
 
-        /** Type of transaction (incoming payment or outgoing payment) */
+        /** Type of transaction */
         fun type(type: TransactionType?) = apply { this.type = type }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -321,6 +345,7 @@ private constructor(
         fun build(): TransactionListParams =
             TransactionListParams(
                 accountIdentifier,
+                cardId,
                 cursor,
                 customerId,
                 endDate,
@@ -344,6 +369,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 accountIdentifier?.let { put("accountIdentifier", it) }
+                cardId?.let { put("cardId", it) }
                 cursor?.let { put("cursor", it) }
                 customerId?.let { put("customerId", it) }
                 endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
@@ -506,6 +532,7 @@ private constructor(
 
         return other is TransactionListParams &&
             accountIdentifier == other.accountIdentifier &&
+            cardId == other.cardId &&
             cursor == other.cursor &&
             customerId == other.customerId &&
             endDate == other.endDate &&
@@ -525,6 +552,7 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             accountIdentifier,
+            cardId,
             cursor,
             customerId,
             endDate,
@@ -542,5 +570,5 @@ private constructor(
         )
 
     override fun toString() =
-        "TransactionListParams{accountIdentifier=$accountIdentifier, cursor=$cursor, customerId=$customerId, endDate=$endDate, limit=$limit, platformCustomerId=$platformCustomerId, receiverAccountIdentifier=$receiverAccountIdentifier, reference=$reference, senderAccountIdentifier=$senderAccountIdentifier, sortOrder=$sortOrder, startDate=$startDate, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "TransactionListParams{accountIdentifier=$accountIdentifier, cardId=$cardId, cursor=$cursor, customerId=$customerId, endDate=$endDate, limit=$limit, platformCustomerId=$platformCustomerId, receiverAccountIdentifier=$receiverAccountIdentifier, reference=$reference, senderAccountIdentifier=$senderAccountIdentifier, sortOrder=$sortOrder, startDate=$startDate, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

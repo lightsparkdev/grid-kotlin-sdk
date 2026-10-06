@@ -13,6 +13,7 @@ internal class TransactionListParamsTest {
     fun create() {
         TransactionListParams.builder()
             .accountIdentifier("accountIdentifier")
+            .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
             .cursor("cursor")
             .customerId("customerId")
             .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -33,6 +34,7 @@ internal class TransactionListParamsTest {
         val params =
             TransactionListParams.builder()
                 .accountIdentifier("accountIdentifier")
+                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .cursor("cursor")
                 .customerId("customerId")
                 .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -53,6 +55,7 @@ internal class TransactionListParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("accountIdentifier", "accountIdentifier")
+                    .put("cardId", "Card:019542f5-b3e7-1d02-0000-000000000010")
                     .put("cursor", "cursor")
                     .put("customerId", "customerId")
                     .put("endDate", "2019-12-27T18:11:19.117Z")
