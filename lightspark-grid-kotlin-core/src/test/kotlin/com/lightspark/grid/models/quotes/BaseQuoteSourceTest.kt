@@ -13,16 +13,14 @@ internal class BaseQuoteSourceTest {
     @Test
     fun create() {
         val baseQuoteSource =
-            BaseQuoteSource.builder().sourceType(JsonValue.from(mapOf<String, Any>())).build()
-
-        assertThat(baseQuoteSource._sourceType()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
+            BaseQuoteSource.builder().putAdditionalProperty("foo", JsonValue.from("bar")).build()
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val baseQuoteSource =
-            BaseQuoteSource.builder().sourceType(JsonValue.from(mapOf<String, Any>())).build()
+            BaseQuoteSource.builder().putAdditionalProperty("foo", JsonValue.from("bar")).build()
 
         val roundtrippedBaseQuoteSource =
             jsonMapper.readValue(

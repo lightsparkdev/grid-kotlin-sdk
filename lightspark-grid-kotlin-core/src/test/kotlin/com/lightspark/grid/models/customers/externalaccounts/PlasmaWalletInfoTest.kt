@@ -11,13 +11,53 @@ internal class PlasmaWalletInfoTest {
 
     @Test
     fun create() {
-        val plasmaWalletInfo = PlasmaWalletInfo.builder().build()
+        val plasmaWalletInfo =
+            PlasmaWalletInfo.builder()
+                .accountType(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .build()
+
+        assertThat(plasmaWalletInfo.accountType())
+            .isEqualTo(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+        assertThat(plasmaWalletInfo.address())
+            .isEqualTo("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+        assertThat(plasmaWalletInfo.beneficiary())
+            .isEqualTo(
+                WalletBeneficiaryOneOf.ofIndividual(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+            )
+        assertThat(plasmaWalletInfo.vaspName()).isEqualTo("Kraken")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val plasmaWalletInfo = PlasmaWalletInfo.builder().build()
+        val plasmaWalletInfo =
+            PlasmaWalletInfo.builder()
+                .accountType(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .build()
 
         val roundtrippedPlasmaWalletInfo =
             jsonMapper.readValue(

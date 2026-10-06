@@ -20,7 +20,27 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(
+                    IncomingTransaction.Destination.Account.builder()
+                        .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
+                        .onChainTransaction(
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
+                                .network(
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
+                                        .Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .direction(IncomingTransaction.Direction.CREDIT)
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
@@ -86,7 +106,23 @@ internal class IncomingTransactionTest {
                         .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(TransactionSourceOneOf.builder().build())
+                .source(
+                    TransactionSourceOneOf.Account.builder()
+                        .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .onChainTransaction(
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
+                                .network(
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
@@ -94,8 +130,30 @@ internal class IncomingTransactionTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
         assertThat(incomingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(incomingTransaction._destination())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(incomingTransaction.destination())
+            .isEqualTo(
+                IncomingTransaction.Destination.ofAccount(
+                    IncomingTransaction.Destination.Account.builder()
+                        .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
+                        .onChainTransaction(
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
+                                .network(
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
+                                        .Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+            )
         assertThat(incomingTransaction.direction()).isEqualTo(IncomingTransaction.Direction.CREDIT)
         assertThat(incomingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(incomingTransaction.status()).isEqualTo(TransactionStatus.CREATED)
@@ -174,7 +232,26 @@ internal class IncomingTransactionTest {
             )
         assertThat(incomingTransaction.settledAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(incomingTransaction.source()).isEqualTo(TransactionSourceOneOf.builder().build())
+        assertThat(incomingTransaction.source())
+            .isEqualTo(
+                TransactionSourceOneOf.ofAccount(
+                    TransactionSourceOneOf.Account.builder()
+                        .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .onChainTransaction(
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
+                                .network(
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+            )
         assertThat(incomingTransaction.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
     }
@@ -186,7 +263,27 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(
+                    IncomingTransaction.Destination.Account.builder()
+                        .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
+                        .onChainTransaction(
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
+                                .network(
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
+                                        .Network
+                                        .SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .direction(IncomingTransaction.Direction.CREDIT)
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
@@ -252,7 +349,23 @@ internal class IncomingTransactionTest {
                         .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(TransactionSourceOneOf.builder().build())
+                .source(
+                    TransactionSourceOneOf.Account.builder()
+                        .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .onChainTransaction(
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
+                                .network(
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
+                                )
+                                .transactionHash(
+                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 

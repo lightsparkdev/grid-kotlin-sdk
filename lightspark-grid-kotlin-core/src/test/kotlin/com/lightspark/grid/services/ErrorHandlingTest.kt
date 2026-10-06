@@ -81,10 +81,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -144,10 +158,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -207,10 +235,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -270,10 +312,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -333,10 +389,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -396,10 +466,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -459,10 +543,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -522,10 +620,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -585,10 +697,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -648,10 +774,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -711,10 +851,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -774,10 +928,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -837,10 +1005,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -900,10 +1082,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -963,10 +1159,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -1026,10 +1236,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(
@@ -1087,10 +1311,24 @@ internal class ErrorHandlingTest {
                         .idempotencyKey("<uuid>")
                         .quoteRequest(
                             QuoteRequest.builder()
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .lockedCurrencyAmount(1000L)
                                 .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .description("Invoice #1234 payment")
                                 .documentIds(
                                     listOf(

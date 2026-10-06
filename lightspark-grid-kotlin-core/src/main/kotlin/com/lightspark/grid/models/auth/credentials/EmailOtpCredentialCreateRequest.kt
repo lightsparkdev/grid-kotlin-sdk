@@ -20,7 +20,7 @@ class EmailOtpCredentialCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<String>,
-    private val type: JsonValue,
+    private val type: JsonField<Type>,
     private val email: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -28,28 +28,28 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
     ) : this(accountId, type, email, mutableMapOf())
 
     fun toAuthCredentialCreateRequest(): AuthCredentialCreateRequest =
-        AuthCredentialCreateRequest.builder().accountId(accountId).type(type).build()
+        AuthCredentialCreateRequest.builder().accountId(accountId).build()
 
     /**
      * Identifier of the internal account that this credential will authenticate.
      *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun accountId(): String? = accountId.getNullable("accountId")
+
+    /**
+     * Discriminator value identifying this as an email OTP credential.
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun accountId(): String = accountId.getRequired("accountId")
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = emailOtpCredentialCreateRequest.type().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
+    fun type(): Type = type.getRequired("type")
 
     /**
      * A new email address to register as a replacement credential.
@@ -65,6 +65,13 @@ private constructor(
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
+
+    /**
+     * Returns the raw JSON value of [type].
+     *
+     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
     /**
      * Returns the raw JSON value of [email].
@@ -93,7 +100,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountId()
          * .type()
          * ```
          */
@@ -103,8 +109,8 @@ private constructor(
     /** A builder for [EmailOtpCredentialCreateRequest]. */
     class Builder internal constructor() {
 
-        private var accountId: JsonField<String>? = null
-        private var type: JsonValue? = null
+        private var accountId: JsonField<String> = JsonMissing.of()
+        private var type: JsonField<Type>? = null
         private var email: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -129,7 +135,16 @@ private constructor(
          */
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
-        fun type(type: JsonValue) = apply { this.type = type }
+        /** Discriminator value identifying this as an email OTP credential. */
+        fun type(type: Type) = type(JsonField.of(type))
+
+        /**
+         * Sets [Builder.type] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun type(type: JsonField<Type>) = apply { this.type = type }
 
         /** A new email address to register as a replacement credential. */
         fun email(email: String) = email(JsonField.of(email))
@@ -168,7 +183,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountId()
          * .type()
          * ```
          *
@@ -176,7 +190,7 @@ private constructor(
          */
         fun build(): EmailOtpCredentialCreateRequest =
             EmailOtpCredentialCreateRequest(
-                checkRequired("accountId", accountId),
+                accountId,
                 checkRequired("type", type),
                 email,
                 additionalProperties.toMutableMap(),
@@ -199,6 +213,7 @@ private constructor(
         }
 
         accountId()
+        type().validate()
         email()
         validated = true
     }
@@ -217,7 +232,9 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountId.asKnown() == null) 0 else 1) + (if (email.asKnown() == null) 0 else 1)
+        (if (accountId.asKnown() == null) 0 else 1) +
+            (type.asKnown()?.validity() ?: 0) +
+            (if (email.asKnown() == null) 0 else 1)
 
     /** Discriminator value identifying this as an email OTP credential. */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

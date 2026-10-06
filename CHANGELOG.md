@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.9.0...v1.10.0) (2026-10-06)
+
+
+### Features
+
+* regenerate the SDK with stlc ([#26](https://github.com/lightsparkdev/grid-kotlin-sdk/issues/26)) ([00ca31e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/00ca31e60aaf2b0b18e99421d418cfb5ad7242da))
+
 ## 1.9.0 (2026-06-12)
 
 Full Changelog: [v1.8.0...v1.9.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.8.0...v1.9.0)

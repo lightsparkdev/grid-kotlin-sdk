@@ -94,6 +94,8 @@ private constructor(
     )
 
     /**
+     * Destination account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -121,6 +123,8 @@ private constructor(
         lockedCurrencySide.getRequired("lockedCurrencySide")
 
     /**
+     * Source account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -432,6 +436,7 @@ private constructor(
             additionalProperties = quoteRequest.additionalProperties.toMutableMap()
         }
 
+        /** Destination account details */
         fun destination(destination: QuoteDestinationOneOf) = destination(JsonField.of(destination))
 
         /**
@@ -444,6 +449,27 @@ private constructor(
         fun destination(destination: JsonField<QuoteDestinationOneOf>) = apply {
             this.destination = destination
         }
+
+        /** Alias for calling [destination] with `QuoteDestinationOneOf.ofAccount(account)`. */
+        fun destination(account: QuoteDestinationOneOf.Account) =
+            destination(QuoteDestinationOneOf.ofAccount(account))
+
+        /**
+         * Alias for calling [destination] with the following:
+         * ```kotlin
+         * QuoteDestinationOneOf.Account.builder()
+         *     .accountId(accountId)
+         *     .build()
+         * ```
+         */
+        fun accountDestination(accountId: String) =
+            destination(QuoteDestinationOneOf.Account.builder().accountId(accountId).build())
+
+        /**
+         * Alias for calling [destination] with `QuoteDestinationOneOf.ofUmaAddress(umaAddress)`.
+         */
+        fun destination(umaAddress: QuoteDestinationOneOf.UmaAddress) =
+            destination(QuoteDestinationOneOf.ofUmaAddress(umaAddress))
 
         /**
          * The amount to send/receive in the smallest unit of the locked currency (eg. cents). See
@@ -484,6 +510,7 @@ private constructor(
             this.lockedCurrencySide = lockedCurrencySide
         }
 
+        /** Source account details */
         fun source(source: QuoteSourceOneOf) = source(JsonField.of(source))
 
         /**
@@ -494,6 +521,37 @@ private constructor(
          * supported value.
          */
         fun source(source: JsonField<QuoteSourceOneOf>) = apply { this.source = source }
+
+        /** Alias for calling [source] with `QuoteSourceOneOf.ofAccount(account)`. */
+        fun source(account: QuoteSourceOneOf.Account) = source(QuoteSourceOneOf.ofAccount(account))
+
+        /**
+         * Alias for calling [source] with the following:
+         * ```kotlin
+         * QuoteSourceOneOf.Account.builder()
+         *     .accountId(accountId)
+         *     .build()
+         * ```
+         */
+        fun accountSource(accountId: String) =
+            source(QuoteSourceOneOf.Account.builder().accountId(accountId).build())
+
+        /**
+         * Alias for calling [source] with `QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding)`.
+         */
+        fun source(realtimeFunding: QuoteSourceOneOf.RealtimeFunding) =
+            source(QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding))
+
+        /**
+         * Alias for calling [source] with the following:
+         * ```kotlin
+         * QuoteSourceOneOf.RealtimeFunding.builder()
+         *     .currency(currency)
+         *     .build()
+         * ```
+         */
+        fun realtimeFundingSource(currency: String) =
+            source(QuoteSourceOneOf.RealtimeFunding.builder().currency(currency).build())
 
         /** Optional description/memo for the transfer */
         fun description(description: String) = description(JsonField.of(description))
@@ -768,8 +826,10 @@ private constructor(
             return@apply
         }
 
+        destination().validate()
         lockedCurrencyAmount()
         lockedCurrencySide().validate()
+        source().validate()
         description()
         documentIds()
         immediatelyExecute()
@@ -796,8 +856,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (lockedCurrencyAmount.asKnown() == null) 0 else 1) +
+        (destination.asKnown()?.validity() ?: 0) +
+            (if (lockedCurrencyAmount.asKnown() == null) 0 else 1) +
             (lockedCurrencySide.asKnown()?.validity() ?: 0) +
+            (source.asKnown()?.validity() ?: 0) +
             (if (description.asKnown() == null) 0 else 1) +
             (documentIds.asKnown()?.size ?: 0) +
             (if (immediatelyExecute.asKnown() == null) 0 else 1) +
