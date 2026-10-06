@@ -4,7 +4,9 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.models.transactions.CancelTransactionRequest
 import com.lightspark.grid.models.transactions.TransactionApproveParams
+import com.lightspark.grid.models.transactions.TransactionCancelParams
 import com.lightspark.grid.models.transactions.TransactionRejectParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -70,6 +72,31 @@ internal class TransactionServiceTest {
             )
 
         incomingTransaction.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun cancel() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val transactionService = client.transactions()
+
+        val transaction =
+            transactionService.cancel(
+                TransactionCancelParams.builder()
+                    .transactionId("transactionId")
+                    .cancelTransactionRequest(
+                        CancelTransactionRequest.builder().reason("REQUESTED_AFTER_HOURS").build()
+                    )
+                    .build()
+            )
+
+        transaction.validate()
     }
 
     @Disabled("Mock server tests are disabled")

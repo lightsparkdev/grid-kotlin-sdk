@@ -12,7 +12,7 @@ internal class ExchangeRateListParamsTest {
     fun create() {
         ExchangeRateListParams.builder()
             .addDestinationCurrency("string")
-            .sendingAmount(0L)
+            .sendingAmount(1L)
             .sourceCurrency("sourceCurrency")
             .build()
     }
@@ -22,7 +22,7 @@ internal class ExchangeRateListParamsTest {
         val params =
             ExchangeRateListParams.builder()
                 .addDestinationCurrency("string")
-                .sendingAmount(0L)
+                .sendingAmount(1L)
                 .sourceCurrency("sourceCurrency")
                 .build()
 
@@ -32,7 +32,7 @@ internal class ExchangeRateListParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("destinationCurrency", listOf("string").joinToString(","))
-                    .put("sendingAmount", "0")
+                    .put("sendingAmount", "1")
                     .put("sourceCurrency", "sourceCurrency")
                     .build()
             )

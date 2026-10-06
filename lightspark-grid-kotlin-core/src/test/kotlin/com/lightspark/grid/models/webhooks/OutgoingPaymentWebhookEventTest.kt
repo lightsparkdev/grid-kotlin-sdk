@@ -29,6 +29,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(OutgoingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -57,31 +58,31 @@ internal class OutgoingPaymentWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
+                        .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .PaymentRail
-                                                .BANK_TRANSFER
-                                        )
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .PaymentRail
-                                                .MOBILE_MONEY
-                                        )
-                                        .reference("UMA-Q12345-REF")
-                                        .accountNumber("1234567890")
-                                        .bankAccountType(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .BankAccountType
-                                                .CHECKING
-                                        )
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                        .accountHolderName("Acme Exports Pte Ltd")
                                         .bankName("Chase Bank")
-                                        .phoneNumber("+50312345678")
+                                        .country("NG")
+                                        .addPaymentRail(
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                                .PaymentRail
+                                                .SWIFT
+                                        )
+                                        .addPaymentRail(
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                                .PaymentRail
+                                                .SWIFT
+                                        )
+                                        .swiftCode("DEUTDEFF")
+                                        .accountNumber("1234567890")
+                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                        .iban("GB29NWBK60161331926819")
+                                        .reference("UMA-Q12345-REF")
                                         .build()
                                 )
                                 .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -91,21 +92,20 @@ internal class OutgoingPaymentWebhookEventTest {
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                        .accountHolderName("Acme Exports Pte Ltd")
+                                        .bankName("Deutsche Bank")
+                                        .country("NG")
                                         .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
                                                 .PaymentRail
-                                                .BANK_TRANSFER
+                                                .SWIFT
                                         )
+                                        .swiftCode("DEUTDEFF")
+                                        .accountNumber("1234567890")
+                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                        .iban("GB29NWBK60161331926819")
                                         .reference("UMA-Q12345-REF")
-                                        .accountNumber("0123456789")
-                                        .bankAccountType(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .BankAccountType
-                                                .CHECKING
-                                        )
-                                        .bankName("Banco Cuscatlan")
-                                        .phoneNumber("+50312345678")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -114,7 +114,13 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                        .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
@@ -156,7 +162,9 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
+                        .ruleBasedAccountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000011")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .settlementTimelineSeconds(0L)
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -172,6 +180,7 @@ internal class OutgoingPaymentWebhookEventTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(JsonValue.from(mapOf<String, Any>()))
+                    .direction(OutgoingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .sentAmount(
                         CurrencyAmount.builder()
@@ -200,31 +209,31 @@ internal class OutgoingPaymentWebhookEventTest {
                     .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                     .description("Payment for invoice #1234")
                     .exchangeRate(1.08)
+                    .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                     .fees(10L)
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                            .PaymentRail
-                                            .BANK_TRANSFER
-                                    )
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                            .PaymentRail
-                                            .MOBILE_MONEY
-                                    )
-                                    .reference("UMA-Q12345-REF")
-                                    .accountNumber("1234567890")
-                                    .bankAccountType(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                            .BankAccountType
-                                            .CHECKING
-                                    )
+                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                    .accountHolderName("Acme Exports Pte Ltd")
                                     .bankName("Chase Bank")
-                                    .phoneNumber("+50312345678")
+                                    .country("NG")
+                                    .addPaymentRail(
+                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                            .PaymentRail
+                                            .SWIFT
+                                    )
+                                    .addPaymentRail(
+                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                            .PaymentRail
+                                            .SWIFT
+                                    )
+                                    .swiftCode("DEUTDEFF")
+                                    .accountNumber("1234567890")
+                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                    .iban("GB29NWBK60161331926819")
+                                    .reference("UMA-Q12345-REF")
                                     .build()
                             )
                             .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -234,21 +243,20 @@ internal class OutgoingPaymentWebhookEventTest {
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                    .accountHolderName("Acme Exports Pte Ltd")
+                                    .bankName("Deutsche Bank")
+                                    .country("NG")
                                     .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
                                             .PaymentRail
-                                            .BANK_TRANSFER
+                                            .SWIFT
                                     )
+                                    .swiftCode("DEUTDEFF")
+                                    .accountNumber("1234567890")
+                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                    .iban("GB29NWBK60161331926819")
                                     .reference("UMA-Q12345-REF")
-                                    .accountNumber("0123456789")
-                                    .bankAccountType(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                            .BankAccountType
-                                            .CHECKING
-                                    )
-                                    .bankName("Banco Cuscatlan")
-                                    .phoneNumber("+50312345678")
                                     .build()
                             )
                             .instructionsNotes(
@@ -257,7 +265,13 @@ internal class OutgoingPaymentWebhookEventTest {
                             .isPlatformAccount(true)
                             .build()
                     )
+                    .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                    .pendingReason(
+                        OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
+                    .platformFees(5L)
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                    .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                     .rateDetails(
                         OutgoingRateDetails.builder()
                             .counterpartyFixedFee(10L)
@@ -299,7 +313,9 @@ internal class OutgoingPaymentWebhookEventTest {
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                             .build()
                     )
+                    .ruleBasedAccountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000011")
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                    .settlementTimelineSeconds(0L)
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .build()
             )
@@ -320,6 +336,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(OutgoingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -348,31 +365,31 @@ internal class OutgoingPaymentWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
+                        .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .PaymentRail
-                                                .BANK_TRANSFER
-                                        )
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .PaymentRail
-                                                .MOBILE_MONEY
-                                        )
-                                        .reference("UMA-Q12345-REF")
-                                        .accountNumber("1234567890")
-                                        .bankAccountType(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .BankAccountType
-                                                .CHECKING
-                                        )
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                        .accountHolderName("Acme Exports Pte Ltd")
                                         .bankName("Chase Bank")
-                                        .phoneNumber("+50312345678")
+                                        .country("NG")
+                                        .addPaymentRail(
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                                .PaymentRail
+                                                .SWIFT
+                                        )
+                                        .addPaymentRail(
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                                .PaymentRail
+                                                .SWIFT
+                                        )
+                                        .swiftCode("DEUTDEFF")
+                                        .accountNumber("1234567890")
+                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                        .iban("GB29NWBK60161331926819")
+                                        .reference("UMA-Q12345-REF")
                                         .build()
                                 )
                                 .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -382,21 +399,20 @@ internal class OutgoingPaymentWebhookEventTest {
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
+                                        .accountHolderName("Acme Exports Pte Ltd")
+                                        .bankName("Deutsche Bank")
+                                        .country("NG")
                                         .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
                                                 .PaymentRail
-                                                .BANK_TRANSFER
+                                                .SWIFT
                                         )
+                                        .swiftCode("DEUTDEFF")
+                                        .accountNumber("1234567890")
+                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
+                                        .iban("GB29NWBK60161331926819")
                                         .reference("UMA-Q12345-REF")
-                                        .accountNumber("0123456789")
-                                        .bankAccountType(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                .BankAccountType
-                                                .CHECKING
-                                        )
-                                        .bankName("Banco Cuscatlan")
-                                        .phoneNumber("+50312345678")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -405,7 +421,13 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                        .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
@@ -447,7 +469,9 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
+                        .ruleBasedAccountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000011")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .settlementTimelineSeconds(0L)
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )

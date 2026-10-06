@@ -17,7 +17,7 @@ internal class PhpExternalAccountCreateInfoTest {
             PhpExternalAccountCreateInfo.builder()
                 .accountNumber("001234567890")
                 .accountType(PhpExternalAccountCreateInfo.AccountType.PHP_ACCOUNT)
-                .bankName("BDO Unibank")
+                .bankName("Bank of the Philippine Islands (BPI)")
                 .beneficiary(
                     PhpBeneficiary.builder()
                         .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -39,12 +39,14 @@ internal class PhpExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .rail("INSTAPAY")
                 .build()
 
         assertThat(phpExternalAccountCreateInfo.accountNumber()).isEqualTo("001234567890")
         assertThat(phpExternalAccountCreateInfo.accountType())
             .isEqualTo(PhpExternalAccountCreateInfo.AccountType.PHP_ACCOUNT)
-        assertThat(phpExternalAccountCreateInfo.bankName()).isEqualTo("BDO Unibank")
+        assertThat(phpExternalAccountCreateInfo.bankName())
+            .isEqualTo("Bank of the Philippine Islands (BPI)")
         assertThat(phpExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 PhpExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -69,6 +71,7 @@ internal class PhpExternalAccountCreateInfoTest {
                         .build()
                 )
             )
+        assertThat(phpExternalAccountCreateInfo.rail()).isEqualTo("INSTAPAY")
     }
 
     @Test
@@ -78,7 +81,7 @@ internal class PhpExternalAccountCreateInfoTest {
             PhpExternalAccountCreateInfo.builder()
                 .accountNumber("001234567890")
                 .accountType(PhpExternalAccountCreateInfo.AccountType.PHP_ACCOUNT)
-                .bankName("BDO Unibank")
+                .bankName("Bank of the Philippine Islands (BPI)")
                 .beneficiary(
                     PhpBeneficiary.builder()
                         .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -100,6 +103,7 @@ internal class PhpExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .rail("INSTAPAY")
                 .build()
 
         val roundtrippedPhpExternalAccountCreateInfo =

@@ -14,7 +14,7 @@ internal class CopAccountInfoTest {
         val copAccountInfo =
             CopAccountInfo.builder()
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Banco de Colombia (Bancolombia)")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
@@ -22,7 +22,7 @@ internal class CopAccountInfoTest {
                 .build()
 
         assertThat(copAccountInfo.accountType()).isEqualTo(CopAccountInfo.AccountType.COP_ACCOUNT)
-        assertThat(copAccountInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(copAccountInfo.bankName()).isEqualTo("Banco de Colombia (Bancolombia)")
         assertThat(copAccountInfo.paymentRails())
             .containsExactly(CopAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(copAccountInfo.accountNumber()).isEqualTo("1234567890")
@@ -37,7 +37,7 @@ internal class CopAccountInfoTest {
         val copAccountInfo =
             CopAccountInfo.builder()
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Banco de Colombia (Bancolombia)")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)

@@ -15,7 +15,7 @@ internal class PkrExternalAccountCreateInfoTest {
         val pkrExternalAccountCreateInfo =
             PkrExternalAccountCreateInfo.builder()
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Habib Bank Limited")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -44,7 +44,7 @@ internal class PkrExternalAccountCreateInfoTest {
 
         assertThat(pkrExternalAccountCreateInfo.accountType())
             .isEqualTo(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("Habib Bank Limited")
         assertThat(pkrExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -80,7 +80,7 @@ internal class PkrExternalAccountCreateInfoTest {
         val pkrExternalAccountCreateInfo =
             PkrExternalAccountCreateInfo.builder()
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Habib Bank Limited")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)

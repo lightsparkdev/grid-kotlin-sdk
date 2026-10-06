@@ -1,0 +1,251 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.lightspark.grid.models.customers
+
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.customers.externalaccounts.Address
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
+
+internal class CustomerUpdateResponseTest {
+
+    @Test
+    fun ofOneOf() {
+        val oneOf =
+            CustomerOneOf.ofIndividualCustomer(
+                IndividualCustomer.builder()
+                    .customerType(JsonValue.from("INDIVIDUAL"))
+                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .umaAddress("\$john.doe@uma.domain.com")
+                    .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .addAgreementConsent(
+                        AgreementConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
+                    .contactVerification(
+                        Customer.ContactVerification.builder()
+                            .email(Customer.ContactVerification.Email.VERIFIED)
+                            .phone(Customer.ContactVerification.Phone.VERIFIED)
+                            .build()
+                    )
+                    .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        Customer.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .isDeleted(false)
+                    .phoneNumber("+14155551234")
+                    .region("US")
+                    .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .address(
+                        Address.builder()
+                            .country("US")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
+                            .city("San Francisco")
+                            .line2("Apt 4B")
+                            .state("CA")
+                            .build()
+                    )
+                    .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
+                    .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                    )
+                    .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomer.IdType.SSN)
+                    .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                    .nationality("US")
+                    .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomer.PepStatus.NONE)
+                    .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                    .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                    .addSourceOfWealthCategory(
+                        IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
+                    .build()
+            )
+
+        val customerUpdateResponse = CustomerUpdateResponse.ofOneOf(oneOf)
+
+        assertThat(customerUpdateResponse.oneOf()).isEqualTo(oneOf)
+        assertThat(customerUpdateResponse.walletOperationProcessing()).isNull()
+    }
+
+    @Test
+    fun ofOneOfRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val customerUpdateResponse =
+            CustomerUpdateResponse.ofOneOf(
+                CustomerOneOf.ofIndividualCustomer(
+                    IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
+                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .umaAddress("\$john.doe@uma.domain.com")
+                        .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addAgreementConsent(
+                            AgreementConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("2025-10-13")
+                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                .build()
+                        )
+                        .contactVerification(
+                            Customer.ContactVerification.builder()
+                                .email(Customer.ContactVerification.Email.VERIFIED)
+                                .phone(Customer.ContactVerification.Phone.VERIFIED)
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            Customer.EndUserTermsConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
+                        .isDeleted(false)
+                        .phoneNumber("+14155551234")
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
+                        .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
+                        .expectedMonthlyTransactionCount(
+                            IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        )
+                        .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
+                        .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                        .nationality("US")
+                        .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                        .pepStatus(IndividualCustomer.PepStatus.NONE)
+                        .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                        .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                        .sourceOfFundsOtherDescription("Contest winnings")
+                        .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                        .addSourceOfWealthCategory(
+                            IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                        )
+                        .sourceOfWealthOtherDescription("Royalty income from published works")
+                        .build()
+                )
+            )
+
+        val roundtrippedCustomerUpdateResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(customerUpdateResponse),
+                jacksonTypeRef<CustomerUpdateResponse>(),
+            )
+
+        assertThat(roundtrippedCustomerUpdateResponse).isEqualTo(customerUpdateResponse)
+    }
+
+    @Test
+    fun ofWalletOperationProcessing() {
+        val walletOperationProcessing =
+            CustomerUpdateResponse.WalletOperationProcessing.builder()
+                .status(CustomerUpdateResponse.WalletOperationProcessing.Status.PROCESSING)
+                .message("This login is still being processed. Retry the same request in a moment.")
+                .build()
+
+        val customerUpdateResponse =
+            CustomerUpdateResponse.ofWalletOperationProcessing(walletOperationProcessing)
+
+        assertThat(customerUpdateResponse.oneOf()).isNull()
+        assertThat(customerUpdateResponse.walletOperationProcessing())
+            .isEqualTo(walletOperationProcessing)
+    }
+
+    @Test
+    fun ofWalletOperationProcessingRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val customerUpdateResponse =
+            CustomerUpdateResponse.ofWalletOperationProcessing(
+                CustomerUpdateResponse.WalletOperationProcessing.builder()
+                    .status(CustomerUpdateResponse.WalletOperationProcessing.Status.PROCESSING)
+                    .message(
+                        "This login is still being processed. Retry the same request in a moment."
+                    )
+                    .build()
+            )
+
+        val roundtrippedCustomerUpdateResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(customerUpdateResponse),
+                jacksonTypeRef<CustomerUpdateResponse>(),
+            )
+
+        assertThat(roundtrippedCustomerUpdateResponse).isEqualTo(customerUpdateResponse)
+    }
+
+    enum class IncompatibleJsonShapeTestCase(val value: JsonValue) {
+        BOOLEAN(JsonValue.from(false)),
+        STRING(JsonValue.from("invalid")),
+        INTEGER(JsonValue.from(-1)),
+        FLOAT(JsonValue.from(3.14)),
+        ARRAY(JsonValue.from(listOf("invalid", "array"))),
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    fun incompatibleJsonShapeDeserializesToUnknown(testCase: IncompatibleJsonShapeTestCase) {
+        val customerUpdateResponse =
+            jsonMapper().convertValue(testCase.value, jacksonTypeRef<CustomerUpdateResponse>())
+
+        val e =
+            assertThrows<LightsparkGridInvalidDataException> { customerUpdateResponse.validate() }
+        assertThat(e).hasMessageStartingWith("Unknown ")
+    }
+}
