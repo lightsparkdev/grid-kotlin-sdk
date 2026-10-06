@@ -19,7 +19,6 @@ internal class QuoteTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .destination(
                     QuoteDestinationOneOf.Account.builder()
-                        .destinationType(BaseDestination.DestinationType.ACCOUNT)
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                         .build()
@@ -45,7 +44,6 @@ internal class QuoteTest {
                 )
                 .source(
                     QuoteSourceOneOf.Account.builder()
-                        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -148,7 +146,6 @@ internal class QuoteTest {
             .isEqualTo(
                 QuoteDestinationOneOf.ofAccount(
                     QuoteDestinationOneOf.Account.builder()
-                        .destinationType(BaseDestination.DestinationType.ACCOUNT)
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                         .build()
@@ -179,7 +176,6 @@ internal class QuoteTest {
             .isEqualTo(
                 QuoteSourceOneOf.ofAccount(
                     QuoteSourceOneOf.Account.builder()
-                        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -288,7 +284,6 @@ internal class QuoteTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .destination(
                     QuoteDestinationOneOf.Account.builder()
-                        .destinationType(BaseDestination.DestinationType.ACCOUNT)
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                         .build()
@@ -314,7 +309,6 @@ internal class QuoteTest {
                 )
                 .source(
                     QuoteSourceOneOf.Account.builder()
-                        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()

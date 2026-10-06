@@ -4,8 +4,6 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.models.quotes.BaseDestination
-import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
@@ -36,7 +34,6 @@ internal class QuoteServiceAsyncTest {
                         QuoteRequest.builder()
                             .destination(
                                 QuoteDestinationOneOf.Account.builder()
-                                    .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                     .accountId(
                                         "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                                     )
@@ -47,7 +44,6 @@ internal class QuoteServiceAsyncTest {
                             .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                             .source(
                                 QuoteSourceOneOf.Account.builder()
-                                    .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                     .accountId(
                                         "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
                                     )

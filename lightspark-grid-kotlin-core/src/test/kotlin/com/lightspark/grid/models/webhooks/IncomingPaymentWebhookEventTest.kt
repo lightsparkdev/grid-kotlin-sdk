@@ -10,12 +10,10 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
-import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
-import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -32,16 +30,17 @@ internal class IncomingPaymentWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            IncomingTransaction.Destination.AccountDestination.builder()
-                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            IncomingTransaction.Destination.Account.builder()
                                 .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                                )
                                 .onChainTransaction(
-                                    IncomingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
                                         .builder()
                                         .network(
-                                            IncomingTransaction.Destination.AccountDestination
+                                            IncomingTransaction.Destination.Account
                                                 .OnChainTransaction
                                                 .Network
                                                 .SOLANA
@@ -121,15 +120,14 @@ internal class IncomingPaymentWebhookEventTest {
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
-                            TransactionSourceOneOf.AccountSource.builder()
-                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            TransactionSourceOneOf.Account.builder()
                                 .currency("USD")
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                 .onChainTransaction(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction
-                                        .builder()
+                                    TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                         .network(
-                                            TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                            TransactionSourceOneOf.Account.OnChainTransaction
                                                 .Network
                                                 .SOLANA
                                         )
@@ -161,17 +159,16 @@ internal class IncomingPaymentWebhookEventTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
-                        IncomingTransaction.Destination.AccountDestination.builder()
-                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        IncomingTransaction.Destination.Account.builder()
                             .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .onChainTransaction(
-                                IncomingTransaction.Destination.AccountDestination
-                                    .OnChainTransaction
-                                    .builder()
+                                IncomingTransaction.Destination.Account.OnChainTransaction.builder()
                                     .network(
-                                        IncomingTransaction.Destination.AccountDestination
-                                            .OnChainTransaction
+                                        IncomingTransaction.Destination.Account.OnChainTransaction
                                             .Network
                                             .SOLANA
                                     )
@@ -250,15 +247,14 @@ internal class IncomingPaymentWebhookEventTest {
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .source(
-                        TransactionSourceOneOf.AccountSource.builder()
-                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        TransactionSourceOneOf.Account.builder()
                             .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .onChainTransaction(
-                                TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                     .network(
-                                        TransactionSourceOneOf.AccountSource.OnChainTransaction
-                                            .Network
+                                        TransactionSourceOneOf.Account.OnChainTransaction.Network
                                             .SOLANA
                                     )
                                     .transactionHash(
@@ -294,16 +290,17 @@ internal class IncomingPaymentWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            IncomingTransaction.Destination.AccountDestination.builder()
-                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            IncomingTransaction.Destination.Account.builder()
                                 .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                                )
                                 .onChainTransaction(
-                                    IncomingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
                                         .builder()
                                         .network(
-                                            IncomingTransaction.Destination.AccountDestination
+                                            IncomingTransaction.Destination.Account
                                                 .OnChainTransaction
                                                 .Network
                                                 .SOLANA
@@ -383,15 +380,14 @@ internal class IncomingPaymentWebhookEventTest {
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
-                            TransactionSourceOneOf.AccountSource.builder()
-                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            TransactionSourceOneOf.Account.builder()
                                 .currency("USD")
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                 .onChainTransaction(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction
-                                        .builder()
+                                    TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                         .network(
-                                            TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                            TransactionSourceOneOf.Account.OnChainTransaction
                                                 .Network
                                                 .SOLANA
                                         )

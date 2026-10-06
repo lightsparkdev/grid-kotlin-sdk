@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,16 +13,14 @@ internal class BaseQuoteSourceTest {
     @Test
     fun create() {
         val baseQuoteSource =
-            BaseQuoteSource.builder().sourceType(BaseQuoteSource.SourceType.ACCOUNT).build()
-
-        assertThat(baseQuoteSource.sourceType()).isEqualTo(BaseQuoteSource.SourceType.ACCOUNT)
+            BaseQuoteSource.builder().putAdditionalProperty("foo", JsonValue.from("bar")).build()
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val baseQuoteSource =
-            BaseQuoteSource.builder().sourceType(BaseQuoteSource.SourceType.ACCOUNT).build()
+            BaseQuoteSource.builder().putAdditionalProperty("foo", JsonValue.from("bar")).build()
 
         val roundtrippedBaseQuoteSource =
             jsonMapper.readValue(

@@ -18,7 +18,6 @@ internal class QuoteSourceOneOfTest {
     fun ofAccount() {
         val account =
             QuoteSourceOneOf.Account.builder()
-                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .build()
@@ -26,7 +25,7 @@ internal class QuoteSourceOneOfTest {
         val quoteSourceOneOf = QuoteSourceOneOf.ofAccount(account)
 
         assertThat(quoteSourceOneOf.account()).isEqualTo(account)
-        assertThat(quoteSourceOneOf.realTimeFunding()).isNull()
+        assertThat(quoteSourceOneOf.realtimeFunding()).isNull()
     }
 
     @Test
@@ -35,7 +34,6 @@ internal class QuoteSourceOneOfTest {
         val quoteSourceOneOf =
             QuoteSourceOneOf.ofAccount(
                 QuoteSourceOneOf.Account.builder()
-                    .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                     .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .build()
@@ -51,28 +49,26 @@ internal class QuoteSourceOneOfTest {
     }
 
     @Test
-    fun ofRealTimeFunding() {
-        val realTimeFunding =
-            QuoteSourceOneOf.RealTimeFunding.builder()
-                .sourceType(BaseQuoteSource.SourceType.REALTIME_FUNDING)
+    fun ofRealtimeFunding() {
+        val realtimeFunding =
+            QuoteSourceOneOf.RealtimeFunding.builder()
                 .currency("USD")
                 .cryptoNetwork("SOLANA")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                 .build()
 
-        val quoteSourceOneOf = QuoteSourceOneOf.ofRealTimeFunding(realTimeFunding)
+        val quoteSourceOneOf = QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding)
 
         assertThat(quoteSourceOneOf.account()).isNull()
-        assertThat(quoteSourceOneOf.realTimeFunding()).isEqualTo(realTimeFunding)
+        assertThat(quoteSourceOneOf.realtimeFunding()).isEqualTo(realtimeFunding)
     }
 
     @Test
-    fun ofRealTimeFundingRoundtrip() {
+    fun ofRealtimeFundingRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteSourceOneOf =
-            QuoteSourceOneOf.ofRealTimeFunding(
-                QuoteSourceOneOf.RealTimeFunding.builder()
-                    .sourceType(BaseQuoteSource.SourceType.REALTIME_FUNDING)
+            QuoteSourceOneOf.ofRealtimeFunding(
+                QuoteSourceOneOf.RealtimeFunding.builder()
                     .currency("USD")
                     .cryptoNetwork("SOLANA")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")

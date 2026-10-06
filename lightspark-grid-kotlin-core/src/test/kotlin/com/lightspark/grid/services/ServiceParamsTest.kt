@@ -14,8 +14,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.models.quotes.BaseDestination
-import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
@@ -56,7 +54,6 @@ internal class ServiceParamsTest {
                     QuoteRequest.builder()
                         .destination(
                             QuoteDestinationOneOf.Account.builder()
-                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                                 .build()
@@ -65,7 +62,6 @@ internal class ServiceParamsTest {
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.Account.builder()
-                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()

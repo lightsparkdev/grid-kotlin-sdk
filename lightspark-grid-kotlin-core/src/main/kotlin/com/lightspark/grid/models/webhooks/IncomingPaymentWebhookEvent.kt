@@ -1054,15 +1054,53 @@ private constructor(
              * Alias for calling [destination] with
              * `IncomingTransaction.Destination.ofAccount(account)`.
              */
-            fun destination(account: IncomingTransaction.Destination.AccountDestination) =
+            fun destination(account: IncomingTransaction.Destination.Account) =
                 destination(IncomingTransaction.Destination.ofAccount(account))
+
+            /**
+             * Alias for calling [destination] with the following:
+             * ```kotlin
+             * IncomingTransaction.Destination.Account.builder()
+             *     .destinationType(IncomingTransaction.Destination.Account.DestinationType.ACCOUNT)
+             *     .accountId(accountId)
+             *     .build()
+             * ```
+             */
+            fun accountDestination(accountId: String) =
+                destination(
+                    IncomingTransaction.Destination.Account.builder()
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
+                        .accountId(accountId)
+                        .build()
+                )
 
             /**
              * Alias for calling [destination] with
              * `IncomingTransaction.Destination.ofUmaAddress(umaAddress)`.
              */
-            fun destination(umaAddress: IncomingTransaction.Destination.UmaAddressDestination) =
+            fun destination(umaAddress: IncomingTransaction.Destination.UmaAddress) =
                 destination(IncomingTransaction.Destination.ofUmaAddress(umaAddress))
+
+            /**
+             * Alias for calling [destination] with the following:
+             * ```kotlin
+             * IncomingTransaction.Destination.UmaAddress.builder()
+             *     .destinationType(IncomingTransaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
+             *     .umaAddress(umaAddress)
+             *     .build()
+             * ```
+             */
+            fun umaAddressDestination(umaAddress: String) =
+                destination(
+                    IncomingTransaction.Destination.UmaAddress.builder()
+                        .destinationType(
+                            IncomingTransaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS
+                        )
+                        .umaAddress(umaAddress)
+                        .build()
+                )
 
             /** Whether this transaction credits or debits the customer's account. */
             fun direction(direction: IncomingTransaction.Direction) =
@@ -1393,26 +1431,75 @@ private constructor(
              */
             fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
 
+            /** Alias for calling [source] with `TransactionSourceOneOf.ofAccount(account)`. */
+            fun source(account: TransactionSourceOneOf.Account) =
+                source(TransactionSourceOneOf.ofAccount(account))
+
             /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofAccountSource(accountSource)`.
+             * Alias for calling [source] with the following:
+             * ```kotlin
+             * TransactionSourceOneOf.Account.builder()
+             *     .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+             *     .accountId(accountId)
+             *     .build()
+             * ```
              */
-            fun source(accountSource: TransactionSourceOneOf.AccountSource) =
-                source(TransactionSourceOneOf.ofAccountSource(accountSource))
+            fun accountSource(accountId: String) =
+                source(
+                    TransactionSourceOneOf.Account.builder()
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .accountId(accountId)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [source] with `TransactionSourceOneOf.ofUmaAddress(umaAddress)`.
+             */
+            fun source(umaAddress: TransactionSourceOneOf.UmaAddress) =
+                source(TransactionSourceOneOf.ofUmaAddress(umaAddress))
+
+            /**
+             * Alias for calling [source] with the following:
+             * ```kotlin
+             * TransactionSourceOneOf.UmaAddress.builder()
+             *     .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
+             *     .umaAddress(umaAddress)
+             *     .build()
+             * ```
+             */
+            fun umaAddressSource(umaAddress: String) =
+                source(
+                    TransactionSourceOneOf.UmaAddress.builder()
+                        .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
+                        .umaAddress(umaAddress)
+                        .build()
+                )
 
             /**
              * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofUmaAddressSource(umaAddressSource)`.
+             * `TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding)`.
              */
-            fun source(umaAddressSource: TransactionSourceOneOf.UmaAddressSource) =
-                source(TransactionSourceOneOf.ofUmaAddressSource(umaAddressSource))
+            fun source(realtimeFunding: TransactionSourceOneOf.RealtimeFunding) =
+                source(TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding))
 
             /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofExternalFundingSource(externalFundingSource)`.
+             * Alias for calling [source] with the following:
+             * ```kotlin
+             * TransactionSourceOneOf.RealtimeFunding.builder()
+             *     .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+             *     .currency(currency)
+             *     .build()
+             * ```
              */
-            fun source(externalFundingSource: TransactionSourceOneOf.ExternalFundingSource) =
-                source(TransactionSourceOneOf.ofExternalFundingSource(externalFundingSource))
+            fun realtimeFundingSource(currency: String) =
+                source(
+                    TransactionSourceOneOf.RealtimeFunding.builder()
+                        .sourceType(
+                            TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING
+                        )
+                        .currency(currency)
+                        .build()
+                )
 
             /** When the transaction was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))

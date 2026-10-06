@@ -18,7 +18,6 @@ internal class QuoteDestinationOneOfTest {
     fun ofAccount() {
         val account =
             QuoteDestinationOneOf.Account.builder()
-                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                 .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                 .build()
@@ -35,7 +34,6 @@ internal class QuoteDestinationOneOfTest {
         val quoteDestinationOneOf =
             QuoteDestinationOneOf.ofAccount(
                 QuoteDestinationOneOf.Account.builder()
-                    .destinationType(BaseDestination.DestinationType.ACCOUNT)
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                     .build()
@@ -54,7 +52,6 @@ internal class QuoteDestinationOneOfTest {
     fun ofUmaAddress() {
         val umaAddress =
             QuoteDestinationOneOf.UmaAddress.builder()
-                .destinationType(BaseDestination.DestinationType.UMA_ADDRESS)
                 .currency("EUR")
                 .umaAddress("\$receiver@uma.domain.com")
                 .build()
@@ -71,7 +68,6 @@ internal class QuoteDestinationOneOfTest {
         val quoteDestinationOneOf =
             QuoteDestinationOneOf.ofUmaAddress(
                 QuoteDestinationOneOf.UmaAddress.builder()
-                    .destinationType(BaseDestination.DestinationType.UMA_ADDRESS)
                     .currency("EUR")
                     .umaAddress("\$receiver@uma.domain.com")
                     .build()

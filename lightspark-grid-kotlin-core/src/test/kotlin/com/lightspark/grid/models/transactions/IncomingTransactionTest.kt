@@ -8,7 +8,6 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
-import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -22,16 +21,16 @@ internal class IncomingTransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    IncomingTransaction.Destination.AccountDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                    IncomingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .onChainTransaction(
-                            IncomingTransaction.Destination.AccountDestination.OnChainTransaction
-                                .builder()
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
                                 .network(
-                                    IncomingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
                                         .Network
                                         .SOLANA
                                 )
@@ -108,15 +107,14 @@ internal class IncomingTransactionTest {
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .source(
-                    TransactionSourceOneOf.AccountSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                    TransactionSourceOneOf.Account.builder()
                         .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .onChainTransaction(
-                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                 .network(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
-                                        .SOLANA
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
                                 )
                                 .transactionHash(
                                     "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
@@ -135,16 +133,16 @@ internal class IncomingTransactionTest {
         assertThat(incomingTransaction.destination())
             .isEqualTo(
                 IncomingTransaction.Destination.ofAccount(
-                    IncomingTransaction.Destination.AccountDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                    IncomingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .onChainTransaction(
-                            IncomingTransaction.Destination.AccountDestination.OnChainTransaction
-                                .builder()
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
                                 .network(
-                                    IncomingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
                                         .Network
                                         .SOLANA
                                 )
@@ -236,16 +234,15 @@ internal class IncomingTransactionTest {
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
         assertThat(incomingTransaction.source())
             .isEqualTo(
-                TransactionSourceOneOf.ofAccountSource(
-                    TransactionSourceOneOf.AccountSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                TransactionSourceOneOf.ofAccount(
+                    TransactionSourceOneOf.Account.builder()
                         .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .onChainTransaction(
-                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                 .network(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
-                                        .SOLANA
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
                                 )
                                 .transactionHash(
                                     "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
@@ -267,16 +264,16 @@ internal class IncomingTransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    IncomingTransaction.Destination.AccountDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                    IncomingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .onChainTransaction(
-                            IncomingTransaction.Destination.AccountDestination.OnChainTransaction
-                                .builder()
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
                                 .network(
-                                    IncomingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
                                         .Network
                                         .SOLANA
                                 )
@@ -353,15 +350,14 @@ internal class IncomingTransactionTest {
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .source(
-                    TransactionSourceOneOf.AccountSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                    TransactionSourceOneOf.Account.builder()
                         .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .onChainTransaction(
-                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                 .network(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
-                                        .SOLANA
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
                                 )
                                 .transactionHash(
                                     "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"

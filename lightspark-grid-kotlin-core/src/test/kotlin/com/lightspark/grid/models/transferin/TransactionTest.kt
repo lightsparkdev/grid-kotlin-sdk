@@ -13,7 +13,6 @@ import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
-import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
@@ -35,16 +34,16 @@ internal class TransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    IncomingTransaction.Destination.AccountDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                    IncomingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .onChainTransaction(
-                            IncomingTransaction.Destination.AccountDestination.OnChainTransaction
-                                .builder()
+                            IncomingTransaction.Destination.Account.OnChainTransaction.builder()
                                 .network(
-                                    IncomingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    IncomingTransaction.Destination.Account.OnChainTransaction
                                         .Network
                                         .SOLANA
                                 )
@@ -121,15 +120,14 @@ internal class TransactionTest {
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .source(
-                    TransactionSourceOneOf.AccountSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                    TransactionSourceOneOf.Account.builder()
                         .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .onChainTransaction(
-                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                 .network(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
-                                        .SOLANA
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
                                 )
                                 .transactionHash(
                                     "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
@@ -157,17 +155,16 @@ internal class TransactionTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
-                        IncomingTransaction.Destination.AccountDestination.builder()
-                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        IncomingTransaction.Destination.Account.builder()
                             .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .onChainTransaction(
-                                IncomingTransaction.Destination.AccountDestination
-                                    .OnChainTransaction
-                                    .builder()
+                                IncomingTransaction.Destination.Account.OnChainTransaction.builder()
                                     .network(
-                                        IncomingTransaction.Destination.AccountDestination
-                                            .OnChainTransaction
+                                        IncomingTransaction.Destination.Account.OnChainTransaction
                                             .Network
                                             .SOLANA
                                     )
@@ -246,15 +243,14 @@ internal class TransactionTest {
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .source(
-                        TransactionSourceOneOf.AccountSource.builder()
-                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        TransactionSourceOneOf.Account.builder()
                             .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .onChainTransaction(
-                                TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                     .network(
-                                        TransactionSourceOneOf.AccountSource.OnChainTransaction
-                                            .Network
+                                        TransactionSourceOneOf.Account.OnChainTransaction.Network
                                             .SOLANA
                                     )
                                     .transactionHash(
@@ -284,16 +280,16 @@ internal class TransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    OutgoingTransaction.Destination.AccountDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                    OutgoingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            OutgoingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .onChainTransaction(
-                            OutgoingTransaction.Destination.AccountDestination.OnChainTransaction
-                                .builder()
+                            OutgoingTransaction.Destination.Account.OnChainTransaction.builder()
                                 .network(
-                                    OutgoingTransaction.Destination.AccountDestination
-                                        .OnChainTransaction
+                                    OutgoingTransaction.Destination.Account.OnChainTransaction
                                         .Network
                                         .SOLANA
                                 )
@@ -320,15 +316,14 @@ internal class TransactionTest {
                         .build()
                 )
                 .source(
-                    TransactionSourceOneOf.AccountSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                    TransactionSourceOneOf.Account.builder()
                         .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .onChainTransaction(
-                            TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                            TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                 .network(
-                                    TransactionSourceOneOf.AccountSource.OnChainTransaction.Network
-                                        .SOLANA
+                                    TransactionSourceOneOf.Account.OnChainTransaction.Network.SOLANA
                                 )
                                 .transactionHash(
                                     "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
@@ -466,17 +461,16 @@ internal class TransactionTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
-                        OutgoingTransaction.Destination.AccountDestination.builder()
-                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        OutgoingTransaction.Destination.Account.builder()
                             .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                OutgoingTransaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .onChainTransaction(
-                                OutgoingTransaction.Destination.AccountDestination
-                                    .OnChainTransaction
-                                    .builder()
+                                OutgoingTransaction.Destination.Account.OnChainTransaction.builder()
                                     .network(
-                                        OutgoingTransaction.Destination.AccountDestination
-                                            .OnChainTransaction
+                                        OutgoingTransaction.Destination.Account.OnChainTransaction
                                             .Network
                                             .SOLANA
                                     )
@@ -503,15 +497,14 @@ internal class TransactionTest {
                             .build()
                     )
                     .source(
-                        TransactionSourceOneOf.AccountSource.builder()
-                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        TransactionSourceOneOf.Account.builder()
                             .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .onChainTransaction(
-                                TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                TransactionSourceOneOf.Account.OnChainTransaction.builder()
                                     .network(
-                                        TransactionSourceOneOf.AccountSource.OnChainTransaction
-                                            .Network
+                                        TransactionSourceOneOf.Account.OnChainTransaction.Network
                                             .SOLANA
                                     )
                                     .transactionHash(

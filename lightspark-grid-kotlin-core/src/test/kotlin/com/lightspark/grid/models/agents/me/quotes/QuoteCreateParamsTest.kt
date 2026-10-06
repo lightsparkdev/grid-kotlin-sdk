@@ -4,8 +4,6 @@ package com.lightspark.grid.models.agents.me.quotes
 
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.http.Headers
-import com.lightspark.grid.models.quotes.BaseDestination
-import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
@@ -22,7 +20,6 @@ internal class QuoteCreateParamsTest {
                 QuoteRequest.builder()
                     .destination(
                         QuoteDestinationOneOf.Account.builder()
-                            .destinationType(BaseDestination.DestinationType.ACCOUNT)
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                             .build()
@@ -31,7 +28,6 @@ internal class QuoteCreateParamsTest {
                     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                     .source(
                         QuoteSourceOneOf.Account.builder()
-                            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .build()
@@ -80,7 +76,6 @@ internal class QuoteCreateParamsTest {
                     QuoteRequest.builder()
                         .destination(
                             QuoteDestinationOneOf.Account.builder()
-                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                                 .build()
@@ -89,7 +84,6 @@ internal class QuoteCreateParamsTest {
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.Account.builder()
-                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -139,20 +133,10 @@ internal class QuoteCreateParamsTest {
             QuoteCreateParams.builder()
                 .quoteRequest(
                     QuoteRequest.builder()
-                        .destination(
-                            QuoteDestinationOneOf.Account.builder()
-                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
-                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .build()
-                        )
+                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .lockedCurrencyAmount(1000L)
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.Account.builder()
-                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
-                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .build()
-                        )
+                        .accountSource("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
                 .build()
@@ -171,7 +155,6 @@ internal class QuoteCreateParamsTest {
                     QuoteRequest.builder()
                         .destination(
                             QuoteDestinationOneOf.Account.builder()
-                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                                 .build()
@@ -180,7 +163,6 @@ internal class QuoteCreateParamsTest {
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.Account.builder()
-                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -226,7 +208,6 @@ internal class QuoteCreateParamsTest {
                 QuoteRequest.builder()
                     .destination(
                         QuoteDestinationOneOf.Account.builder()
-                            .destinationType(BaseDestination.DestinationType.ACCOUNT)
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                             .build()
@@ -235,7 +216,6 @@ internal class QuoteCreateParamsTest {
                     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                     .source(
                         QuoteSourceOneOf.Account.builder()
-                            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .build()
@@ -280,20 +260,10 @@ internal class QuoteCreateParamsTest {
             QuoteCreateParams.builder()
                 .quoteRequest(
                     QuoteRequest.builder()
-                        .destination(
-                            QuoteDestinationOneOf.Account.builder()
-                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
-                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .build()
-                        )
+                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .lockedCurrencyAmount(1000L)
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.Account.builder()
-                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
-                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .build()
-                        )
+                        .accountSource("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
                 .build()
@@ -303,20 +273,10 @@ internal class QuoteCreateParamsTest {
         assertThat(body)
             .isEqualTo(
                 QuoteRequest.builder()
-                    .destination(
-                        QuoteDestinationOneOf.Account.builder()
-                            .destinationType(BaseDestination.DestinationType.ACCOUNT)
-                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                            .build()
-                    )
+                    .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .lockedCurrencyAmount(1000L)
                     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(
-                        QuoteSourceOneOf.Account.builder()
-                            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
-                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .build()
-                    )
+                    .accountSource("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .build()
             )
     }

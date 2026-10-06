@@ -455,6 +455,17 @@ private constructor(
             destination(QuoteDestinationOneOf.ofAccount(account))
 
         /**
+         * Alias for calling [destination] with the following:
+         * ```kotlin
+         * QuoteDestinationOneOf.Account.builder()
+         *     .accountId(accountId)
+         *     .build()
+         * ```
+         */
+        fun accountDestination(accountId: String) =
+            destination(QuoteDestinationOneOf.Account.builder().accountId(accountId).build())
+
+        /**
          * Alias for calling [destination] with `QuoteDestinationOneOf.ofUmaAddress(umaAddress)`.
          */
         fun destination(umaAddress: QuoteDestinationOneOf.UmaAddress) =
@@ -515,10 +526,32 @@ private constructor(
         fun source(account: QuoteSourceOneOf.Account) = source(QuoteSourceOneOf.ofAccount(account))
 
         /**
-         * Alias for calling [source] with `QuoteSourceOneOf.ofRealTimeFunding(realTimeFunding)`.
+         * Alias for calling [source] with the following:
+         * ```kotlin
+         * QuoteSourceOneOf.Account.builder()
+         *     .accountId(accountId)
+         *     .build()
+         * ```
          */
-        fun source(realTimeFunding: QuoteSourceOneOf.RealTimeFunding) =
-            source(QuoteSourceOneOf.ofRealTimeFunding(realTimeFunding))
+        fun accountSource(accountId: String) =
+            source(QuoteSourceOneOf.Account.builder().accountId(accountId).build())
+
+        /**
+         * Alias for calling [source] with `QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding)`.
+         */
+        fun source(realtimeFunding: QuoteSourceOneOf.RealtimeFunding) =
+            source(QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding))
+
+        /**
+         * Alias for calling [source] with the following:
+         * ```kotlin
+         * QuoteSourceOneOf.RealtimeFunding.builder()
+         *     .currency(currency)
+         *     .build()
+         * ```
+         */
+        fun realtimeFundingSource(currency: String) =
+            source(QuoteSourceOneOf.RealtimeFunding.builder().currency(currency).build())
 
         /** Optional description/memo for the transfer */
         fun description(description: String) = description(JsonField.of(description))
