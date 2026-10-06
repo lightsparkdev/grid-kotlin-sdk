@@ -15,10 +15,22 @@ internal class QuoteCreateParamsTest {
             .idempotencyKey("<uuid>")
             .quoteRequest(
                 QuoteRequest.builder()
-                    .destination(QuoteDestinationOneOf.builder().build())
+                    .destination(
+                        QuoteDestinationOneOf.Account.builder()
+                            .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .paymentRail(JsonValue.from("ACH"))
+                            .build()
+                    )
                     .lockedCurrencyAmount(1000L)
                     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(QuoteSourceOneOf.builder().build())
+                    .source(
+                        QuoteSourceOneOf.Account.builder()
+                            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .build()
+                    )
                     .description("Invoice #1234 payment")
                     .documentIds(
                         listOf(
@@ -61,10 +73,22 @@ internal class QuoteCreateParamsTest {
                 .idempotencyKey("<uuid>")
                 .quoteRequest(
                     QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
+                        .destination(
+                            QuoteDestinationOneOf.Account.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .paymentRail(JsonValue.from("ACH"))
+                                .build()
+                        )
                         .lockedCurrencyAmount(1000L)
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
+                        .source(
+                            QuoteSourceOneOf.Account.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .build()
+                        )
                         .description("Invoice #1234 payment")
                         .documentIds(
                             listOf(
@@ -110,10 +134,20 @@ internal class QuoteCreateParamsTest {
             QuoteCreateParams.builder()
                 .quoteRequest(
                     QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
+                        .destination(
+                            QuoteDestinationOneOf.Account.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(1000L)
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
+                        .source(
+                            QuoteSourceOneOf.Account.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -130,10 +164,22 @@ internal class QuoteCreateParamsTest {
                 .idempotencyKey("<uuid>")
                 .quoteRequest(
                     QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
+                        .destination(
+                            QuoteDestinationOneOf.Account.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .paymentRail(JsonValue.from("ACH"))
+                                .build()
+                        )
                         .lockedCurrencyAmount(1000L)
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
+                        .source(
+                            QuoteSourceOneOf.Account.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .build()
+                        )
                         .description("Invoice #1234 payment")
                         .documentIds(
                             listOf(
@@ -173,10 +219,22 @@ internal class QuoteCreateParamsTest {
         assertThat(body)
             .isEqualTo(
                 QuoteRequest.builder()
-                    .destination(QuoteDestinationOneOf.builder().build())
+                    .destination(
+                        QuoteDestinationOneOf.Account.builder()
+                            .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .paymentRail(JsonValue.from("ACH"))
+                            .build()
+                    )
                     .lockedCurrencyAmount(1000L)
                     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(QuoteSourceOneOf.builder().build())
+                    .source(
+                        QuoteSourceOneOf.Account.builder()
+                            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .build()
+                    )
                     .description("Invoice #1234 payment")
                     .documentIds(
                         listOf(
@@ -217,10 +275,20 @@ internal class QuoteCreateParamsTest {
             QuoteCreateParams.builder()
                 .quoteRequest(
                     QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
+                        .destination(
+                            QuoteDestinationOneOf.Account.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(1000L)
                         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
+                        .source(
+                            QuoteSourceOneOf.Account.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -230,10 +298,20 @@ internal class QuoteCreateParamsTest {
         assertThat(body)
             .isEqualTo(
                 QuoteRequest.builder()
-                    .destination(QuoteDestinationOneOf.builder().build())
+                    .destination(
+                        QuoteDestinationOneOf.Account.builder()
+                            .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .build()
+                    )
                     .lockedCurrencyAmount(1000L)
                     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(QuoteSourceOneOf.builder().build())
+                    .source(
+                        QuoteSourceOneOf.Account.builder()
+                            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .build()
+                    )
                     .build()
             )
     }
