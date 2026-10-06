@@ -11,6 +11,15 @@ The Lightspark Grid Kotlin SDK provides convenient access to the [Lightspark Gri
 
 It is generated with [Stainless](https://www.stainless.com/).
 
+## MCP Server
+
+Use the Lightspark Grid MCP Server to enable AI assistants to interact with this API, allowing them to explore endpoints, make test requests, and use documentation to help integrate this SDK into your application.
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=%40lightsparkdev%2Fgrid-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBsaWdodHNwYXJrZGV2L2dyaWQtbWNwIl0sImVudiI6eyJHUklEX0NMSUVOVF9JRCI6Ik15IFVzZXJuYW1lIiwiR1JJRF9DTElFTlRfU0VDUkVUIjoiTXkgUGFzc3dvcmQiLCJHUklEX0FHRU5UX0FDQ0VTU19UT0tFTiI6Ik15IEFnZW50IEFjY2VzcyBUb2tlbiIsIkdSSURfV0VCSE9PS19QVUJLRVkiOiJNeSBXZWJob29rIFNpZ25hdHVyZSJ9fQ)
+[![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22%40lightsparkdev%2Fgrid-mcp%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40lightsparkdev%2Fgrid-mcp%22%5D%2C%22env%22%3A%7B%22GRID_CLIENT_ID%22%3A%22My%20Username%22%2C%22GRID_CLIENT_SECRET%22%3A%22My%20Password%22%2C%22GRID_AGENT_ACCESS_TOKEN%22%3A%22My%20Agent%20Access%20Token%22%2C%22GRID_WEBHOOK_PUBKEY%22%3A%22My%20Webhook%20Signature%22%7D%7D)
+
+> Note: You may need to set environment variables in your MCP client.
+
 <!-- x-release-please-start-version -->
 
 KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.10.0).
@@ -48,6 +57,8 @@ This library requires Java 8 or later.
 ```kotlin
 import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
@@ -58,10 +69,16 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteRequest = QuoteRequest.builder()
-    .destination(QuoteDestinationOneOf.builder().build())
+    .destination(QuoteDestinationOneOf.Account.builder()
+        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+        .build())
     .lockedCurrencyAmount(1000L)
     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder().build())
+    .source(QuoteSourceOneOf.Account.builder()
+        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+        .build())
     .build()
 val quote: Quote = client.quotes().create(params)
 ```
@@ -159,6 +176,8 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```kotlin
 import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
@@ -169,10 +188,16 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteRequest = QuoteRequest.builder()
-    .destination(QuoteDestinationOneOf.builder().build())
+    .destination(QuoteDestinationOneOf.Account.builder()
+        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+        .build())
     .lockedCurrencyAmount(1000L)
     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder().build())
+    .source(QuoteSourceOneOf.Account.builder()
+        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+        .build())
     .build()
 val quote: Quote = client.async().quotes().create(params)
 ```
@@ -182,6 +207,8 @@ Or create an asynchronous client from the beginning:
 ```kotlin
 import com.lightspark.grid.client.LightsparkGridClientAsync
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
@@ -192,10 +219,16 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 val client: LightsparkGridClientAsync = LightsparkGridOkHttpClientAsync.fromEnv()
 
 val params: QuoteRequest = QuoteRequest.builder()
-    .destination(QuoteDestinationOneOf.builder().build())
+    .destination(QuoteDestinationOneOf.Account.builder()
+        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+        .build())
     .lockedCurrencyAmount(1000L)
     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder().build())
+    .source(QuoteSourceOneOf.Account.builder()
+        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+        .build())
     .build()
 val quote: Quote = client.quotes().create(params)
 ```
@@ -271,16 +304,24 @@ To access this data, prefix any HTTP method call on a client or service with `wi
 ```kotlin
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteRequest = QuoteRequest.builder()
-    .destination(QuoteDestinationOneOf.builder().build())
+    .destination(QuoteDestinationOneOf.Account.builder()
+        .destinationType(BaseDestination.DestinationType.ACCOUNT)
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+        .build())
     .lockedCurrencyAmount(1000L)
     .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder().build())
+    .source(QuoteSourceOneOf.Account.builder()
+        .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+        .build())
     .build()
 val quote: HttpResponseFor<Quote> = client.quotes().withRawResponse().create(params)
 
@@ -610,6 +651,8 @@ These can be accessed on the built object later using the `_additionalHeaders()`
 To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/core/Values.kt) object to its setter:
 
 ```kotlin
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
@@ -617,10 +660,16 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .quoteRequest(QuoteRequest.builder()
-        .destination(QuoteDestinationOneOf.builder().build())
+        .destination(QuoteDestinationOneOf.Account.builder()
+            .destinationType(BaseDestination.DestinationType.ACCOUNT)
+            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+            .build())
         .lockedCurrencyAmount(1000L)
         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-        .source(QuoteSourceOneOf.builder().build())
+        .source(QuoteSourceOneOf.Account.builder()
+            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+            .build())
         .build())
     .build()
 ```
@@ -666,6 +715,8 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](lightspa
 
 ```kotlin
 import com.lightspark.grid.core.JsonMissing
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteRequest
@@ -673,10 +724,16 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .quoteRequest(QuoteRequest.builder()
-        .destination(QuoteDestinationOneOf.builder().build())
+        .destination(QuoteDestinationOneOf.Account.builder()
+            .destinationType(BaseDestination.DestinationType.ACCOUNT)
+            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+            .build())
         .lockedCurrencyAmount(1000L)
         .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-        .source(QuoteSourceOneOf.builder().build())
+        .source(QuoteSourceOneOf.Account.builder()
+            .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
+            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+            .build())
         .build())
     .destination(JsonMissing.of())
     .build()
