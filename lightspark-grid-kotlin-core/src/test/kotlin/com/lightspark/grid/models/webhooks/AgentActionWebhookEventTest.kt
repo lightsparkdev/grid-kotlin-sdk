@@ -43,7 +43,14 @@ internal class AgentActionWebhookEventTest {
                             Quote.builder()
                                 .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .exchangeRate(1.0)
                                 .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                                 .feesIncluded(10L)
@@ -63,7 +70,14 @@ internal class AgentActionWebhookEventTest {
                                         .symbol("\$")
                                         .build()
                                 )
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .status(Quote.Status.PENDING)
                                 .totalReceivingAmount(1000L)
                                 .totalSendingAmount(123010L)
@@ -120,24 +134,15 @@ internal class AgentActionWebhookEventTest {
                                 .addPaymentInstruction(
                                     PaymentInstructions.builder()
                                         .accountOrWalletInfo(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                            PaymentInstructions.AccountOrWalletInfo.SparkWallet
                                                 .builder()
-                                                .accountHolderName("Acme Exports Pte Ltd")
-                                                .bankName("Deutsche Bank")
-                                                .country("NG")
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SwiftAccount
-                                                        .PaymentRail
-                                                        .SWIFT
+                                                .address(
+                                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                                 )
-                                                .swiftCode("DEUTDEFF")
-                                                .accountNumber("1234567890")
-                                                .bankAddress(
-                                                    "12 Marina Boulevard, Singapore 018982"
+                                                .assetType("BTC")
+                                                .invoice(
+                                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
                                                 )
-                                                .iban("GB29NWBK60161331926819")
-                                                .reference("UMA-Q12345-REF")
                                                 .build()
                                         )
                                         .instructionsNotes(
@@ -184,7 +189,33 @@ internal class AgentActionWebhookEventTest {
                             IncomingTransaction.builder()
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .destination(JsonValue.from(mapOf<String, Any>()))
+                                .destination(
+                                    IncomingTransaction.Destination.Account.builder()
+                                        .currency("EUR")
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .destinationType(
+                                            IncomingTransaction.Destination.Account.DestinationType
+                                                .ACCOUNT
+                                        )
+                                        .onChainTransaction(
+                                            IncomingTransaction.Destination.Account
+                                                .OnChainTransaction
+                                                .builder()
+                                                .network(
+                                                    IncomingTransaction.Destination.Account
+                                                        .OnChainTransaction
+                                                        .Network
+                                                        .SOLANA
+                                                )
+                                                .transactionHash(
+                                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                                )
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
                                 .status(TransactionStatus.CREATED)
@@ -257,7 +288,31 @@ internal class AgentActionWebhookEventTest {
                                         .build()
                                 )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .source(TransactionSourceOneOf.builder().build())
+                                .source(
+                                    TransactionSourceOneOf.Account.builder()
+                                        .currency("USD")
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .sourceType(
+                                            TransactionSourceOneOf.Account.SourceType.ACCOUNT
+                                        )
+                                        .onChainTransaction(
+                                            TransactionSourceOneOf.Account.OnChainTransaction
+                                                .builder()
+                                                .network(
+                                                    TransactionSourceOneOf.Account
+                                                        .OnChainTransaction
+                                                        .Network
+                                                        .SOLANA
+                                                )
+                                                .transactionHash(
+                                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                                )
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .build()
                         )
@@ -284,7 +339,14 @@ internal class AgentActionWebhookEventTest {
                         Quote.builder()
                             .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                             .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                            .destination(QuoteDestinationOneOf.builder().build())
+                            .destination(
+                                QuoteDestinationOneOf.Account.builder()
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                    .build()
+                            )
                             .exchangeRate(1.0)
                             .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                             .feesIncluded(10L)
@@ -304,7 +366,14 @@ internal class AgentActionWebhookEventTest {
                                     .symbol("\$")
                                     .build()
                             )
-                            .source(QuoteSourceOneOf.builder().build())
+                            .source(
+                                QuoteSourceOneOf.Account.builder()
+                                    .accountId(
+                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                    )
+                                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                    .build()
+                            )
                             .status(Quote.Status.PENDING)
                             .totalReceivingAmount(1000L)
                             .totalSendingAmount(123010L)
@@ -355,21 +424,15 @@ internal class AgentActionWebhookEventTest {
                             .addPaymentInstruction(
                                 PaymentInstructions.builder()
                                     .accountOrWalletInfo(
-                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                        PaymentInstructions.AccountOrWalletInfo.SparkWallet
                                             .builder()
-                                            .accountHolderName("Acme Exports Pte Ltd")
-                                            .bankName("Deutsche Bank")
-                                            .country("NG")
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                    .PaymentRail
-                                                    .SWIFT
+                                            .address(
+                                                "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                             )
-                                            .swiftCode("DEUTDEFF")
-                                            .accountNumber("1234567890")
-                                            .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                            .iban("GB29NWBK60161331926819")
-                                            .reference("UMA-Q12345-REF")
+                                            .assetType("BTC")
+                                            .invoice(
+                                                "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                            )
                                             .build()
                                     )
                                     .instructionsNotes(
@@ -412,7 +475,32 @@ internal class AgentActionWebhookEventTest {
                         IncomingTransaction.builder()
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .destination(JsonValue.from(mapOf<String, Any>()))
+                            .destination(
+                                IncomingTransaction.Destination.Account.builder()
+                                    .currency("EUR")
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .destinationType(
+                                        IncomingTransaction.Destination.Account.DestinationType
+                                            .ACCOUNT
+                                    )
+                                    .onChainTransaction(
+                                        IncomingTransaction.Destination.Account.OnChainTransaction
+                                            .builder()
+                                            .network(
+                                                IncomingTransaction.Destination.Account
+                                                    .OnChainTransaction
+                                                    .Network
+                                                    .SOLANA
+                                            )
+                                            .transactionHash(
+                                                "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                            )
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .direction(IncomingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .status(TransactionStatus.CREATED)
@@ -484,7 +572,27 @@ internal class AgentActionWebhookEventTest {
                                     .build()
                             )
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                            .source(TransactionSourceOneOf.builder().build())
+                            .source(
+                                TransactionSourceOneOf.Account.builder()
+                                    .currency("USD")
+                                    .accountId(
+                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                    )
+                                    .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                                    .onChainTransaction(
+                                        TransactionSourceOneOf.Account.OnChainTransaction.builder()
+                                            .network(
+                                                TransactionSourceOneOf.Account.OnChainTransaction
+                                                    .Network
+                                                    .SOLANA
+                                            )
+                                            .transactionHash(
+                                                "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                            )
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .build()
                     )
@@ -516,7 +624,14 @@ internal class AgentActionWebhookEventTest {
                             Quote.builder()
                                 .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.Account.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
+                                        .build()
+                                )
                                 .exchangeRate(1.0)
                                 .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                                 .feesIncluded(10L)
@@ -536,7 +651,14 @@ internal class AgentActionWebhookEventTest {
                                         .symbol("\$")
                                         .build()
                                 )
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.Account.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .status(Quote.Status.PENDING)
                                 .totalReceivingAmount(1000L)
                                 .totalSendingAmount(123010L)
@@ -593,24 +715,15 @@ internal class AgentActionWebhookEventTest {
                                 .addPaymentInstruction(
                                     PaymentInstructions.builder()
                                         .accountOrWalletInfo(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
+                                            PaymentInstructions.AccountOrWalletInfo.SparkWallet
                                                 .builder()
-                                                .accountHolderName("Acme Exports Pte Ltd")
-                                                .bankName("Deutsche Bank")
-                                                .country("NG")
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SwiftAccount
-                                                        .PaymentRail
-                                                        .SWIFT
+                                                .address(
+                                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                                 )
-                                                .swiftCode("DEUTDEFF")
-                                                .accountNumber("1234567890")
-                                                .bankAddress(
-                                                    "12 Marina Boulevard, Singapore 018982"
+                                                .assetType("BTC")
+                                                .invoice(
+                                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
                                                 )
-                                                .iban("GB29NWBK60161331926819")
-                                                .reference("UMA-Q12345-REF")
                                                 .build()
                                         )
                                         .instructionsNotes(
@@ -657,7 +770,33 @@ internal class AgentActionWebhookEventTest {
                             IncomingTransaction.builder()
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .destination(JsonValue.from(mapOf<String, Any>()))
+                                .destination(
+                                    IncomingTransaction.Destination.Account.builder()
+                                        .currency("EUR")
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .destinationType(
+                                            IncomingTransaction.Destination.Account.DestinationType
+                                                .ACCOUNT
+                                        )
+                                        .onChainTransaction(
+                                            IncomingTransaction.Destination.Account
+                                                .OnChainTransaction
+                                                .builder()
+                                                .network(
+                                                    IncomingTransaction.Destination.Account
+                                                        .OnChainTransaction
+                                                        .Network
+                                                        .SOLANA
+                                                )
+                                                .transactionHash(
+                                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                                )
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
                                 .status(TransactionStatus.CREATED)
@@ -730,7 +869,31 @@ internal class AgentActionWebhookEventTest {
                                         .build()
                                 )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .source(TransactionSourceOneOf.builder().build())
+                                .source(
+                                    TransactionSourceOneOf.Account.builder()
+                                        .currency("USD")
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .sourceType(
+                                            TransactionSourceOneOf.Account.SourceType.ACCOUNT
+                                        )
+                                        .onChainTransaction(
+                                            TransactionSourceOneOf.Account.OnChainTransaction
+                                                .builder()
+                                                .network(
+                                                    TransactionSourceOneOf.Account
+                                                        .OnChainTransaction
+                                                        .Network
+                                                        .SOLANA
+                                                )
+                                                .transactionHash(
+                                                    "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                                )
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .build()
                         )

@@ -10,7 +10,6 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -18,28 +17,14 @@ import java.util.Objects
 class BaseTransactionDestination
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val destinationType: JsonValue,
     private val currency: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("destinationType")
-        @ExcludeMissing
-        destinationType: JsonValue = JsonMissing.of(),
-        @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
-    ) : this(destinationType, currency, mutableMapOf())
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = baseTransactionDestination.destinationType().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("destinationType")
-    @ExcludeMissing
-    fun _destinationType(): JsonValue = destinationType
+        @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of()
+    ) : this(currency, mutableMapOf())
 
     /**
      * Currency code for the destination
@@ -72,11 +57,6 @@ private constructor(
 
         /**
          * Returns a mutable builder for constructing an instance of [BaseTransactionDestination].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .destinationType()
-         * ```
          */
         fun builder() = Builder()
     }
@@ -84,18 +64,12 @@ private constructor(
     /** A builder for [BaseTransactionDestination]. */
     class Builder internal constructor() {
 
-        private var destinationType: JsonValue? = null
         private var currency: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(baseTransactionDestination: BaseTransactionDestination) = apply {
-            destinationType = baseTransactionDestination.destinationType
             currency = baseTransactionDestination.currency
             additionalProperties = baseTransactionDestination.additionalProperties.toMutableMap()
-        }
-
-        fun destinationType(destinationType: JsonValue) = apply {
-            this.destinationType = destinationType
         }
 
         /** Currency code for the destination */
@@ -132,20 +106,9 @@ private constructor(
          * Returns an immutable instance of [BaseTransactionDestination].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .destinationType()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): BaseTransactionDestination =
-            BaseTransactionDestination(
-                checkRequired("destinationType", destinationType),
-                currency,
-                additionalProperties.toMutableMap(),
-            )
+            BaseTransactionDestination(currency, additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -188,17 +151,14 @@ private constructor(
         }
 
         return other is BaseTransactionDestination &&
-            destinationType == other.destinationType &&
             currency == other.currency &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy {
-        Objects.hash(destinationType, currency, additionalProperties)
-    }
+    private val hashCode: Int by lazy { Objects.hash(currency, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BaseTransactionDestination{destinationType=$destinationType, currency=$currency, additionalProperties=$additionalProperties}"
+        "BaseTransactionDestination{currency=$currency, additionalProperties=$additionalProperties}"
 }
