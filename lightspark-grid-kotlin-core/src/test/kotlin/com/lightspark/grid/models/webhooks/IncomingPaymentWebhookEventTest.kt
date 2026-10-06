@@ -10,10 +10,12 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
+import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
+import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -29,7 +31,28 @@ internal class IncomingPaymentWebhookEventTest {
                     IncomingPaymentWebhookEvent.Data.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(
+                            IncomingTransaction.Destination.AccountDestination.builder()
+                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                                .currency("EUR")
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .onChainTransaction(
+                                    IncomingTransaction.Destination.AccountDestination
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            IncomingTransaction.Destination.AccountDestination
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
@@ -97,7 +120,26 @@ internal class IncomingPaymentWebhookEventTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(TransactionSourceOneOf.builder().build())
+                        .source(
+                            TransactionSourceOneOf.AccountSource.builder()
+                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                                .currency("USD")
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .onChainTransaction(
+                                    TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .addRequestedReceiverCustomerInfoField(
                             CounterpartyFieldDefinition.builder()
@@ -118,7 +160,28 @@ internal class IncomingPaymentWebhookEventTest {
                 IncomingPaymentWebhookEvent.Data.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .destination(JsonValue.from(mapOf<String, Any>()))
+                    .destination(
+                        IncomingTransaction.Destination.AccountDestination.builder()
+                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .onChainTransaction(
+                                IncomingTransaction.Destination.AccountDestination
+                                    .OnChainTransaction
+                                    .builder()
+                                    .network(
+                                        IncomingTransaction.Destination.AccountDestination
+                                            .OnChainTransaction
+                                            .Network
+                                            .SOLANA
+                                    )
+                                    .transactionHash(
+                                        "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .direction(IncomingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .status(TransactionStatus.CREATED)
@@ -186,7 +249,25 @@ internal class IncomingPaymentWebhookEventTest {
                             .build()
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                    .source(TransactionSourceOneOf.builder().build())
+                    .source(
+                        TransactionSourceOneOf.AccountSource.builder()
+                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .onChainTransaction(
+                                TransactionSourceOneOf.AccountSource.OnChainTransaction.builder()
+                                    .network(
+                                        TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                            .Network
+                                            .SOLANA
+                                    )
+                                    .transactionHash(
+                                        "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .addRequestedReceiverCustomerInfoField(
                         CounterpartyFieldDefinition.builder()
@@ -212,7 +293,28 @@ internal class IncomingPaymentWebhookEventTest {
                     IncomingPaymentWebhookEvent.Data.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(
+                            IncomingTransaction.Destination.AccountDestination.builder()
+                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                                .currency("EUR")
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .onChainTransaction(
+                                    IncomingTransaction.Destination.AccountDestination
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            IncomingTransaction.Destination.AccountDestination
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
@@ -280,7 +382,26 @@ internal class IncomingPaymentWebhookEventTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(TransactionSourceOneOf.builder().build())
+                        .source(
+                            TransactionSourceOneOf.AccountSource.builder()
+                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                                .currency("USD")
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .onChainTransaction(
+                                    TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            TransactionSourceOneOf.AccountSource.OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .addRequestedReceiverCustomerInfoField(
                             CounterpartyFieldDefinition.builder()
