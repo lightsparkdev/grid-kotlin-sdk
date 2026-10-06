@@ -58,7 +58,7 @@ internal class ServiceParamsTest {
                             QuoteDestinationOneOf.Account.builder()
                                 .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .paymentRail(JsonValue.from("ACH"))
+                                .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                                 .build()
                         )
                         .lockedCurrencyAmount(1000L)

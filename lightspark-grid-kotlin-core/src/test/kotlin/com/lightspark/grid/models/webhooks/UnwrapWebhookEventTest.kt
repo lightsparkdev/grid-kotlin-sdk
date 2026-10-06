@@ -80,7 +80,7 @@ internal class UnwrapWebhookEventTest {
                                         .accountId(
                                             "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                                         )
-                                        .paymentRail(JsonValue.from("ACH"))
+                                        .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                                         .build()
                                 )
                                 .exchangeRate(1.0)
@@ -402,7 +402,9 @@ internal class UnwrapWebhookEventTest {
                                             .accountId(
                                                 "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                                             )
-                                            .paymentRail(JsonValue.from("ACH"))
+                                            .paymentRail(
+                                                QuoteDestinationOneOf.Account.PaymentRail.ACH
+                                            )
                                             .build()
                                     )
                                     .exchangeRate(1.0)

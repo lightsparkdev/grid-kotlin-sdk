@@ -4,7 +4,6 @@ package com.lightspark.grid.proguard
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
 import com.lightspark.grid.models.quotes.BaseDestination
@@ -107,7 +106,7 @@ internal class ProGuardCompatibilityTest {
                 QuoteDestinationOneOf.Account.builder()
                     .destinationType(BaseDestination.DestinationType.ACCOUNT)
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .paymentRail(JsonValue.from("ACH"))
+                    .paymentRail(QuoteDestinationOneOf.Account.PaymentRail.ACH)
                     .build()
             )
 
