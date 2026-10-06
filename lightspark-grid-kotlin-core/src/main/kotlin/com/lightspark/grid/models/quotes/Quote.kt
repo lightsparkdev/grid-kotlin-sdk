@@ -144,6 +144,8 @@ private constructor(
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
     /**
+     * Destination account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -199,6 +201,8 @@ private constructor(
     fun sendingCurrency(): Currency = sendingCurrency.getRequired("sendingCurrency")
 
     /**
+     * Source account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -601,6 +605,7 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
+        /** Destination account details */
         fun destination(destination: QuoteDestinationOneOf) = destination(JsonField.of(destination))
 
         /**
@@ -613,6 +618,16 @@ private constructor(
         fun destination(destination: JsonField<QuoteDestinationOneOf>) = apply {
             this.destination = destination
         }
+
+        /** Alias for calling [destination] with `QuoteDestinationOneOf.ofAccount(account)`. */
+        fun destination(account: QuoteDestinationOneOf.Account) =
+            destination(QuoteDestinationOneOf.ofAccount(account))
+
+        /**
+         * Alias for calling [destination] with `QuoteDestinationOneOf.ofUmaAddress(umaAddress)`.
+         */
+        fun destination(umaAddress: QuoteDestinationOneOf.UmaAddress) =
+            destination(QuoteDestinationOneOf.ofUmaAddress(umaAddress))
 
         /**
          * Number of sending currency units per receiving currency unit. The rate is fee-exclusive:
@@ -697,6 +712,7 @@ private constructor(
             this.sendingCurrency = sendingCurrency
         }
 
+        /** Source account details */
         fun source(source: QuoteSourceOneOf) = source(JsonField.of(source))
 
         /**
@@ -707,6 +723,15 @@ private constructor(
          * supported value.
          */
         fun source(source: JsonField<QuoteSourceOneOf>) = apply { this.source = source }
+
+        /** Alias for calling [source] with `QuoteSourceOneOf.ofAccount(account)`. */
+        fun source(account: QuoteSourceOneOf.Account) = source(QuoteSourceOneOf.ofAccount(account))
+
+        /**
+         * Alias for calling [source] with `QuoteSourceOneOf.ofRealTimeFunding(realTimeFunding)`.
+         */
+        fun source(realTimeFunding: QuoteSourceOneOf.RealTimeFunding) =
+            source(QuoteSourceOneOf.ofRealTimeFunding(realTimeFunding))
 
         /**
          * Current status of the quote. `PENDING_AUTHORIZATION` occurs only for customers in a
@@ -1012,11 +1037,13 @@ private constructor(
 
         id()
         createdAt()
+        destination().validate()
         exchangeRate()
         expiresAt()
         feesIncluded()
         receivingCurrency().validate()
         sendingCurrency().validate()
+        source().validate()
         status().validate()
         totalReceivingAmount()
         totalSendingAmount()
@@ -1047,11 +1074,13 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
+            (destination.asKnown()?.validity() ?: 0) +
             (if (exchangeRate.asKnown() == null) 0 else 1) +
             (if (expiresAt.asKnown() == null) 0 else 1) +
             (if (feesIncluded.asKnown() == null) 0 else 1) +
             (receivingCurrency.asKnown()?.validity() ?: 0) +
             (sendingCurrency.asKnown()?.validity() ?: 0) +
+            (source.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
             (if (totalReceivingAmount.asKnown() == null) 0 else 1) +
             (if (totalSendingAmount.asKnown() == null) 0 else 1) +
