@@ -3,7 +3,6 @@
 package com.lightspark.grid.models.exchangerates
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.quotes.Currency
 import java.time.OffsetDateTime
@@ -24,7 +23,7 @@ internal class ExchangeRateTest {
                         .symbol("\$")
                         .build()
                 )
-                .destinationPaymentRail(JsonValue.from("ACH"))
+                .destinationPaymentRail(ExchangeRate.DestinationPaymentRail.UPI)
                 .exchangeRate(0.012121)
                 .fees(ExchangeRate.Fees.builder().fixed(100L).total(100L).build())
                 .maxSendingAmount(10000000L)
@@ -51,7 +50,8 @@ internal class ExchangeRateTest {
                     .symbol("\$")
                     .build()
             )
-        assertThat(exchangeRate._destinationPaymentRail()).isEqualTo(JsonValue.from("ACH"))
+        assertThat(exchangeRate.destinationPaymentRail())
+            .isEqualTo(ExchangeRate.DestinationPaymentRail.UPI)
         assertThat(exchangeRate.exchangeRate()).isEqualTo(0.012121)
         assertThat(exchangeRate.fees())
             .isEqualTo(ExchangeRate.Fees.builder().fixed(100L).total(100L).build())
@@ -84,7 +84,7 @@ internal class ExchangeRateTest {
                         .symbol("\$")
                         .build()
                 )
-                .destinationPaymentRail(JsonValue.from("ACH"))
+                .destinationPaymentRail(ExchangeRate.DestinationPaymentRail.UPI)
                 .exchangeRate(0.012121)
                 .fees(ExchangeRate.Fees.builder().fixed(100L).total(100L).build())
                 .maxSendingAmount(10000000L)

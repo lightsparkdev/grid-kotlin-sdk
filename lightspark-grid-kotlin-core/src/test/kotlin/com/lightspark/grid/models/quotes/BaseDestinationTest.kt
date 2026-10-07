@@ -13,17 +13,14 @@ internal class BaseDestinationTest {
     @Test
     fun create() {
         val baseDestination =
-            BaseDestination.builder().destinationType(JsonValue.from(mapOf<String, Any>())).build()
-
-        assertThat(baseDestination._destinationType())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
+            BaseDestination.builder().putAdditionalProperty("foo", JsonValue.from("bar")).build()
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val baseDestination =
-            BaseDestination.builder().destinationType(JsonValue.from(mapOf<String, Any>())).build()
+            BaseDestination.builder().putAdditionalProperty("foo", JsonValue.from("bar")).build()
 
         val roundtrippedBaseDestination =
             jsonMapper.readValue(

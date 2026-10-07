@@ -11,13 +11,53 @@ internal class SparkWalletInfoTest {
 
     @Test
     fun create() {
-        val sparkWalletInfo = SparkWalletInfo.builder().build()
+        val sparkWalletInfo =
+            SparkWalletInfo.builder()
+                .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
+                .address("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .build()
+
+        assertThat(sparkWalletInfo.accountType())
+            .isEqualTo(SparkWalletInfo.AccountType.SPARK_WALLET)
+        assertThat(sparkWalletInfo.address())
+            .isEqualTo("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
+        assertThat(sparkWalletInfo.beneficiary())
+            .isEqualTo(
+                WalletBeneficiaryOneOf.ofIndividual(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+            )
+        assertThat(sparkWalletInfo.vaspName()).isEqualTo("Kraken")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sparkWalletInfo = SparkWalletInfo.builder().build()
+        val sparkWalletInfo =
+            SparkWalletInfo.builder()
+                .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
+                .address("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .build()
 
         val roundtrippedSparkWalletInfo =
             jsonMapper.readValue(
