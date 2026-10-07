@@ -9,7 +9,6 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
-import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteRetrieveParams
 
 /**
@@ -60,13 +59,6 @@ interface QuoteService {
         params: QuoteCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Quote
-
-    /** @see create */
-    fun create(
-        quoteRequest: QuoteRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Quote =
-        create(QuoteCreateParams.builder().quoteRequest(quoteRequest).build(), requestOptions)
 
     /**
      * Retrieve a quote by its ID. If the quote has been settled, it will include the transaction
@@ -144,14 +136,6 @@ interface QuoteService {
             params: QuoteCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Quote>
-
-        /** @see create */
-        @MustBeClosed
-        fun create(
-            quoteRequest: QuoteRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Quote> =
-            create(QuoteCreateParams.builder().quoteRequest(quoteRequest).build(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /quotes/{quoteId}`, but is otherwise the same as

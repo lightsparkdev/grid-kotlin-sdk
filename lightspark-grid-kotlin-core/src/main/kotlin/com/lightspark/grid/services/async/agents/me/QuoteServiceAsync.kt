@@ -11,7 +11,6 @@ import com.lightspark.grid.models.agents.me.quotes.QuoteCreateParams
 import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteParams
 import com.lightspark.grid.models.agents.me.quotes.QuoteRetrieveParams
 import com.lightspark.grid.models.quotes.Quote
-import com.lightspark.grid.models.quotes.QuoteRequest
 
 /**
  * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -45,13 +44,6 @@ interface QuoteServiceAsync {
         params: QuoteCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Quote
-
-    /** @see create */
-    suspend fun create(
-        quoteRequest: QuoteRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Quote =
-        create(QuoteCreateParams.builder().quoteRequest(quoteRequest).build(), requestOptions)
 
     /**
      * Retrieve a quote created by the authenticated agent. Returns 404 if the quote exists but was
@@ -117,14 +109,6 @@ interface QuoteServiceAsync {
             params: QuoteCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Quote>
-
-        /** @see create */
-        @MustBeClosed
-        suspend fun create(
-            quoteRequest: QuoteRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Quote> =
-            create(QuoteCreateParams.builder().quoteRequest(quoteRequest).build(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /agents/me/quotes/{quoteId}`, but is otherwise the

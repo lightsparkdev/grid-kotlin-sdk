@@ -17,7 +17,6 @@ import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
-import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
@@ -299,7 +298,7 @@ private constructor(
         private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
-        private val refund: JsonField<Refund>,
+        private val refund: JsonField<IncomingTransaction.Refund>,
         private val ruleBasedAccountId: JsonField<String>,
         private val sentAmount: JsonField<CurrencyAmount>,
         private val settledAt: JsonField<OffsetDateTime>,
@@ -362,7 +361,9 @@ private constructor(
             @JsonProperty("reconciliationInstructions")
             @ExcludeMissing
             reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
-            @JsonProperty("refund") @ExcludeMissing refund: JsonField<Refund> = JsonMissing.of(),
+            @JsonProperty("refund")
+            @ExcludeMissing
+            refund: JsonField<IncomingTransaction.Refund> = JsonMissing.of(),
             @JsonProperty("ruleBasedAccountId")
             @ExcludeMissing
             ruleBasedAccountId: JsonField<String> = JsonMissing.of(),
@@ -621,7 +622,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun refund(): Refund? = refund.getNullable("refund")
+        fun refund(): IncomingTransaction.Refund? = refund.getNullable("refund")
 
         /**
          * The `RULE_BASED` internal account whose deposit this transaction sweeps. Present only on
@@ -852,7 +853,9 @@ private constructor(
          *
          * Unlike [refund], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("refund") @ExcludeMissing fun _refund(): JsonField<Refund> = refund
+        @JsonProperty("refund")
+        @ExcludeMissing
+        fun _refund(): JsonField<IncomingTransaction.Refund> = refund
 
         /**
          * Returns the raw JSON value of [ruleBasedAccountId].
@@ -969,7 +972,7 @@ private constructor(
             private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
             private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
                 JsonMissing.of()
-            private var refund: JsonField<Refund> = JsonMissing.of()
+            private var refund: JsonField<IncomingTransaction.Refund> = JsonMissing.of()
             private var ruleBasedAccountId: JsonField<String> = JsonMissing.of()
             private var sentAmount: JsonField<CurrencyAmount> = JsonMissing.of()
             private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -1361,16 +1364,18 @@ private constructor(
             ) = apply { this.reconciliationInstructions = reconciliationInstructions }
 
             /** The refund if transaction was refunded. */
-            fun refund(refund: Refund) = refund(JsonField.of(refund))
+            fun refund(refund: IncomingTransaction.Refund) = refund(JsonField.of(refund))
 
             /**
              * Sets [Builder.refund] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.refund] with a well-typed [Refund] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.refund] with a well-typed
+             * [IncomingTransaction.Refund] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
-            fun refund(refund: JsonField<Refund>) = apply { this.refund = refund }
+            fun refund(refund: JsonField<IncomingTransaction.Refund>) = apply {
+                this.refund = refund
+            }
 
             /**
              * The `RULE_BASED` internal account whose deposit this transaction sweeps. Present only
