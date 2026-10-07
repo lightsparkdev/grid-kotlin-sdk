@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = "com.lightspark.grid"
-    version = "1.10.0" // x-release-please-version
+    version = "2.0.0" // x-release-please-version
 }
 
 subprojects {
