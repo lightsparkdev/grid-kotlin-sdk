@@ -28,12 +28,6 @@ import com.lightspark.grid.models.customers.externalaccounts.InrBeneficiary
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Required fields depend on the selected paymentRails:
- * - NEFT: accountNumber, ifsc, rail
- * - RTGS: accountNumber, ifsc, rail
- * - UPI: vpa
- */
 class InrExternalAccountCreateInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

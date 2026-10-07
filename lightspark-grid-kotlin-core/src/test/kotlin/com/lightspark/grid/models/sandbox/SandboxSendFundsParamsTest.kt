@@ -10,13 +10,9 @@ internal class SandboxSendFundsParamsTest {
     @Test
     fun create() {
         SandboxSendFundsParams.builder()
-            .sendRequest(
-                SendRequest.builder()
-                    .currencyCode("USD")
-                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
-                    .currencyAmount(1000L)
-                    .build()
-            )
+            .currencyCode("USD")
+            .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+            .currencyAmount(1000L)
             .build()
     }
 
@@ -24,47 +20,29 @@ internal class SandboxSendFundsParamsTest {
     fun body() {
         val params =
             SandboxSendFundsParams.builder()
-                .sendRequest(
-                    SendRequest.builder()
-                        .currencyCode("USD")
-                        .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
-                        .currencyAmount(1000L)
-                        .build()
-                )
+                .currencyCode("USD")
+                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                .currencyAmount(1000L)
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                SendRequest.builder()
-                    .currencyCode("USD")
-                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
-                    .currencyAmount(1000L)
-                    .build()
-            )
+        assertThat(body.currencyCode()).isEqualTo("USD")
+        assertThat(body.quoteId()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
+        assertThat(body.currencyAmount()).isEqualTo(1000L)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             SandboxSendFundsParams.builder()
-                .sendRequest(
-                    SendRequest.builder()
-                        .currencyCode("USD")
-                        .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
-                        .build()
-                )
+                .currencyCode("USD")
+                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                SendRequest.builder()
-                    .currencyCode("USD")
-                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
-                    .build()
-            )
+        assertThat(body.currencyCode()).isEqualTo("USD")
+        assertThat(body.quoteId()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
     }
 }

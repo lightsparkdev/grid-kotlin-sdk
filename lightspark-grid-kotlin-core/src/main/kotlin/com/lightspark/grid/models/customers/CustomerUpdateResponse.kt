@@ -24,6 +24,8 @@ import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.BusinessCustomer
+import com.lightspark.grid.models.IndividualCustomer
 import java.util.Collections
 import java.util.Objects
 
@@ -35,20 +37,15 @@ import java.util.Objects
 @JsonSerialize(using = CustomerUpdateResponse.Serializer::class)
 class CustomerUpdateResponse
 private constructor(
-    private val oneOf: CustomerOneOf? = null,
+    private val individualCustomer: IndividualCustomer? = null,
+    private val businessCustomer: BusinessCustomer? = null,
     private val walletOperationProcessing: WalletOperationProcessing? = null,
     private val _json: JsonValue? = null,
 ) {
 
-    /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     */
-    fun oneOf(): CustomerOneOf? = oneOf
+    fun individualCustomer(): IndividualCustomer? = individualCustomer
+
+    fun businessCustomer(): BusinessCustomer? = businessCustomer
 
     /**
      * `200` response returned by an Embedded Wallet operation that the wallet provider has accepted
@@ -60,19 +57,16 @@ private constructor(
      */
     fun walletOperationProcessing(): WalletOperationProcessing? = walletOperationProcessing
 
-    fun isOneOf(): Boolean = oneOf != null
+    fun isIndividualCustomer(): Boolean = individualCustomer != null
+
+    fun isBusinessCustomer(): Boolean = businessCustomer != null
 
     fun isWalletOperationProcessing(): Boolean = walletOperationProcessing != null
 
-    /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     */
-    fun asOneOf(): CustomerOneOf = oneOf.getOrThrow("oneOf")
+    fun asIndividualCustomer(): IndividualCustomer =
+        individualCustomer.getOrThrow("individualCustomer")
+
+    fun asBusinessCustomer(): BusinessCustomer = businessCustomer.getOrThrow("businessCustomer")
 
     /**
      * `200` response returned by an Embedded Wallet operation that the wallet provider has accepted
@@ -97,7 +91,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = customerUpdateResponse.accept(object : CustomerUpdateResponse.Visitor<String?> {
-     *     override fun visitOneOf(oneOf: CustomerOneOf): String? = oneOf.toString()
+     *     override fun visitIndividualCustomer(individualCustomer: IndividualCustomer): String? = individualCustomer.toString()
      *
      *     // ...
      *
@@ -113,7 +107,8 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            oneOf != null -> visitor.visitOneOf(oneOf)
+            individualCustomer != null -> visitor.visitIndividualCustomer(individualCustomer)
+            businessCustomer != null -> visitor.visitBusinessCustomer(businessCustomer)
             walletOperationProcessing != null ->
                 visitor.visitWalletOperationProcessing(walletOperationProcessing)
             else -> visitor.unknown(_json)
@@ -136,8 +131,12 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitOneOf(oneOf: CustomerOneOf) {
-                    oneOf.validate()
+                override fun visitIndividualCustomer(individualCustomer: IndividualCustomer) {
+                    individualCustomer.validate()
+                }
+
+                override fun visitBusinessCustomer(businessCustomer: BusinessCustomer) {
+                    businessCustomer.validate()
                 }
 
                 override fun visitWalletOperationProcessing(
@@ -166,7 +165,11 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitOneOf(oneOf: CustomerOneOf) = oneOf.validity()
+                override fun visitIndividualCustomer(individualCustomer: IndividualCustomer) =
+                    individualCustomer.validity()
+
+                override fun visitBusinessCustomer(businessCustomer: BusinessCustomer) =
+                    businessCustomer.validity()
 
                 override fun visitWalletOperationProcessing(
                     walletOperationProcessing: WalletOperationProcessing
@@ -182,15 +185,19 @@ private constructor(
         }
 
         return other is CustomerUpdateResponse &&
-            oneOf == other.oneOf &&
+            individualCustomer == other.individualCustomer &&
+            businessCustomer == other.businessCustomer &&
             walletOperationProcessing == other.walletOperationProcessing
     }
 
-    override fun hashCode(): Int = Objects.hash(oneOf, walletOperationProcessing)
+    override fun hashCode(): Int =
+        Objects.hash(individualCustomer, businessCustomer, walletOperationProcessing)
 
     override fun toString(): String =
         when {
-            oneOf != null -> "CustomerUpdateResponse{oneOf=$oneOf}"
+            individualCustomer != null ->
+                "CustomerUpdateResponse{individualCustomer=$individualCustomer}"
+            businessCustomer != null -> "CustomerUpdateResponse{businessCustomer=$businessCustomer}"
             walletOperationProcessing != null ->
                 "CustomerUpdateResponse{walletOperationProcessing=$walletOperationProcessing}"
             _json != null -> "CustomerUpdateResponse{_unknown=$_json}"
@@ -199,15 +206,11 @@ private constructor(
 
     companion object {
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
-        fun ofOneOf(oneOf: CustomerOneOf) = CustomerUpdateResponse(oneOf = oneOf)
+        fun ofIndividualCustomer(individualCustomer: IndividualCustomer) =
+            CustomerUpdateResponse(individualCustomer = individualCustomer)
+
+        fun ofBusinessCustomer(businessCustomer: BusinessCustomer) =
+            CustomerUpdateResponse(businessCustomer = businessCustomer)
 
         /**
          * `200` response returned by an Embedded Wallet operation that the wallet provider has
@@ -227,15 +230,9 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
-        fun visitOneOf(oneOf: CustomerOneOf): T
+        fun visitIndividualCustomer(individualCustomer: IndividualCustomer): T
+
+        fun visitBusinessCustomer(businessCustomer: BusinessCustomer): T
 
         /**
          * `200` response returned by an Embedded Wallet operation that the wallet provider has
@@ -270,8 +267,11 @@ private constructor(
 
             val bestMatches =
                 sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<CustomerOneOf>())?.let {
-                            CustomerUpdateResponse(oneOf = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<IndividualCustomer>())?.let {
+                            CustomerUpdateResponse(individualCustomer = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<BusinessCustomer>())?.let {
+                            CustomerUpdateResponse(businessCustomer = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<WalletOperationProcessing>())?.let {
                             CustomerUpdateResponse(walletOperationProcessing = it, _json = json)
@@ -301,7 +301,8 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.oneOf != null -> generator.writeObject(value.oneOf)
+                value.individualCustomer != null -> generator.writeObject(value.individualCustomer)
+                value.businessCustomer != null -> generator.writeObject(value.businessCustomer)
                 value.walletOperationProcessing != null ->
                     generator.writeObject(value.walletOperationProcessing)
                 value._json != null -> generator.writeObject(value._json)

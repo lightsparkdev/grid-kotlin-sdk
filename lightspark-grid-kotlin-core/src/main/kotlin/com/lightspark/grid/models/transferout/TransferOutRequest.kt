@@ -381,8 +381,20 @@ private constructor(
         fun accountId(): String = accountId.getRequired("accountId")
 
         /**
-         * The payment rail to use for the transfer. Must be one of the rails supported by the
-         * destination account. If not specified, the system will select a default rail.
+         * The payment rail used for the transfer. Payment rails represent the underlying payment
+         * network or system used to move funds between accounts.
+         *
+         * `ACH_SAME_DAY` requests same-business-day settlement for a USD payout and is priced
+         * separately. It is subject to the NACHA per-entry same-day limit, which the network
+         * applies to every originator: $1,000,000 per entry, rising to $10,000,000 on 2027-09-17. A
+         * payout above that limit is rejected rather than slowed — check the amount before
+         * requesting this rail, or send it over `ACH`, which settles on the standard schedule and
+         * has no such limit.
+         *
+         * `ACH` will settle on the standard next-business-day schedule. Until a date we announce in
+         * advance, `ACH` continues to settle same-business-day on production platforms; it already
+         * settles next-business-day on sandbox platforms. To guarantee same-day settlement after
+         * that date, request `ACH_SAME_DAY`.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -456,8 +468,20 @@ private constructor(
             fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
             /**
-             * The payment rail to use for the transfer. Must be one of the rails supported by the
-             * destination account. If not specified, the system will select a default rail.
+             * The payment rail used for the transfer. Payment rails represent the underlying
+             * payment network or system used to move funds between accounts.
+             *
+             * `ACH_SAME_DAY` requests same-business-day settlement for a USD payout and is priced
+             * separately. It is subject to the NACHA per-entry same-day limit, which the network
+             * applies to every originator: $1,000,000 per entry, rising to $10,000,000 on
+             * 2027-09-17. A payout above that limit is rejected rather than slowed — check the
+             * amount before requesting this rail, or send it over `ACH`, which settles on the
+             * standard schedule and has no such limit.
+             *
+             * `ACH` will settle on the standard next-business-day schedule. Until a date we
+             * announce in advance, `ACH` continues to settle same-business-day on production
+             * platforms; it already settles next-business-day on sandbox platforms. To guarantee
+             * same-day settlement after that date, request `ACH_SAME_DAY`.
              */
             fun paymentRail(paymentRail: PaymentRail) = paymentRail(JsonField.of(paymentRail))
 
@@ -550,8 +574,20 @@ private constructor(
             (if (accountId.asKnown() == null) 0 else 1) + (paymentRail.asKnown()?.validity() ?: 0)
 
         /**
-         * The payment rail to use for the transfer. Must be one of the rails supported by the
-         * destination account. If not specified, the system will select a default rail.
+         * The payment rail used for the transfer. Payment rails represent the underlying payment
+         * network or system used to move funds between accounts.
+         *
+         * `ACH_SAME_DAY` requests same-business-day settlement for a USD payout and is priced
+         * separately. It is subject to the NACHA per-entry same-day limit, which the network
+         * applies to every originator: $1,000,000 per entry, rising to $10,000,000 on 2027-09-17. A
+         * payout above that limit is rejected rather than slowed — check the amount before
+         * requesting this rail, or send it over `ACH`, which settles on the standard schedule and
+         * has no such limit.
+         *
+         * `ACH` will settle on the standard next-business-day schedule. Until a date we announce in
+         * advance, `ACH` continues to settle same-business-day on production platforms; it already
+         * settles next-business-day on sandbox platforms. To guarantee same-day settlement after
+         * that date, request `ACH_SAME_DAY`.
          */
         class PaymentRail @JsonCreator private constructor(private val value: JsonField<String>) :
             Enum {

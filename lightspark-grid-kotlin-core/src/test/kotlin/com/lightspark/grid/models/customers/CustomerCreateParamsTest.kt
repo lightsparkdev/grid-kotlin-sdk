@@ -42,7 +42,7 @@ internal class CustomerCreateParamsTest {
                     .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
-                    .email("john.doe@example.com")
+                    .email("jane.smith@example.com")
                     .endUserTermsConsent(
                         IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
                             .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
@@ -59,7 +59,7 @@ internal class CustomerCreateParamsTest {
                         IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
                             .VOLUME_100_K_TO_1_M
                     )
-                    .fullName("John Michael Doe")
+                    .fullName("Jane Smith")
                     .identifier("123-45-6789")
                     .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
@@ -67,7 +67,7 @@ internal class CustomerCreateParamsTest {
                     .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
                     .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
                     .phoneNumber("+14155551234")
-                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .platformCustomerId("ind-9f84e0c2")
                     .purposeOfAccount(
                         IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
                     )
@@ -123,7 +123,7 @@ internal class CustomerCreateParamsTest {
                         .countryOfIssuance("US")
                         .addCurrency("USD")
                         .addCurrency("USDC")
-                        .email("john.doe@example.com")
+                        .email("jane.smith@example.com")
                         .endUserTermsConsent(
                             IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
                                 .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
@@ -140,7 +140,7 @@ internal class CustomerCreateParamsTest {
                             IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
                                 .VOLUME_100_K_TO_1_M
                         )
-                        .fullName("John Michael Doe")
+                        .fullName("Jane Smith")
                         .identifier("123-45-6789")
                         .idType(IndividualCustomerCreateRequest.IdType.SSN)
                         .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
@@ -150,7 +150,7 @@ internal class CustomerCreateParamsTest {
                         )
                         .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
                         .phoneNumber("+14155551234")
-                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .platformCustomerId("ind-9f84e0c2")
                         .purposeOfAccount(
                             IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
                         )
@@ -205,7 +205,7 @@ internal class CustomerCreateParamsTest {
                         .countryOfIssuance("US")
                         .addCurrency("USD")
                         .addCurrency("USDC")
-                        .email("john.doe@example.com")
+                        .email("jane.smith@example.com")
                         .endUserTermsConsent(
                             IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
                                 .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
@@ -222,7 +222,7 @@ internal class CustomerCreateParamsTest {
                             IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
                                 .VOLUME_100_K_TO_1_M
                         )
-                        .fullName("John Michael Doe")
+                        .fullName("Jane Smith")
                         .identifier("123-45-6789")
                         .idType(IndividualCustomerCreateRequest.IdType.SSN)
                         .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
@@ -232,7 +232,7 @@ internal class CustomerCreateParamsTest {
                         )
                         .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
                         .phoneNumber("+14155551234")
-                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .platformCustomerId("ind-9f84e0c2")
                         .purposeOfAccount(
                             IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
                         )

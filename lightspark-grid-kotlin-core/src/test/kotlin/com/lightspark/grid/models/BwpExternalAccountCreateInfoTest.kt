@@ -37,7 +37,7 @@ internal class BwpExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(bwpExternalAccountCreateInfo.accountType())
@@ -67,7 +67,7 @@ internal class BwpExternalAccountCreateInfoTest {
                 )
             )
         assertThat(bwpExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(bwpExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
+        assertThat(bwpExternalAccountCreateInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -98,7 +98,7 @@ internal class BwpExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedBwpExternalAccountCreateInfo =

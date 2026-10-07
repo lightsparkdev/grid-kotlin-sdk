@@ -31,6 +31,7 @@ import com.lightspark.grid.models.CadExternalAccountCreateInfo
 import com.lightspark.grid.models.CopExternalAccountCreateInfo
 import com.lightspark.grid.models.DkkExternalAccountCreateInfo
 import com.lightspark.grid.models.EgpExternalAccountCreateInfo
+import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import com.lightspark.grid.models.EurExternalAccountCreateInfo
 import com.lightspark.grid.models.GbpExternalAccountCreateInfo
 import com.lightspark.grid.models.GhsExternalAccountCreateInfo
@@ -105,9 +106,11 @@ private constructor(
     )
 
     /**
-     * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber, bankName
-     * - MOBILE_MONEY: bankName, phoneNumber
+     * A payout to a CNY bank account with a `BUSINESS` beneficiary needs supporting documents for
+     * its `purposeOfPayment`. Upload them with `POST /payment-documents` and pass their IDs in
+     * `documentIds` on `POST /quotes`.
+     * [Supporting documents](https://docs.lightspark.com/payouts-and-b2b/payment-flow/send-payment#supporting-documents)
+     * lists the documents each purpose needs.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -267,9 +270,11 @@ private constructor(
         }
 
         /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
+         * A payout to a CNY bank account with a `BUSINESS` beneficiary needs supporting documents
+         * for its `purposeOfPayment`. Upload them with `POST /payment-documents` and pass their IDs
+         * in `documentIds` on `POST /quotes`.
+         * [Supporting documents](https://docs.lightspark.com/payouts-and-b2b/payment-flow/send-payment#supporting-documents)
+         * lists the documents each purpose needs.
          */
         fun accountInfo(accountInfo: AccountInfo) = accountInfo(JsonField.of(accountInfo))
 
@@ -564,6 +569,178 @@ private constructor(
         fun accountInfo(swiftAccount: SwiftExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofSwiftAccount(swiftAccount))
 
+        /** Alias for calling [accountInfo] with `AccountInfo.ofBaseWallet(baseWallet)`. */
+        fun accountInfo(baseWallet: BaseWalletInfo) =
+            accountInfo(AccountInfo.ofBaseWallet(baseWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * BaseWalletInfo.builder()
+         *     .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun baseWalletAccountInfo(address: String) =
+            accountInfo(
+                BaseWalletInfo.builder()
+                    .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofEthereumWallet(ethereumWallet)`. */
+        fun accountInfo(ethereumWallet: EthereumWalletExternalAccountInfo) =
+            accountInfo(AccountInfo.ofEthereumWallet(ethereumWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * EthereumWalletExternalAccountInfo.builder()
+         *     .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun ethereumWalletAccountInfo(address: String) =
+            accountInfo(
+                EthereumWalletExternalAccountInfo.builder()
+                    .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofLightning(lightning)`. */
+        fun accountInfo(lightning: LightningWalletInfo) =
+            accountInfo(AccountInfo.ofLightning(lightning))
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPolygonWallet(polygonWallet)`. */
+        fun accountInfo(polygonWallet: PolygonWalletInfo) =
+            accountInfo(AccountInfo.ofPolygonWallet(polygonWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * PolygonWalletInfo.builder()
+         *     .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun polygonWalletAccountInfo(address: String) =
+            accountInfo(
+                PolygonWalletInfo.builder()
+                    .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPlasmaWallet(plasmaWallet)`. */
+        fun accountInfo(plasmaWallet: PlasmaWalletInfo) =
+            accountInfo(AccountInfo.ofPlasmaWallet(plasmaWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * PlasmaWalletInfo.builder()
+         *     .accountType(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun plasmaWalletAccountInfo(address: String) =
+            accountInfo(
+                PlasmaWalletInfo.builder()
+                    .accountType(PlasmaWalletInfo.AccountType.PLASMA_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofArbitrumWallet(arbitrumWallet)`. */
+        fun accountInfo(arbitrumWallet: ArbitrumWalletInfo) =
+            accountInfo(AccountInfo.ofArbitrumWallet(arbitrumWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * ArbitrumWalletInfo.builder()
+         *     .accountType(ArbitrumWalletInfo.AccountType.ARBITRUM_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun arbitrumWalletAccountInfo(address: String) =
+            accountInfo(
+                ArbitrumWalletInfo.builder()
+                    .accountType(ArbitrumWalletInfo.AccountType.ARBITRUM_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSolanaWallet(solanaWallet)`. */
+        fun accountInfo(solanaWallet: SolanaWalletInfo) =
+            accountInfo(AccountInfo.ofSolanaWallet(solanaWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * SolanaWalletInfo.builder()
+         *     .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun solanaWalletAccountInfo(address: String) =
+            accountInfo(
+                SolanaWalletInfo.builder()
+                    .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSparkWallet(sparkWallet)`. */
+        fun accountInfo(sparkWallet: SparkWalletInfo) =
+            accountInfo(AccountInfo.ofSparkWallet(sparkWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * SparkWalletInfo.builder()
+         *     .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun sparkWalletAccountInfo(address: String) =
+            accountInfo(
+                SparkWalletInfo.builder()
+                    .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
+                    .address(address)
+                    .build()
+            )
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofTronWallet(tronWallet)`. */
+        fun accountInfo(tronWallet: TronWalletInfo) =
+            accountInfo(AccountInfo.ofTronWallet(tronWallet))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * TronWalletInfo.builder()
+         *     .accountType(TronWalletInfo.AccountType.TRON_WALLET)
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun tronWalletAccountInfo(address: String) =
+            accountInfo(
+                TronWalletInfo.builder()
+                    .accountType(TronWalletInfo.AccountType.TRON_WALLET)
+                    .address(address)
+                    .build()
+            )
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofIlsAccount(ilsAccount)`. */
         fun accountInfo(ilsAccount: AccountInfo.IlsAccount) =
             accountInfo(AccountInfo.ofIlsAccount(ilsAccount))
@@ -749,9 +926,11 @@ private constructor(
             (if (platformAccountId.asKnown() == null) 0 else 1)
 
     /**
-     * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber, bankName
-     * - MOBILE_MONEY: bankName, phoneNumber
+     * A payout to a CNY bank account with a `BUSINESS` beneficiary needs supporting documents for
+     * its `purposeOfPayment`. Upload them with `POST /payment-documents` and pass their IDs in
+     * `documentIds` on `POST /quotes`.
+     * [Supporting documents](https://docs.lightspark.com/payouts-and-b2b/payment-flow/send-payment#supporting-documents)
+     * lists the documents each purpose needs.
      */
     @JsonDeserialize(using = AccountInfo.Deserializer::class)
     @JsonSerialize(using = AccountInfo.Serializer::class)
@@ -795,6 +974,15 @@ private constructor(
         private val zarAccount: ZarExternalAccountCreateInfo? = null,
         private val zmwAccount: ZmwExternalAccountCreateInfo? = null,
         private val swiftAccount: SwiftExternalAccountCreateInfo? = null,
+        private val baseWallet: BaseWalletInfo? = null,
+        private val ethereumWallet: EthereumWalletExternalAccountInfo? = null,
+        private val lightning: LightningWalletInfo? = null,
+        private val polygonWallet: PolygonWalletInfo? = null,
+        private val plasmaWallet: PlasmaWalletInfo? = null,
+        private val arbitrumWallet: ArbitrumWalletInfo? = null,
+        private val solanaWallet: SolanaWalletInfo? = null,
+        private val sparkWallet: SparkWalletInfo? = null,
+        private val tronWallet: TronWalletInfo? = null,
         private val ilsAccount: IlsAccount? = null,
         private val tryAccount: TryAccount? = null,
         private val _json: JsonValue? = null,
@@ -802,11 +990,6 @@ private constructor(
 
         fun aedAccount(): AedExternalAccountCreateInfo? = aedAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun bdtAccount(): BdtExternalAccountCreateInfo? = bdtAccount
 
         fun brlAccount(): BrlExternalAccountCreateInfo? = brlAccount
@@ -824,31 +1007,16 @@ private constructor(
          */
         fun cnyAccount(): CnyAccount? = cnyAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun copAccount(): CopExternalAccountCreateInfo? = copAccount
 
         fun dkkAccount(): DkkExternalAccountCreateInfo? = dkkAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: bankName, iban
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun egpAccount(): EgpExternalAccountCreateInfo? = egpAccount
 
         fun eurAccount(): EurExternalAccountCreateInfo? = eurAccount
 
         fun gbpAccount(): GbpExternalAccountCreateInfo? = gbpAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun ghsAccount(): GhsExternalAccountCreateInfo? = ghsAccount
 
         fun gtqAccount(): GtqExternalAccountCreateInfo? = gtqAccount
@@ -859,12 +1027,6 @@ private constructor(
 
         fun idrAccount(): IdrExternalAccountCreateInfo? = idrAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - NEFT: accountNumber, ifsc, rail
-         * - RTGS: accountNumber, ifsc, rail
-         * - UPI: vpa
-         */
         fun inrAccount(): InrExternalAccountCreateInfo? = inrAccount
 
         fun jmdAccount(): JmdExternalAccountCreateInfo? = jmdAccount
@@ -881,22 +1043,12 @@ private constructor(
 
         fun phpAccount(): PhpExternalAccountCreateInfo? = phpAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun pkrAccount(): PkrExternalAccountCreateInfo? = pkrAccount
 
         fun rwfAccount(): RwfExternalAccountCreateInfo? = rwfAccount
 
         fun sgdAccount(): SgdExternalAccountCreateInfo? = sgdAccount
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: bankAccountType, accountNumber
-         * - MOBILE_MONEY: phoneNumber
-         */
         fun slvAccount(): SlvExternalAccountCreateInfo? = slvAccount
 
         fun thbAccount(): ThbExternalAccountCreateInfo? = thbAccount
@@ -917,12 +1069,25 @@ private constructor(
 
         fun zmwAccount(): ZmwExternalAccountCreateInfo? = zmwAccount
 
-        /**
-         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
-         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
-         * both identifiers for the same account.
-         */
         fun swiftAccount(): SwiftExternalAccountCreateInfo? = swiftAccount
+
+        fun baseWallet(): BaseWalletInfo? = baseWallet
+
+        fun ethereumWallet(): EthereumWalletExternalAccountInfo? = ethereumWallet
+
+        fun lightning(): LightningWalletInfo? = lightning
+
+        fun polygonWallet(): PolygonWalletInfo? = polygonWallet
+
+        fun plasmaWallet(): PlasmaWalletInfo? = plasmaWallet
+
+        fun arbitrumWallet(): ArbitrumWalletInfo? = arbitrumWallet
+
+        fun solanaWallet(): SolanaWalletInfo? = solanaWallet
+
+        fun sparkWallet(): SparkWalletInfo? = sparkWallet
+
+        fun tronWallet(): TronWalletInfo? = tronWallet
 
         fun ilsAccount(): IlsAccount? = ilsAccount
 
@@ -1004,17 +1169,30 @@ private constructor(
 
         fun isSwiftAccount(): Boolean = swiftAccount != null
 
+        fun isBaseWallet(): Boolean = baseWallet != null
+
+        fun isEthereumWallet(): Boolean = ethereumWallet != null
+
+        fun isLightning(): Boolean = lightning != null
+
+        fun isPolygonWallet(): Boolean = polygonWallet != null
+
+        fun isPlasmaWallet(): Boolean = plasmaWallet != null
+
+        fun isArbitrumWallet(): Boolean = arbitrumWallet != null
+
+        fun isSolanaWallet(): Boolean = solanaWallet != null
+
+        fun isSparkWallet(): Boolean = sparkWallet != null
+
+        fun isTronWallet(): Boolean = tronWallet != null
+
         fun isIlsAccount(): Boolean = ilsAccount != null
 
         fun isTryAccount(): Boolean = tryAccount != null
 
         fun asAedAccount(): AedExternalAccountCreateInfo = aedAccount.getOrThrow("aedAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun asBdtAccount(): BdtExternalAccountCreateInfo = bdtAccount.getOrThrow("bdtAccount")
 
         fun asBrlAccount(): BrlExternalAccountCreateInfo = brlAccount.getOrThrow("brlAccount")
@@ -1032,31 +1210,16 @@ private constructor(
          */
         fun asCnyAccount(): CnyAccount = cnyAccount.getOrThrow("cnyAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun asCopAccount(): CopExternalAccountCreateInfo = copAccount.getOrThrow("copAccount")
 
         fun asDkkAccount(): DkkExternalAccountCreateInfo = dkkAccount.getOrThrow("dkkAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: bankName, iban
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun asEgpAccount(): EgpExternalAccountCreateInfo = egpAccount.getOrThrow("egpAccount")
 
         fun asEurAccount(): EurExternalAccountCreateInfo = eurAccount.getOrThrow("eurAccount")
 
         fun asGbpAccount(): GbpExternalAccountCreateInfo = gbpAccount.getOrThrow("gbpAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun asGhsAccount(): GhsExternalAccountCreateInfo = ghsAccount.getOrThrow("ghsAccount")
 
         fun asGtqAccount(): GtqExternalAccountCreateInfo = gtqAccount.getOrThrow("gtqAccount")
@@ -1067,12 +1230,6 @@ private constructor(
 
         fun asIdrAccount(): IdrExternalAccountCreateInfo = idrAccount.getOrThrow("idrAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - NEFT: accountNumber, ifsc, rail
-         * - RTGS: accountNumber, ifsc, rail
-         * - UPI: vpa
-         */
         fun asInrAccount(): InrExternalAccountCreateInfo = inrAccount.getOrThrow("inrAccount")
 
         fun asJmdAccount(): JmdExternalAccountCreateInfo = jmdAccount.getOrThrow("jmdAccount")
@@ -1089,22 +1246,12 @@ private constructor(
 
         fun asPhpAccount(): PhpExternalAccountCreateInfo = phpAccount.getOrThrow("phpAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
-         */
         fun asPkrAccount(): PkrExternalAccountCreateInfo = pkrAccount.getOrThrow("pkrAccount")
 
         fun asRwfAccount(): RwfExternalAccountCreateInfo = rwfAccount.getOrThrow("rwfAccount")
 
         fun asSgdAccount(): SgdExternalAccountCreateInfo = sgdAccount.getOrThrow("sgdAccount")
 
-        /**
-         * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: bankAccountType, accountNumber
-         * - MOBILE_MONEY: phoneNumber
-         */
         fun asSlvAccount(): SlvExternalAccountCreateInfo = slvAccount.getOrThrow("slvAccount")
 
         fun asThbAccount(): ThbExternalAccountCreateInfo = thbAccount.getOrThrow("thbAccount")
@@ -1125,13 +1272,27 @@ private constructor(
 
         fun asZmwAccount(): ZmwExternalAccountCreateInfo = zmwAccount.getOrThrow("zmwAccount")
 
-        /**
-         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
-         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
-         * both identifiers for the same account.
-         */
         fun asSwiftAccount(): SwiftExternalAccountCreateInfo =
             swiftAccount.getOrThrow("swiftAccount")
+
+        fun asBaseWallet(): BaseWalletInfo = baseWallet.getOrThrow("baseWallet")
+
+        fun asEthereumWallet(): EthereumWalletExternalAccountInfo =
+            ethereumWallet.getOrThrow("ethereumWallet")
+
+        fun asLightning(): LightningWalletInfo = lightning.getOrThrow("lightning")
+
+        fun asPolygonWallet(): PolygonWalletInfo = polygonWallet.getOrThrow("polygonWallet")
+
+        fun asPlasmaWallet(): PlasmaWalletInfo = plasmaWallet.getOrThrow("plasmaWallet")
+
+        fun asArbitrumWallet(): ArbitrumWalletInfo = arbitrumWallet.getOrThrow("arbitrumWallet")
+
+        fun asSolanaWallet(): SolanaWalletInfo = solanaWallet.getOrThrow("solanaWallet")
+
+        fun asSparkWallet(): SparkWalletInfo = sparkWallet.getOrThrow("sparkWallet")
+
+        fun asTronWallet(): TronWalletInfo = tronWallet.getOrThrow("tronWallet")
 
         fun asIlsAccount(): IlsAccount = ilsAccount.getOrThrow("ilsAccount")
 
@@ -1203,6 +1364,15 @@ private constructor(
                 zarAccount != null -> visitor.visitZarAccount(zarAccount)
                 zmwAccount != null -> visitor.visitZmwAccount(zmwAccount)
                 swiftAccount != null -> visitor.visitSwiftAccount(swiftAccount)
+                baseWallet != null -> visitor.visitBaseWallet(baseWallet)
+                ethereumWallet != null -> visitor.visitEthereumWallet(ethereumWallet)
+                lightning != null -> visitor.visitLightning(lightning)
+                polygonWallet != null -> visitor.visitPolygonWallet(polygonWallet)
+                plasmaWallet != null -> visitor.visitPlasmaWallet(plasmaWallet)
+                arbitrumWallet != null -> visitor.visitArbitrumWallet(arbitrumWallet)
+                solanaWallet != null -> visitor.visitSolanaWallet(solanaWallet)
+                sparkWallet != null -> visitor.visitSparkWallet(sparkWallet)
+                tronWallet != null -> visitor.visitTronWallet(tronWallet)
                 ilsAccount != null -> visitor.visitIlsAccount(ilsAccount)
                 tryAccount != null -> visitor.visitTryAccount(tryAccount)
                 else -> visitor.unknown(_json)
@@ -1378,6 +1548,44 @@ private constructor(
                         swiftAccount.validate()
                     }
 
+                    override fun visitBaseWallet(baseWallet: BaseWalletInfo) {
+                        baseWallet.validate()
+                    }
+
+                    override fun visitEthereumWallet(
+                        ethereumWallet: EthereumWalletExternalAccountInfo
+                    ) {
+                        ethereumWallet.validate()
+                    }
+
+                    override fun visitLightning(lightning: LightningWalletInfo) {
+                        lightning.validate()
+                    }
+
+                    override fun visitPolygonWallet(polygonWallet: PolygonWalletInfo) {
+                        polygonWallet.validate()
+                    }
+
+                    override fun visitPlasmaWallet(plasmaWallet: PlasmaWalletInfo) {
+                        plasmaWallet.validate()
+                    }
+
+                    override fun visitArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo) {
+                        arbitrumWallet.validate()
+                    }
+
+                    override fun visitSolanaWallet(solanaWallet: SolanaWalletInfo) {
+                        solanaWallet.validate()
+                    }
+
+                    override fun visitSparkWallet(sparkWallet: SparkWalletInfo) {
+                        sparkWallet.validate()
+                    }
+
+                    override fun visitTronWallet(tronWallet: TronWalletInfo) {
+                        tronWallet.validate()
+                    }
+
                     override fun visitIlsAccount(ilsAccount: IlsAccount) {
                         ilsAccount.validate()
                     }
@@ -1520,6 +1728,32 @@ private constructor(
                     override fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
                         swiftAccount.validity()
 
+                    override fun visitBaseWallet(baseWallet: BaseWalletInfo) = baseWallet.validity()
+
+                    override fun visitEthereumWallet(
+                        ethereumWallet: EthereumWalletExternalAccountInfo
+                    ) = ethereumWallet.validity()
+
+                    override fun visitLightning(lightning: LightningWalletInfo) =
+                        lightning.validity()
+
+                    override fun visitPolygonWallet(polygonWallet: PolygonWalletInfo) =
+                        polygonWallet.validity()
+
+                    override fun visitPlasmaWallet(plasmaWallet: PlasmaWalletInfo) =
+                        plasmaWallet.validity()
+
+                    override fun visitArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo) =
+                        arbitrumWallet.validity()
+
+                    override fun visitSolanaWallet(solanaWallet: SolanaWalletInfo) =
+                        solanaWallet.validity()
+
+                    override fun visitSparkWallet(sparkWallet: SparkWalletInfo) =
+                        sparkWallet.validity()
+
+                    override fun visitTronWallet(tronWallet: TronWalletInfo) = tronWallet.validity()
+
                     override fun visitIlsAccount(ilsAccount: IlsAccount) = ilsAccount.validity()
 
                     override fun visitTryAccount(tryAccount: TryAccount) = tryAccount.validity()
@@ -1572,6 +1806,15 @@ private constructor(
                 zarAccount == other.zarAccount &&
                 zmwAccount == other.zmwAccount &&
                 swiftAccount == other.swiftAccount &&
+                baseWallet == other.baseWallet &&
+                ethereumWallet == other.ethereumWallet &&
+                lightning == other.lightning &&
+                polygonWallet == other.polygonWallet &&
+                plasmaWallet == other.plasmaWallet &&
+                arbitrumWallet == other.arbitrumWallet &&
+                solanaWallet == other.solanaWallet &&
+                sparkWallet == other.sparkWallet &&
+                tronWallet == other.tronWallet &&
                 ilsAccount == other.ilsAccount &&
                 tryAccount == other.tryAccount
         }
@@ -1616,6 +1859,15 @@ private constructor(
                 zarAccount,
                 zmwAccount,
                 swiftAccount,
+                baseWallet,
+                ethereumWallet,
+                lightning,
+                polygonWallet,
+                plasmaWallet,
+                arbitrumWallet,
+                solanaWallet,
+                sparkWallet,
+                tronWallet,
                 ilsAccount,
                 tryAccount,
             )
@@ -1660,6 +1912,15 @@ private constructor(
                 zarAccount != null -> "AccountInfo{zarAccount=$zarAccount}"
                 zmwAccount != null -> "AccountInfo{zmwAccount=$zmwAccount}"
                 swiftAccount != null -> "AccountInfo{swiftAccount=$swiftAccount}"
+                baseWallet != null -> "AccountInfo{baseWallet=$baseWallet}"
+                ethereumWallet != null -> "AccountInfo{ethereumWallet=$ethereumWallet}"
+                lightning != null -> "AccountInfo{lightning=$lightning}"
+                polygonWallet != null -> "AccountInfo{polygonWallet=$polygonWallet}"
+                plasmaWallet != null -> "AccountInfo{plasmaWallet=$plasmaWallet}"
+                arbitrumWallet != null -> "AccountInfo{arbitrumWallet=$arbitrumWallet}"
+                solanaWallet != null -> "AccountInfo{solanaWallet=$solanaWallet}"
+                sparkWallet != null -> "AccountInfo{sparkWallet=$sparkWallet}"
+                tronWallet != null -> "AccountInfo{tronWallet=$tronWallet}"
                 ilsAccount != null -> "AccountInfo{ilsAccount=$ilsAccount}"
                 tryAccount != null -> "AccountInfo{tryAccount=$tryAccount}"
                 _json != null -> "AccountInfo{_unknown=$_json}"
@@ -1671,11 +1932,6 @@ private constructor(
             fun ofAedAccount(aedAccount: AedExternalAccountCreateInfo) =
                 AccountInfo(aedAccount = aedAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun ofBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
                 AccountInfo(bdtAccount = bdtAccount)
 
@@ -1697,22 +1953,12 @@ private constructor(
              */
             fun ofCnyAccount(cnyAccount: CnyAccount) = AccountInfo(cnyAccount = cnyAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun ofCopAccount(copAccount: CopExternalAccountCreateInfo) =
                 AccountInfo(copAccount = copAccount)
 
             fun ofDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) =
                 AccountInfo(dkkAccount = dkkAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: bankName, iban
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun ofEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
                 AccountInfo(egpAccount = egpAccount)
 
@@ -1722,11 +1968,6 @@ private constructor(
             fun ofGbpAccount(gbpAccount: GbpExternalAccountCreateInfo) =
                 AccountInfo(gbpAccount = gbpAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun ofGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
                 AccountInfo(ghsAccount = ghsAccount)
 
@@ -1742,12 +1983,6 @@ private constructor(
             fun ofIdrAccount(idrAccount: IdrExternalAccountCreateInfo) =
                 AccountInfo(idrAccount = idrAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - NEFT: accountNumber, ifsc, rail
-             * - RTGS: accountNumber, ifsc, rail
-             * - UPI: vpa
-             */
             fun ofInrAccount(inrAccount: InrExternalAccountCreateInfo) =
                 AccountInfo(inrAccount = inrAccount)
 
@@ -1772,11 +2007,6 @@ private constructor(
             fun ofPhpAccount(phpAccount: PhpExternalAccountCreateInfo) =
                 AccountInfo(phpAccount = phpAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun ofPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
                 AccountInfo(pkrAccount = pkrAccount)
 
@@ -1786,11 +2016,6 @@ private constructor(
             fun ofSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) =
                 AccountInfo(sgdAccount = sgdAccount)
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: bankAccountType, accountNumber
-             * - MOBILE_MONEY: phoneNumber
-             */
             fun ofSlvAccount(slvAccount: SlvExternalAccountCreateInfo) =
                 AccountInfo(slvAccount = slvAccount)
 
@@ -1821,13 +2046,31 @@ private constructor(
             fun ofZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) =
                 AccountInfo(zmwAccount = zmwAccount)
 
-            /**
-             * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g.
-             * BR, GB) use iban, other corridors use accountNumber, and both appear when the bank
-             * exposes both identifiers for the same account.
-             */
             fun ofSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
                 AccountInfo(swiftAccount = swiftAccount)
+
+            fun ofBaseWallet(baseWallet: BaseWalletInfo) = AccountInfo(baseWallet = baseWallet)
+
+            fun ofEthereumWallet(ethereumWallet: EthereumWalletExternalAccountInfo) =
+                AccountInfo(ethereumWallet = ethereumWallet)
+
+            fun ofLightning(lightning: LightningWalletInfo) = AccountInfo(lightning = lightning)
+
+            fun ofPolygonWallet(polygonWallet: PolygonWalletInfo) =
+                AccountInfo(polygonWallet = polygonWallet)
+
+            fun ofPlasmaWallet(plasmaWallet: PlasmaWalletInfo) =
+                AccountInfo(plasmaWallet = plasmaWallet)
+
+            fun ofArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo) =
+                AccountInfo(arbitrumWallet = arbitrumWallet)
+
+            fun ofSolanaWallet(solanaWallet: SolanaWalletInfo) =
+                AccountInfo(solanaWallet = solanaWallet)
+
+            fun ofSparkWallet(sparkWallet: SparkWalletInfo) = AccountInfo(sparkWallet = sparkWallet)
+
+            fun ofTronWallet(tronWallet: TronWalletInfo) = AccountInfo(tronWallet = tronWallet)
 
             fun ofIlsAccount(ilsAccount: IlsAccount) = AccountInfo(ilsAccount = ilsAccount)
 
@@ -1842,11 +2085,6 @@ private constructor(
 
             fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo): T
 
             fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo): T
@@ -1864,31 +2102,16 @@ private constructor(
              */
             fun visitCnyAccount(cnyAccount: CnyAccount): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun visitCopAccount(copAccount: CopExternalAccountCreateInfo): T
 
             fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: bankName, iban
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo): T
 
             fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo): T
 
             fun visitGbpAccount(gbpAccount: GbpExternalAccountCreateInfo): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo): T
 
             fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo): T
@@ -1899,12 +2122,6 @@ private constructor(
 
             fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - NEFT: accountNumber, ifsc, rail
-             * - RTGS: accountNumber, ifsc, rail
-             * - UPI: vpa
-             */
             fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo): T
 
             fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo): T
@@ -1921,22 +2138,12 @@ private constructor(
 
             fun visitPhpAccount(phpAccount: PhpExternalAccountCreateInfo): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: bankName, phoneNumber
-             */
             fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo): T
 
             fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo): T
 
             fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo): T
 
-            /**
-             * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: bankAccountType, accountNumber
-             * - MOBILE_MONEY: phoneNumber
-             */
             fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo): T
 
             fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo): T
@@ -1957,12 +2164,25 @@ private constructor(
 
             fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo): T
 
-            /**
-             * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g.
-             * BR, GB) use iban, other corridors use accountNumber, and both appear when the bank
-             * exposes both identifiers for the same account.
-             */
             fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo): T
+
+            fun visitBaseWallet(baseWallet: BaseWalletInfo): T
+
+            fun visitEthereumWallet(ethereumWallet: EthereumWalletExternalAccountInfo): T
+
+            fun visitLightning(lightning: LightningWalletInfo): T
+
+            fun visitPolygonWallet(polygonWallet: PolygonWalletInfo): T
+
+            fun visitPlasmaWallet(plasmaWallet: PlasmaWalletInfo): T
+
+            fun visitArbitrumWallet(arbitrumWallet: ArbitrumWalletInfo): T
+
+            fun visitSolanaWallet(solanaWallet: SolanaWalletInfo): T
+
+            fun visitSparkWallet(sparkWallet: SparkWalletInfo): T
+
+            fun visitTronWallet(tronWallet: TronWalletInfo): T
 
             fun visitIlsAccount(ilsAccount: IlsAccount): T
 
@@ -2183,6 +2403,54 @@ private constructor(
                             ?.let { AccountInfo(swiftAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
+                    "BASE_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
+                            AccountInfo(baseWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "ETHEREUM_WALLET" -> {
+                        return tryDeserialize(
+                                node,
+                                jacksonTypeRef<EthereumWalletExternalAccountInfo>(),
+                            )
+                            ?.let { AccountInfo(ethereumWallet = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "LIGHTNING" -> {
+                        return tryDeserialize(node, jacksonTypeRef<LightningWalletInfo>())?.let {
+                            AccountInfo(lightning = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "POLYGON_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PolygonWalletInfo>())?.let {
+                            AccountInfo(polygonWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "PLASMA_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PlasmaWalletInfo>())?.let {
+                            AccountInfo(plasmaWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "ARBITRUM_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<ArbitrumWalletInfo>())?.let {
+                            AccountInfo(arbitrumWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "SOLANA_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SolanaWalletInfo>())?.let {
+                            AccountInfo(solanaWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "SPARK_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SparkWalletInfo>())?.let {
+                            AccountInfo(sparkWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
+                    "TRON_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<TronWalletInfo>())?.let {
+                            AccountInfo(tronWallet = it, _json = json)
+                        } ?: AccountInfo(_json = json)
+                    }
                     "ILS_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<IlsAccount>())?.let {
                             AccountInfo(ilsAccount = it, _json = json)
@@ -2245,6 +2513,15 @@ private constructor(
                     value.zarAccount != null -> generator.writeObject(value.zarAccount)
                     value.zmwAccount != null -> generator.writeObject(value.zmwAccount)
                     value.swiftAccount != null -> generator.writeObject(value.swiftAccount)
+                    value.baseWallet != null -> generator.writeObject(value.baseWallet)
+                    value.ethereumWallet != null -> generator.writeObject(value.ethereumWallet)
+                    value.lightning != null -> generator.writeObject(value.lightning)
+                    value.polygonWallet != null -> generator.writeObject(value.polygonWallet)
+                    value.plasmaWallet != null -> generator.writeObject(value.plasmaWallet)
+                    value.arbitrumWallet != null -> generator.writeObject(value.arbitrumWallet)
+                    value.solanaWallet != null -> generator.writeObject(value.solanaWallet)
+                    value.sparkWallet != null -> generator.writeObject(value.sparkWallet)
+                    value.tronWallet != null -> generator.writeObject(value.tronWallet)
                     value.ilsAccount != null -> generator.writeObject(value.ilsAccount)
                     value.tryAccount != null -> generator.writeObject(value.tryAccount)
                     value._json != null -> generator.writeObject(value._json)

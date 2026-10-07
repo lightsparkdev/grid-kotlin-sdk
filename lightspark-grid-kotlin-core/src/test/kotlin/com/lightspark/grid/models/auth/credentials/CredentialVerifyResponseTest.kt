@@ -19,7 +19,7 @@ internal class CredentialVerifyResponseTest {
     fun ofAuthSession() {
         val authSession =
             AuthSession.builder()
-                .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
+                .id("Session:019542f5-b3e7-1d02-0000-000000000003")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
@@ -46,7 +46,7 @@ internal class CredentialVerifyResponseTest {
         val credentialVerifyResponse =
             CredentialVerifyResponse.ofAuthSession(
                 AuthSession.builder()
-                    .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
+                    .id("Session:019542f5-b3e7-1d02-0000-000000000003")
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                     .nickname("example@lightspark.com")

@@ -16,7 +16,7 @@ internal class GhsAccountInfoTest {
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
                 .bankName("Gcb Bank Ltd")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 
@@ -24,7 +24,7 @@ internal class GhsAccountInfoTest {
         assertThat(ghsAccountInfo.bankName()).isEqualTo("Gcb Bank Ltd")
         assertThat(ghsAccountInfo.paymentRails())
             .containsExactly(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(ghsAccountInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(ghsAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -36,7 +36,7 @@ internal class GhsAccountInfoTest {
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
                 .bankName("Gcb Bank Ltd")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 

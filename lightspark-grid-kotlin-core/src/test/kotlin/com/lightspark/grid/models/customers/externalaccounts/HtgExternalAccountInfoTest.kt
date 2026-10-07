@@ -3,8 +3,9 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.HtgBeneficiary
+import com.lightspark.grid.models.platform.externalaccounts.HtgAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,9 +15,61 @@ internal class HtgExternalAccountInfoTest {
     fun create() {
         val htgExternalAccountInfo =
             HtgExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("HTG_ACCOUNT"))
-                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .accountType(HtgAccountInfo.AccountType.HTG_ACCOUNT)
+                .addPaymentRail(HtgAccountInfo.PaymentRail.MOBILE_MONEY)
+                .phoneNumber("+1234567890")
+                .beneficiary(
+                    HtgBeneficiary.builder()
+                        .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
+
+        assertThat(htgExternalAccountInfo.accountType())
+            .isEqualTo(HtgAccountInfo.AccountType.HTG_ACCOUNT)
+        assertThat(htgExternalAccountInfo.paymentRails())
+            .containsExactly(HtgAccountInfo.PaymentRail.MOBILE_MONEY)
+        assertThat(htgExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(htgExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                HtgExternalAccountInfo.Beneficiary.ofIndividual(
+                    HtgBeneficiary.builder()
+                        .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -24,8 +77,30 @@ internal class HtgExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val htgExternalAccountInfo =
             HtgExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("HTG_ACCOUNT"))
-                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .accountType(HtgAccountInfo.AccountType.HTG_ACCOUNT)
+                .addPaymentRail(HtgAccountInfo.PaymentRail.MOBILE_MONEY)
+                .phoneNumber("+1234567890")
+                .beneficiary(
+                    HtgBeneficiary.builder()
+                        .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
 
         val roundtrippedHtgExternalAccountInfo =

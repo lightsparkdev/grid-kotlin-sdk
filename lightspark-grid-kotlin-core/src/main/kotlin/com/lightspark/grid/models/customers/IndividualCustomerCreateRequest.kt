@@ -21,13 +21,6 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an individual
- * customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear as top-level
- * optional fields on the customer resource itself; there is no separate EDD resource. The specific
- * set required for a given customer is driven by the KYC provider's per-jurisdiction / per-flow /
- * per-volume-tier rules (surfaced through `MISSING_FIELD` errors on `POST /verifications`).
- */
 class IndividualCustomerCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -241,9 +234,9 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * Deprecated; send `agreementConsents` instead. Supplying this records acceptance of the
-     * Lightspark End User Terms, equivalent to a single `agreementConsents` entry of type
-     * `LIGHTSPARK_END_USER_TERMS`. Supplying both fields in one request is rejected.
+     * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+     * separately. Reported only for a customer whose acceptance predates that field, and always as
+     * the `LIGHTSPARK_END_USER_TERMS` agreement.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -928,9 +921,9 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
-         * Deprecated; send `agreementConsents` instead. Supplying this records acceptance of the
-         * Lightspark End User Terms, equivalent to a single `agreementConsents` entry of type
-         * `LIGHTSPARK_END_USER_TERMS`. Supplying both fields in one request is rejected.
+         * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+         * separately. Reported only for a customer whose acceptance predates that field, and always
+         * as the `LIGHTSPARK_END_USER_TERMS` agreement.
          */
         @Deprecated("deprecated")
         fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsent) =
@@ -1720,9 +1713,9 @@ private constructor(
     }
 
     /**
-     * Deprecated; send `agreementConsents` instead. Supplying this records acceptance of the
-     * Lightspark End User Terms, equivalent to a single `agreementConsents` entry of type
-     * `LIGHTSPARK_END_USER_TERMS`. Supplying both fields in one request is rejected.
+     * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+     * separately. Reported only for a customer whose acceptance predates that field, and always as
+     * the `LIGHTSPARK_END_USER_TERMS` agreement.
      */
     @Deprecated("deprecated")
     class EndUserTermsConsent

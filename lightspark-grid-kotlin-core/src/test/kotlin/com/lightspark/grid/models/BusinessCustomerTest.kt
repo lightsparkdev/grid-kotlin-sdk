@@ -3,7 +3,6 @@
 package com.lightspark.grid.models
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
@@ -22,7 +21,6 @@ internal class BusinessCustomerTest {
     fun create() {
         val businessCustomer =
             BusinessCustomer.builder()
-                .customerType(JsonValue.from("BUSINESS"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -57,6 +55,7 @@ internal class BusinessCustomerTest {
                 .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(BusinessCustomer.CustomerType.BUSINESS)
                 .address(
                     Address.builder()
                         .country("US")
@@ -134,7 +133,9 @@ internal class BusinessCustomerTest {
                         .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
-                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .addSourceOfFundsCategory(
+                            BusinessCustomer.BusinessInfo.SourceOfFundsCategory.OPERATING_REVENUE
+                        )
                         .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
@@ -142,7 +143,6 @@ internal class BusinessCustomerTest {
                 .kybStatus(BusinessCustomer.KybStatus.APPROVED)
                 .build()
 
-        assertThat(businessCustomer._customerType()).isEqualTo(JsonValue.from("BUSINESS"))
         assertThat(businessCustomer.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
         assertThat(businessCustomer.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
         assertThat(businessCustomer.id()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -181,6 +181,8 @@ internal class BusinessCustomerTest {
         assertThat(businessCustomer.region()).isEqualTo("US")
         assertThat(businessCustomer.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+        assertThat(businessCustomer.customerType())
+            .isEqualTo(BusinessCustomer.CustomerType.BUSINESS)
         assertThat(businessCustomer.address())
             .isEqualTo(
                 Address.builder()
@@ -261,7 +263,9 @@ internal class BusinessCustomerTest {
                     .purposeOfAccountOtherDescription("Escrow for equipment leases")
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
-                    .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                    .addSourceOfFundsCategory(
+                        BusinessCustomer.BusinessInfo.SourceOfFundsCategory.OPERATING_REVENUE
+                    )
                     .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                     .taxId("47-1234567")
                     .build()
@@ -274,7 +278,6 @@ internal class BusinessCustomerTest {
         val jsonMapper = jsonMapper()
         val businessCustomer =
             BusinessCustomer.builder()
-                .customerType(JsonValue.from("BUSINESS"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -309,6 +312,7 @@ internal class BusinessCustomerTest {
                 .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(BusinessCustomer.CustomerType.BUSINESS)
                 .address(
                     Address.builder()
                         .country("US")
@@ -386,7 +390,9 @@ internal class BusinessCustomerTest {
                         .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
-                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .addSourceOfFundsCategory(
+                            BusinessCustomer.BusinessInfo.SourceOfFundsCategory.OPERATING_REVENUE
+                        )
                         .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()

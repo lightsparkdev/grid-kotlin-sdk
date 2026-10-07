@@ -4,6 +4,7 @@ package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,18 +15,18 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                        .accountHolderName("Acme Exports Pte Ltd")
-                        .bankName("Deutsche Bank")
-                        .country("NG")
-                        .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail.SWIFT
-                        )
-                        .swiftCode("DEUTDEFF")
-                        .accountNumber("1234567890")
-                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                        .iban("GB29NWBK60161331926819")
+                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                        .accountNumber("x")
+                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                        .routingNumber("021000021")
+                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                        .bankName("Chase Bank")
+                        .fiToFiInformation("/BNF/Invoice 4471")
+                        .intermediaryBankName("JPMorgan Chase Bank")
+                        .intermediaryRoutingNumber("021000021")
                         .reference("UMA-Q12345-REF")
+                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                         .build()
                 )
                 .instructionsNotes(
@@ -36,19 +37,19 @@ internal class PaymentInstructionsTest {
 
         assertThat(paymentInstructions.accountOrWalletInfo())
             .isEqualTo(
-                PaymentInstructions.AccountOrWalletInfo.ofSwiftAccount(
-                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                        .accountHolderName("Acme Exports Pte Ltd")
-                        .bankName("Deutsche Bank")
-                        .country("NG")
-                        .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail.SWIFT
-                        )
-                        .swiftCode("DEUTDEFF")
-                        .accountNumber("1234567890")
-                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                        .iban("GB29NWBK60161331926819")
+                PaymentInstructions.AccountOrWalletInfo.ofUsdAccount(
+                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                        .accountNumber("x")
+                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                        .routingNumber("021000021")
+                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                        .bankName("Chase Bank")
+                        .fiToFiInformation("/BNF/Invoice 4471")
+                        .intermediaryBankName("JPMorgan Chase Bank")
+                        .intermediaryRoutingNumber("021000021")
                         .reference("UMA-Q12345-REF")
+                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                         .build()
                 )
             )
@@ -65,18 +66,18 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                        .accountHolderName("Acme Exports Pte Ltd")
-                        .bankName("Deutsche Bank")
-                        .country("NG")
-                        .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount.PaymentRail.SWIFT
-                        )
-                        .swiftCode("DEUTDEFF")
-                        .accountNumber("1234567890")
-                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                        .iban("GB29NWBK60161331926819")
+                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                        .accountNumber("x")
+                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                        .routingNumber("021000021")
+                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                        .bankName("Chase Bank")
+                        .fiToFiInformation("/BNF/Invoice 4471")
+                        .intermediaryBankName("JPMorgan Chase Bank")
+                        .intermediaryRoutingNumber("021000021")
                         .reference("UMA-Q12345-REF")
+                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                         .build()
                 )
                 .instructionsNotes(

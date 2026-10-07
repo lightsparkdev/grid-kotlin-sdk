@@ -18,11 +18,6 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Required fields depend on the selected paymentRails:
- * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
- * - MOBILE_MONEY: bankName, phoneNumber
- */
 class CopAccountInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

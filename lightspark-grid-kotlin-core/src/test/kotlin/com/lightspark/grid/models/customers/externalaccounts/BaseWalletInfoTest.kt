@@ -11,13 +11,51 @@ internal class BaseWalletInfoTest {
 
     @Test
     fun create() {
-        val baseWalletInfo = BaseWalletInfo.builder().build()
+        val baseWalletInfo =
+            BaseWalletInfo.builder()
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
+                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+                .build()
+
+        assertThat(baseWalletInfo.beneficiary())
+            .isEqualTo(
+                WalletBeneficiaryOneOf.ofIndividual(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+            )
+        assertThat(baseWalletInfo.vaspName()).isEqualTo("Kraken")
+        assertThat(baseWalletInfo.accountType()).isEqualTo(BaseWalletInfo.AccountType.BASE_WALLET)
+        assertThat(baseWalletInfo.address()).isEqualTo("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val baseWalletInfo = BaseWalletInfo.builder().build()
+        val baseWalletInfo =
+            BaseWalletInfo.builder()
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
+                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+                .build()
 
         val roundtrippedBaseWalletInfo =
             jsonMapper.readValue(

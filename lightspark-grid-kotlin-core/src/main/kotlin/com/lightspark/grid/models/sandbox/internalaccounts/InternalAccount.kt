@@ -235,8 +235,8 @@ private constructor(
     fun privateEnabled(): Boolean? = privateEnabled.getNullable("privateEnabled")
 
     /**
-     * The routing rule attached to this account. Null for accounts that carry no rule, which is
-     * every account other than a `RULE_BASED` one.
+     * The routing rule attached to a rule-based account. Returned on the account rather than as a
+     * resource of its own, because the rule has no lifecycle apart from the account.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -660,8 +660,8 @@ private constructor(
         }
 
         /**
-         * The routing rule attached to this account. Null for accounts that carry no rule, which is
-         * every account other than a `RULE_BASED` one.
+         * The routing rule attached to a rule-based account. Returned on the account rather than as
+         * a resource of its own, because the rule has no lifecycle apart from the account.
          */
         fun sweepRule(sweepRule: SweepRule) = sweepRule(JsonField.of(sweepRule))
 
@@ -1589,8 +1589,8 @@ private constructor(
     }
 
     /**
-     * The routing rule attached to this account. Null for accounts that carry no rule, which is
-     * every account other than a `RULE_BASED` one.
+     * The routing rule attached to a rule-based account. Returned on the account rather than as a
+     * resource of its own, because the rule has no lifecycle apart from the account.
      */
     class SweepRule
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -1640,7 +1640,7 @@ private constructor(
         )
 
         /**
-         * Where funds that settle into this account are swept.
+         * Where a rule-based account's credits are swept.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -1678,8 +1678,10 @@ private constructor(
         fun minimumAmount(): CurrencyAmount? = minimumAmount.getNullable("minimumAmount")
 
         /**
-         * Fee terms applied to every sweep this rule drives. Null when the platform's configured
-         * fees apply.
+         * Overrides the platform-collected fee for this transaction. When present, it replaces any
+         * configured platform-collected fees that would otherwise apply to the transaction.
+         * Currently only supported when the quote's source currency is USD; the fixed fee must be
+         * denominated in the source currency.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1688,7 +1690,13 @@ private constructor(
             platformFeeOverride.getNullable("platformFeeOverride")
 
         /**
-         * The purpose of payment applied to each sweep.
+         * The purpose of the payment. This may be required when sending to certain geographies
+         * (e.g. India).
+         *
+         * Some destinations accept only certain purposes. A business payout to China must use one
+         * of the purposes listed in
+         * [Supporting Documents](https://docs.lightspark.com/payouts-and-b2b/payment-flow/send-payment#supporting-documents),
+         * and each needs its own supporting documents.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1820,7 +1828,7 @@ private constructor(
                 additionalProperties = sweepRule.additionalProperties.toMutableMap()
             }
 
-            /** Where funds that settle into this account are swept. */
+            /** Where a rule-based account's credits are swept. */
             fun destination(destination: Destination) = destination(JsonField.of(destination))
 
             /**
@@ -1889,8 +1897,10 @@ private constructor(
             }
 
             /**
-             * Fee terms applied to every sweep this rule drives. Null when the platform's
-             * configured fees apply.
+             * Overrides the platform-collected fee for this transaction. When present, it replaces
+             * any configured platform-collected fees that would otherwise apply to the transaction.
+             * Currently only supported when the quote's source currency is USD; the fixed fee must
+             * be denominated in the source currency.
              */
             fun platformFeeOverride(platformFeeOverride: PlatformFeeOverride) =
                 platformFeeOverride(JsonField.of(platformFeeOverride))
@@ -1906,7 +1916,15 @@ private constructor(
                 this.platformFeeOverride = platformFeeOverride
             }
 
-            /** The purpose of payment applied to each sweep. */
+            /**
+             * The purpose of the payment. This may be required when sending to certain geographies
+             * (e.g. India).
+             *
+             * Some destinations accept only certain purposes. A business payout to China must use
+             * one of the purposes listed in
+             * [Supporting Documents](https://docs.lightspark.com/payouts-and-b2b/payment-flow/send-payment#supporting-documents),
+             * and each needs its own supporting documents.
+             */
             fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) =
                 purposeOfPayment(JsonField.of(purposeOfPayment))
 
@@ -2029,7 +2047,7 @@ private constructor(
                 (purposeOfPayment.asKnown()?.validity() ?: 0) +
                 (if (remittanceInformation.asKnown() == null) 0 else 1)
 
-        /** Where funds that settle into this account are swept. */
+        /** Where a rule-based account's credits are swept. */
         class Destination
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -2058,8 +2076,20 @@ private constructor(
             fun accountId(): String = accountId.getRequired("accountId")
 
             /**
-             * The rail each sweep is sent over. Null when a rail is selected automatically per
-             * sweep, in which case none is resolved ahead of time.
+             * The payment rail used for the transfer. Payment rails represent the underlying
+             * payment network or system used to move funds between accounts.
+             *
+             * `ACH_SAME_DAY` requests same-business-day settlement for a USD payout and is priced
+             * separately. It is subject to the NACHA per-entry same-day limit, which the network
+             * applies to every originator: $1,000,000 per entry, rising to $10,000,000 on
+             * 2027-09-17. A payout above that limit is rejected rather than slowed — check the
+             * amount before requesting this rail, or send it over `ACH`, which settles on the
+             * standard schedule and has no such limit.
+             *
+             * `ACH` will settle on the standard next-business-day schedule. Until a date we
+             * announce in advance, `ACH` continues to settle same-business-day on production
+             * platforms; it already settles next-business-day on sandbox platforms. To guarantee
+             * same-day settlement after that date, request `ACH_SAME_DAY`.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2137,8 +2167,20 @@ private constructor(
                 fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
                 /**
-                 * The rail each sweep is sent over. Null when a rail is selected automatically per
-                 * sweep, in which case none is resolved ahead of time.
+                 * The payment rail used for the transfer. Payment rails represent the underlying
+                 * payment network or system used to move funds between accounts.
+                 *
+                 * `ACH_SAME_DAY` requests same-business-day settlement for a USD payout and is
+                 * priced separately. It is subject to the NACHA per-entry same-day limit, which the
+                 * network applies to every originator: $1,000,000 per entry, rising to $10,000,000
+                 * on 2027-09-17. A payout above that limit is rejected rather than slowed — check
+                 * the amount before requesting this rail, or send it over `ACH`, which settles on
+                 * the standard schedule and has no such limit.
+                 *
+                 * `ACH` will settle on the standard next-business-day schedule. Until a date we
+                 * announce in advance, `ACH` continues to settle same-business-day on production
+                 * platforms; it already settles next-business-day on sandbox platforms. To
+                 * guarantee same-day settlement after that date, request `ACH_SAME_DAY`.
                  */
                 fun paymentRail(paymentRail: PaymentRail) = paymentRail(JsonField.of(paymentRail))
 
@@ -2236,8 +2278,20 @@ private constructor(
                     (paymentRail.asKnown()?.validity() ?: 0)
 
             /**
-             * The rail each sweep is sent over. Null when a rail is selected automatically per
-             * sweep, in which case none is resolved ahead of time.
+             * The payment rail used for the transfer. Payment rails represent the underlying
+             * payment network or system used to move funds between accounts.
+             *
+             * `ACH_SAME_DAY` requests same-business-day settlement for a USD payout and is priced
+             * separately. It is subject to the NACHA per-entry same-day limit, which the network
+             * applies to every originator: $1,000,000 per entry, rising to $10,000,000 on
+             * 2027-09-17. A payout above that limit is rejected rather than slowed — check the
+             * amount before requesting this rail, or send it over `ACH`, which settles on the
+             * standard schedule and has no such limit.
+             *
+             * `ACH` will settle on the standard next-business-day schedule. Until a date we
+             * announce in advance, `ACH` continues to settle same-business-day on production
+             * platforms; it already settles next-business-day on sandbox platforms. To guarantee
+             * same-day settlement after that date, request `ACH_SAME_DAY`.
              */
             class PaymentRail
             @JsonCreator
@@ -2535,8 +2589,10 @@ private constructor(
         }
 
         /**
-         * Fee terms applied to every sweep this rule drives. Null when the platform's configured
-         * fees apply.
+         * Overrides the platform-collected fee for this transaction. When present, it replaces any
+         * configured platform-collected fees that would otherwise apply to the transaction.
+         * Currently only supported when the quote's source currency is USD; the fixed fee must be
+         * denominated in the source currency.
          */
         class PlatformFeeOverride
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -3012,7 +3068,15 @@ private constructor(
                 "PlatformFeeOverride{platformFixedFee=$platformFixedFee, platformVariableFeeBps=$platformVariableFeeBps, additionalProperties=$additionalProperties}"
         }
 
-        /** The purpose of payment applied to each sweep. */
+        /**
+         * The purpose of the payment. This may be required when sending to certain geographies
+         * (e.g. India).
+         *
+         * Some destinations accept only certain purposes. A business payout to China must use one
+         * of the purposes listed in
+         * [Supporting Documents](https://docs.lightspark.com/payouts-and-b2b/payment-flow/send-payment#supporting-documents),
+         * and each needs its own supporting documents.
+         */
         class PurposeOfPayment
         @JsonCreator
         private constructor(private val value: JsonField<String>) : Enum {

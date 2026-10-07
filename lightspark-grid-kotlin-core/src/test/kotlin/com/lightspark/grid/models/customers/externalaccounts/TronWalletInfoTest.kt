@@ -11,13 +11,51 @@ internal class TronWalletInfoTest {
 
     @Test
     fun create() {
-        val tronWalletInfo = TronWalletInfo.builder().build()
+        val tronWalletInfo =
+            TronWalletInfo.builder()
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .accountType(TronWalletInfo.AccountType.TRON_WALLET)
+                .address("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
+                .build()
+
+        assertThat(tronWalletInfo.beneficiary())
+            .isEqualTo(
+                WalletBeneficiaryOneOf.ofIndividual(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+            )
+        assertThat(tronWalletInfo.vaspName()).isEqualTo("Kraken")
+        assertThat(tronWalletInfo.accountType()).isEqualTo(TronWalletInfo.AccountType.TRON_WALLET)
+        assertThat(tronWalletInfo.address()).isEqualTo("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val tronWalletInfo = TronWalletInfo.builder().build()
+        val tronWalletInfo =
+            TronWalletInfo.builder()
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .accountType(TronWalletInfo.AccountType.TRON_WALLET)
+                .address("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
+                .build()
 
         val roundtrippedTronWalletInfo =
             jsonMapper.readValue(

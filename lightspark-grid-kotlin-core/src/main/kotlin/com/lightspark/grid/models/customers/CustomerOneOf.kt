@@ -12,57 +12,32 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BusinessCustomer
 import com.lightspark.grid.models.IndividualCustomer
 import java.util.Objects
 
-/**
- * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an individual
- * customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear as top-level
- * optional fields on the customer resource itself; there is no separate EDD resource. The specific
- * set required for a given customer is driven by the KYC provider's per-jurisdiction / per-flow /
- * per-volume-tier rules (surfaced through `MISSING_FIELD` errors on `POST /verifications`).
- */
 @JsonDeserialize(using = CustomerOneOf.Deserializer::class)
 @JsonSerialize(using = CustomerOneOf.Serializer::class)
 class CustomerOneOf
 private constructor(
-    private val individualCustomer: IndividualCustomer? = null,
-    private val businessCustomer: BusinessCustomer? = null,
+    private val individual: IndividualCustomer? = null,
+    private val business: BusinessCustomer? = null,
     private val _json: JsonValue? = null,
 ) {
 
-    /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     */
-    fun individualCustomer(): IndividualCustomer? = individualCustomer
+    fun individual(): IndividualCustomer? = individual
 
-    fun businessCustomer(): BusinessCustomer? = businessCustomer
+    fun business(): BusinessCustomer? = business
 
-    fun isIndividualCustomer(): Boolean = individualCustomer != null
+    fun isIndividual(): Boolean = individual != null
 
-    fun isBusinessCustomer(): Boolean = businessCustomer != null
+    fun isBusiness(): Boolean = business != null
 
-    /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     */
-    fun asIndividualCustomer(): IndividualCustomer =
-        individualCustomer.getOrThrow("individualCustomer")
+    fun asIndividual(): IndividualCustomer = individual.getOrThrow("individual")
 
-    fun asBusinessCustomer(): BusinessCustomer = businessCustomer.getOrThrow("businessCustomer")
+    fun asBusiness(): BusinessCustomer = business.getOrThrow("business")
 
     fun _json(): JsonValue? = _json
 
@@ -76,7 +51,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = customerOneOf.accept(object : CustomerOneOf.Visitor<String?> {
-     *     override fun visitIndividualCustomer(individualCustomer: IndividualCustomer): String? = individualCustomer.toString()
+     *     override fun visitIndividual(individual: IndividualCustomer): String? = individual.toString()
      *
      *     // ...
      *
@@ -92,8 +67,8 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            individualCustomer != null -> visitor.visitIndividualCustomer(individualCustomer)
-            businessCustomer != null -> visitor.visitBusinessCustomer(businessCustomer)
+            individual != null -> visitor.visitIndividual(individual)
+            business != null -> visitor.visitBusiness(business)
             else -> visitor.unknown(_json)
         }
 
@@ -114,12 +89,12 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitIndividualCustomer(individualCustomer: IndividualCustomer) {
-                    individualCustomer.validate()
+                override fun visitIndividual(individual: IndividualCustomer) {
+                    individual.validate()
                 }
 
-                override fun visitBusinessCustomer(businessCustomer: BusinessCustomer) {
-                    businessCustomer.validate()
+                override fun visitBusiness(business: BusinessCustomer) {
+                    business.validate()
                 }
             }
         )
@@ -142,11 +117,9 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitIndividualCustomer(individualCustomer: IndividualCustomer) =
-                    individualCustomer.validity()
+                override fun visitIndividual(individual: IndividualCustomer) = individual.validity()
 
-                override fun visitBusinessCustomer(businessCustomer: BusinessCustomer) =
-                    businessCustomer.validity()
+                override fun visitBusiness(business: BusinessCustomer) = business.validity()
 
                 override fun unknown(json: JsonValue?) = 0
             }
@@ -158,35 +131,25 @@ private constructor(
         }
 
         return other is CustomerOneOf &&
-            individualCustomer == other.individualCustomer &&
-            businessCustomer == other.businessCustomer
+            individual == other.individual &&
+            business == other.business
     }
 
-    override fun hashCode(): Int = Objects.hash(individualCustomer, businessCustomer)
+    override fun hashCode(): Int = Objects.hash(individual, business)
 
     override fun toString(): String =
         when {
-            individualCustomer != null -> "CustomerOneOf{individualCustomer=$individualCustomer}"
-            businessCustomer != null -> "CustomerOneOf{businessCustomer=$businessCustomer}"
+            individual != null -> "CustomerOneOf{individual=$individual}"
+            business != null -> "CustomerOneOf{business=$business}"
             _json != null -> "CustomerOneOf{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid CustomerOneOf")
         }
 
     companion object {
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
-        fun ofIndividualCustomer(individualCustomer: IndividualCustomer) =
-            CustomerOneOf(individualCustomer = individualCustomer)
+        fun ofIndividual(individual: IndividualCustomer) = CustomerOneOf(individual = individual)
 
-        fun ofBusinessCustomer(businessCustomer: BusinessCustomer) =
-            CustomerOneOf(businessCustomer = businessCustomer)
+        fun ofBusiness(business: BusinessCustomer) = CustomerOneOf(business = business)
     }
 
     /**
@@ -194,17 +157,9 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
-        fun visitIndividualCustomer(individualCustomer: IndividualCustomer): T
+        fun visitIndividual(individual: IndividualCustomer): T
 
-        fun visitBusinessCustomer(businessCustomer: BusinessCustomer): T
+        fun visitBusiness(business: BusinessCustomer): T
 
         /**
          * Maps an unknown variant of [CustomerOneOf] to a value of type [T].
@@ -226,29 +181,20 @@ private constructor(
             val json = JsonValue.fromJsonNode(node)
             val customerType = json.asObject()?.get("customerType")?.asString()
 
-            when (customerType) {}
-
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<IndividualCustomer>())?.let {
-                            CustomerOneOf(individualCustomer = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<BusinessCustomer>())?.let {
-                            CustomerOneOf(businessCustomer = it, _json = json)
-                        },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> CustomerOneOf(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            when (customerType) {
+                "INDIVIDUAL" -> {
+                    return tryDeserialize(node, jacksonTypeRef<IndividualCustomer>())?.let {
+                        CustomerOneOf(individual = it, _json = json)
+                    } ?: CustomerOneOf(_json = json)
+                }
+                "BUSINESS" -> {
+                    return tryDeserialize(node, jacksonTypeRef<BusinessCustomer>())?.let {
+                        CustomerOneOf(business = it, _json = json)
+                    } ?: CustomerOneOf(_json = json)
+                }
             }
+
+            return CustomerOneOf(_json = json)
         }
     }
 
@@ -260,8 +206,8 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.individualCustomer != null -> generator.writeObject(value.individualCustomer)
-                value.businessCustomer != null -> generator.writeObject(value.businessCustomer)
+                value.individual != null -> generator.writeObject(value.individual)
+                value.business != null -> generator.writeObject(value.business)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid CustomerOneOf")
             }

@@ -14,17 +14,18 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.quotes.Currency
 import java.util.Collections
 import java.util.Objects
 
-class ExternalAccountLookupResponse
+class ReceiverLookupUmaResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val lookupId: JsonField<String>,
-    private val sendingCurrency: JsonValue,
+    private val sendingCurrency: JsonField<Currency>,
     private val supportedCurrencies: JsonField<List<LookupResponse.SupportedCurrency>>,
     private val requiredPayerDataFields: JsonField<List<CounterpartyFieldDefinition>>,
-    private val accountId: JsonField<String>,
+    private val receiverUmaAddress: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -33,20 +34,22 @@ private constructor(
         @JsonProperty("lookupId") @ExcludeMissing lookupId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sendingCurrency")
         @ExcludeMissing
-        sendingCurrency: JsonValue = JsonMissing.of(),
+        sendingCurrency: JsonField<Currency> = JsonMissing.of(),
         @JsonProperty("supportedCurrencies")
         @ExcludeMissing
         supportedCurrencies: JsonField<List<LookupResponse.SupportedCurrency>> = JsonMissing.of(),
         @JsonProperty("requiredPayerDataFields")
         @ExcludeMissing
         requiredPayerDataFields: JsonField<List<CounterpartyFieldDefinition>> = JsonMissing.of(),
-        @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("receiverUmaAddress")
+        @ExcludeMissing
+        receiverUmaAddress: JsonField<String> = JsonMissing.of(),
     ) : this(
         lookupId,
         sendingCurrency,
         supportedCurrencies,
         requiredPayerDataFields,
-        accountId,
+        receiverUmaAddress,
         mutableMapOf(),
     )
 
@@ -72,14 +75,10 @@ private constructor(
      * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated in
      * its smallest unit.
      *
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = externalAccountLookupResponse.sendingCurrency().convert(MyClass::class.java)
-     * ```
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("sendingCurrency")
-    @ExcludeMissing
-    fun _sendingCurrency(): JsonValue = sendingCurrency
+    fun sendingCurrency(): Currency = sendingCurrency.getRequired("sendingCurrency")
 
     /**
      * List of currencies supported by the receiving account
@@ -100,12 +99,12 @@ private constructor(
         requiredPayerDataFields.getNullable("requiredPayerDataFields")
 
     /**
-     * The external account ID that was looked up
+     * The UMA address that was looked up
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun accountId(): String = accountId.getRequired("accountId")
+    fun receiverUmaAddress(): String = receiverUmaAddress.getRequired("receiverUmaAddress")
 
     /**
      * Returns the raw JSON value of [lookupId].
@@ -113,6 +112,15 @@ private constructor(
      * Unlike [lookupId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("lookupId") @ExcludeMissing fun _lookupId(): JsonField<String> = lookupId
+
+    /**
+     * Returns the raw JSON value of [sendingCurrency].
+     *
+     * Unlike [sendingCurrency], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("sendingCurrency")
+    @ExcludeMissing
+    fun _sendingCurrency(): JsonField<Currency> = sendingCurrency
 
     /**
      * Returns the raw JSON value of [supportedCurrencies].
@@ -137,11 +145,14 @@ private constructor(
         requiredPayerDataFields
 
     /**
-     * Returns the raw JSON value of [accountId].
+     * Returns the raw JSON value of [receiverUmaAddress].
      *
-     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [receiverUmaAddress], this method doesn't throw if the JSON field has an unexpected
+     * type.
      */
-    @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
+    @JsonProperty("receiverUmaAddress")
+    @ExcludeMissing
+    fun _receiverUmaAddress(): JsonField<String> = receiverUmaAddress
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -158,41 +169,40 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [ExternalAccountLookupResponse].
+         * Returns a mutable builder for constructing an instance of [ReceiverLookupUmaResponse].
          *
          * The following fields are required:
          * ```kotlin
          * .lookupId()
          * .sendingCurrency()
          * .supportedCurrencies()
-         * .accountId()
+         * .receiverUmaAddress()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [ExternalAccountLookupResponse]. */
+    /** A builder for [ReceiverLookupUmaResponse]. */
     class Builder internal constructor() {
 
         private var lookupId: JsonField<String>? = null
-        private var sendingCurrency: JsonValue? = null
+        private var sendingCurrency: JsonField<Currency>? = null
         private var supportedCurrencies: JsonField<MutableList<LookupResponse.SupportedCurrency>>? =
             null
         private var requiredPayerDataFields: JsonField<MutableList<CounterpartyFieldDefinition>>? =
             null
-        private var accountId: JsonField<String>? = null
+        private var receiverUmaAddress: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(externalAccountLookupResponse: ExternalAccountLookupResponse) = apply {
-            lookupId = externalAccountLookupResponse.lookupId
-            sendingCurrency = externalAccountLookupResponse.sendingCurrency
+        internal fun from(receiverLookupUmaResponse: ReceiverLookupUmaResponse) = apply {
+            lookupId = receiverLookupUmaResponse.lookupId
+            sendingCurrency = receiverLookupUmaResponse.sendingCurrency
             supportedCurrencies =
-                externalAccountLookupResponse.supportedCurrencies.map { it.toMutableList() }
+                receiverLookupUmaResponse.supportedCurrencies.map { it.toMutableList() }
             requiredPayerDataFields =
-                externalAccountLookupResponse.requiredPayerDataFields.map { it.toMutableList() }
-            accountId = externalAccountLookupResponse.accountId
-            additionalProperties = externalAccountLookupResponse.additionalProperties.toMutableMap()
+                receiverLookupUmaResponse.requiredPayerDataFields.map { it.toMutableList() }
+            receiverUmaAddress = receiverLookupUmaResponse.receiverUmaAddress
+            additionalProperties = receiverLookupUmaResponse.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for the lookup. Needed in the subsequent create quote request. */
@@ -212,7 +222,17 @@ private constructor(
          * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated
          * in its smallest unit.
          */
-        fun sendingCurrency(sendingCurrency: JsonValue) = apply {
+        fun sendingCurrency(sendingCurrency: Currency) =
+            sendingCurrency(JsonField.of(sendingCurrency))
+
+        /**
+         * Sets [Builder.sendingCurrency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sendingCurrency] with a well-typed [Currency] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun sendingCurrency(sendingCurrency: JsonField<Currency>) = apply {
             this.sendingCurrency = sendingCurrency
         }
 
@@ -275,17 +295,20 @@ private constructor(
                 }
         }
 
-        /** The external account ID that was looked up */
-        fun accountId(accountId: String) = accountId(JsonField.of(accountId))
+        /** The UMA address that was looked up */
+        fun receiverUmaAddress(receiverUmaAddress: String) =
+            receiverUmaAddress(JsonField.of(receiverUmaAddress))
 
         /**
-         * Sets [Builder.accountId] to an arbitrary JSON value.
+         * Sets [Builder.receiverUmaAddress] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.accountId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.receiverUmaAddress] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
+        fun receiverUmaAddress(receiverUmaAddress: JsonField<String>) = apply {
+            this.receiverUmaAddress = receiverUmaAddress
+        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -307,7 +330,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [ExternalAccountLookupResponse].
+         * Returns an immutable instance of [ReceiverLookupUmaResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -316,18 +339,18 @@ private constructor(
          * .lookupId()
          * .sendingCurrency()
          * .supportedCurrencies()
-         * .accountId()
+         * .receiverUmaAddress()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): ExternalAccountLookupResponse =
-            ExternalAccountLookupResponse(
+        fun build(): ReceiverLookupUmaResponse =
+            ReceiverLookupUmaResponse(
                 checkRequired("lookupId", lookupId),
                 checkRequired("sendingCurrency", sendingCurrency),
                 checkRequired("supportedCurrencies", supportedCurrencies).map { it.toImmutable() },
                 (requiredPayerDataFields ?: JsonMissing.of()).map { it.toImmutable() },
-                checkRequired("accountId", accountId),
+                checkRequired("receiverUmaAddress", receiverUmaAddress),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -342,15 +365,16 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): ExternalAccountLookupResponse = apply {
+    fun validate(): ReceiverLookupUmaResponse = apply {
         if (validated) {
             return@apply
         }
 
         lookupId()
+        sendingCurrency().validate()
         supportedCurrencies().forEach { it.validate() }
         requiredPayerDataFields()?.forEach { it.validate() }
-        accountId()
+        receiverUmaAddress()
         validated = true
     }
 
@@ -369,21 +393,22 @@ private constructor(
      */
     internal fun validity(): Int =
         (if (lookupId.asKnown() == null) 0 else 1) +
+            (sendingCurrency.asKnown()?.validity() ?: 0) +
             (supportedCurrencies.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (requiredPayerDataFields.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (accountId.asKnown() == null) 0 else 1)
+            (if (receiverUmaAddress.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is ExternalAccountLookupResponse &&
+        return other is ReceiverLookupUmaResponse &&
             lookupId == other.lookupId &&
             sendingCurrency == other.sendingCurrency &&
             supportedCurrencies == other.supportedCurrencies &&
             requiredPayerDataFields == other.requiredPayerDataFields &&
-            accountId == other.accountId &&
+            receiverUmaAddress == other.receiverUmaAddress &&
             additionalProperties == other.additionalProperties
     }
 
@@ -393,7 +418,7 @@ private constructor(
             sendingCurrency,
             supportedCurrencies,
             requiredPayerDataFields,
-            accountId,
+            receiverUmaAddress,
             additionalProperties,
         )
     }
@@ -401,5 +426,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccountLookupResponse{lookupId=$lookupId, sendingCurrency=$sendingCurrency, supportedCurrencies=$supportedCurrencies, requiredPayerDataFields=$requiredPayerDataFields, accountId=$accountId, additionalProperties=$additionalProperties}"
+        "ReceiverLookupUmaResponse{lookupId=$lookupId, sendingCurrency=$sendingCurrency, supportedCurrencies=$supportedCurrencies, requiredPayerDataFields=$requiredPayerDataFields, receiverUmaAddress=$receiverUmaAddress, additionalProperties=$additionalProperties}"
 }

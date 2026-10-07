@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/1.10.0)
-[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.10.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/1.11.0)
+[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.11.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.10.0).
+KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.11.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/l
 ### Gradle
 
 ```kotlin
-implementation("com.lightspark.grid:lightspark-grid-kotlin:1.10.0")
+implementation("com.lightspark.grid:lightspark-grid-kotlin:1.11.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.lightspark.grid:lightspark-grid-kotlin:1.10.0")
 <dependency>
   <groupId>com.lightspark.grid</groupId>
   <artifactId>lightspark-grid-kotlin</artifactId>
-  <version>1.10.0</version>
+  <version>1.11.0</version>
 </dependency>
 ```
 

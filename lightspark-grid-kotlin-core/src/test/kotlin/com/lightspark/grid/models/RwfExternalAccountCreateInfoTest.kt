@@ -37,7 +37,7 @@ internal class RwfExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+250781234567")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(rwfExternalAccountCreateInfo.accountType())
@@ -67,7 +67,7 @@ internal class RwfExternalAccountCreateInfoTest {
                 )
             )
         assertThat(rwfExternalAccountCreateInfo.phoneNumber()).isEqualTo("+250781234567")
-        assertThat(rwfExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
+        assertThat(rwfExternalAccountCreateInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -98,7 +98,7 @@ internal class RwfExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+250781234567")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedRwfExternalAccountCreateInfo =

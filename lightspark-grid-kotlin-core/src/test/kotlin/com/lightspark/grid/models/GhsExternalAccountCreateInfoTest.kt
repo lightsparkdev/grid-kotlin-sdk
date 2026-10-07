@@ -37,7 +37,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 
@@ -68,7 +68,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(ghsExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(ghsExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -100,7 +100,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 

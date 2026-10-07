@@ -16,14 +16,14 @@ internal class MwkAccountInfoTest {
                 .accountType(MwkAccountInfo.AccountType.MWK_ACCOUNT)
                 .addPaymentRail(MwkAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(mwkAccountInfo.accountType()).isEqualTo(MwkAccountInfo.AccountType.MWK_ACCOUNT)
         assertThat(mwkAccountInfo.paymentRails())
             .containsExactly(MwkAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(mwkAccountInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(mwkAccountInfo.provider()).isEqualTo("Example Provider")
+        assertThat(mwkAccountInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class MwkAccountInfoTest {
                 .accountType(MwkAccountInfo.AccountType.MWK_ACCOUNT)
                 .addPaymentRail(MwkAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedMwkAccountInfo =

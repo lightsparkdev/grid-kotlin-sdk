@@ -6,7 +6,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.BeneficialOwner
+import com.lightspark.grid.models.BusinessCustomer
 import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -19,11 +22,92 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class CustomerUpdateResponseTest {
 
     @Test
-    fun ofOneOf() {
-        val oneOf =
-            CustomerOneOf.ofIndividualCustomer(
+    fun ofIndividualCustomer() {
+        val individualCustomer =
+            IndividualCustomer.builder()
+                .platformCustomerId("9f84e0c2a72c4fa")
+                .umaAddress("\$john.doe@uma.domain.com")
+                .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .addAgreementConsent(
+                    AgreementConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
+                .contactVerification(
+                    Customer.ContactVerification.builder()
+                        .email(Customer.ContactVerification.Email.VERIFIED)
+                        .phone(Customer.ContactVerification.Phone.VERIFIED)
+                        .build()
+                )
+                .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .addCurrency("USD")
+                .addCurrency("USDC")
+                .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    Customer.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
+                .isDeleted(false)
+                .phoneNumber("+14155551234")
+                .region("US")
+                .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                .address(
+                    Address.builder()
+                        .country("US")
+                        .line1("123 Main Street")
+                        .postalCode("94105")
+                        .city("San Francisco")
+                        .line2("Apt 4B")
+                        .state("CA")
+                        .build()
+                )
+                .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
+                .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
+                .expectedMonthlyTransactionCount(
+                    IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                )
+                .expectedMonthlyTransactionVolume(
+                    IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                )
+                .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomer.IdType.SSN)
+                .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                .nationality("US")
+                .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                .pepStatus(IndividualCustomer.PepStatus.NONE)
+                .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                .sourceOfFundsOtherDescription("Contest winnings")
+                .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.INVESTMENTS)
+                .sourceOfWealthOtherDescription("Royalty income from published works")
+                .build()
+
+        val customerUpdateResponse = CustomerUpdateResponse.ofIndividualCustomer(individualCustomer)
+
+        assertThat(customerUpdateResponse.individualCustomer()).isEqualTo(individualCustomer)
+        assertThat(customerUpdateResponse.businessCustomer()).isNull()
+        assertThat(customerUpdateResponse.walletOperationProcessing()).isNull()
+    }
+
+    @Test
+    fun ofIndividualCustomerRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val customerUpdateResponse =
+            CustomerUpdateResponse.ofIndividualCustomer(
                 IndividualCustomer.builder()
-                    .customerType(JsonValue.from("INDIVIDUAL"))
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -58,6 +142,7 @@ internal class CustomerUpdateResponseTest {
                     .phoneNumber("+14155551234")
                     .region("US")
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -96,91 +181,278 @@ internal class CustomerUpdateResponseTest {
                     .build()
             )
 
-        val customerUpdateResponse = CustomerUpdateResponse.ofOneOf(oneOf)
+        val roundtrippedCustomerUpdateResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(customerUpdateResponse),
+                jacksonTypeRef<CustomerUpdateResponse>(),
+            )
 
-        assertThat(customerUpdateResponse.oneOf()).isEqualTo(oneOf)
+        assertThat(roundtrippedCustomerUpdateResponse).isEqualTo(customerUpdateResponse)
+    }
+
+    @Test
+    fun ofBusinessCustomer() {
+        val businessCustomer =
+            BusinessCustomer.builder()
+                .platformCustomerId("9f84e0c2a72c4fa")
+                .umaAddress("\$john.doe@uma.domain.com")
+                .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .addAgreementConsent(
+                    AgreementConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
+                .contactVerification(
+                    Customer.ContactVerification.builder()
+                        .email(Customer.ContactVerification.Email.VERIFIED)
+                        .phone(Customer.ContactVerification.Phone.VERIFIED)
+                        .build()
+                )
+                .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .addCurrency("USD")
+                .addCurrency("USDC")
+                .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    Customer.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
+                .isDeleted(false)
+                .phoneNumber("+14155551234")
+                .region("US")
+                .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(BusinessCustomer.CustomerType.BUSINESS)
+                .address(
+                    Address.builder()
+                        .country("US")
+                        .line1("123 Main Street")
+                        .postalCode("94105")
+                        .city("San Francisco")
+                        .line2("Apt 4B")
+                        .state("CA")
+                        .build()
+                )
+                .addBeneficialOwner(
+                    BeneficialOwner.builder()
+                        .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                        .ownershipPercentage(51L)
+                        .personalInfo(
+                            BeneficialOwnerPersonalInfo.builder()
+                                .address(
+                                    Address.builder()
+                                        .country("US")
+                                        .line1("123 Main Street")
+                                        .postalCode("94105")
+                                        .city("San Francisco")
+                                        .line2("Apt 4B")
+                                        .state("CA")
+                                        .build()
+                                )
+                                .birthDate(LocalDate.parse("1978-06-15"))
+                                .firstName("Jane")
+                                .identifier("123-45-6789")
+                                .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
+                                .lastName("Smith")
+                                .nationality("US")
+                                .countryOfIssuance("US")
+                                .email("jane.smith@acmecorp.com")
+                                .middleName("Marie")
+                                .phoneNumber("+14155550192")
+                                .build()
+                        )
+                        .addRole(BeneficialOwner.Role.UBO)
+                        .addRole(BeneficialOwner.Role.DIRECTOR)
+                        .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                        .build()
+                )
+                .businessInfo(
+                    BusinessCustomer.BusinessInfo.builder()
+                        .legalName("Acme Corporation, Inc.")
+                        .businessType(
+                            BusinessCustomer.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
+                        .addCountriesOfOperation("US")
+                        .country("US")
+                        .doingBusinessAs("Acme")
+                        .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
+                        .expectedMonthlyTransactionCount(
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
+                        )
+                        .addExpectedRecipientJurisdiction("US")
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
+                        .purposeOfAccount(
+                            BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
+                        .registrationNumber("5523041")
+                        .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(
+                            BusinessCustomer.BusinessInfo.SourceOfFundsCategory.OPERATING_REVENUE
+                        )
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                        .taxId("47-1234567")
+                        .build()
+                )
+                .kybStatus(BusinessCustomer.KybStatus.APPROVED)
+                .build()
+
+        val customerUpdateResponse = CustomerUpdateResponse.ofBusinessCustomer(businessCustomer)
+
+        assertThat(customerUpdateResponse.individualCustomer()).isNull()
+        assertThat(customerUpdateResponse.businessCustomer()).isEqualTo(businessCustomer)
         assertThat(customerUpdateResponse.walletOperationProcessing()).isNull()
     }
 
     @Test
-    fun ofOneOfRoundtrip() {
+    fun ofBusinessCustomerRoundtrip() {
         val jsonMapper = jsonMapper()
         val customerUpdateResponse =
-            CustomerUpdateResponse.ofOneOf(
-                CustomerOneOf.ofIndividualCustomer(
-                    IndividualCustomer.builder()
-                        .customerType(JsonValue.from("INDIVIDUAL"))
-                        .platformCustomerId("9f84e0c2a72c4fa")
-                        .umaAddress("\$john.doe@uma.domain.com")
-                        .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .addAgreementConsent(
-                            AgreementConsent.builder()
-                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
-                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                                .ipAddress("198.51.100.24")
-                                .termsVersion("2025-10-13")
-                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
-                                .build()
-                        )
-                        .contactVerification(
-                            Customer.ContactVerification.builder()
-                                .email(Customer.ContactVerification.Email.VERIFIED)
-                                .phone(Customer.ContactVerification.Phone.VERIFIED)
-                                .build()
-                        )
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
-                        .endUserTermsConsent(
-                            Customer.EndUserTermsConsent.builder()
-                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
-                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                                .ipAddress("198.51.100.24")
-                                .termsVersion("V1")
-                                .build()
-                        )
-                        .isDeleted(false)
-                        .phoneNumber("+14155551234")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .countryOfIssuance("US")
-                        .expectedMonthlyTransactionCount(
-                            IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
-                        )
-                        .expectedMonthlyTransactionVolume(
-                            IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
-                        )
-                        .fullName("John Michael Doe")
-                        .identifier("123-45-6789")
-                        .idType(IndividualCustomer.IdType.SSN)
-                        .kycStatus(IndividualCustomer.KycStatus.APPROVED)
-                        .nationality("US")
-                        .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
-                        .pepStatus(IndividualCustomer.PepStatus.NONE)
-                        .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
-                        .purposeOfAccountOtherDescription("Household budgeting between spouses")
-                        .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
-                        .sourceOfFundsOtherDescription("Contest winnings")
-                        .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
-                        .addSourceOfWealthCategory(
-                            IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
-                        )
-                        .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .build()
-                )
+            CustomerUpdateResponse.ofBusinessCustomer(
+                BusinessCustomer.builder()
+                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .umaAddress("\$john.doe@uma.domain.com")
+                    .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .addAgreementConsent(
+                        AgreementConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
+                    .contactVerification(
+                        Customer.ContactVerification.builder()
+                            .email(Customer.ContactVerification.Email.VERIFIED)
+                            .phone(Customer.ContactVerification.Phone.VERIFIED)
+                            .build()
+                    )
+                    .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        Customer.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .isDeleted(false)
+                    .phoneNumber("+14155551234")
+                    .region("US")
+                    .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .customerType(BusinessCustomer.CustomerType.BUSINESS)
+                    .address(
+                        Address.builder()
+                            .country("US")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
+                            .city("San Francisco")
+                            .line2("Apt 4B")
+                            .state("CA")
+                            .build()
+                    )
+                    .addBeneficialOwner(
+                        BeneficialOwner.builder()
+                            .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
+                            .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                            .ownershipPercentage(51L)
+                            .personalInfo(
+                                BeneficialOwnerPersonalInfo.builder()
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .city("San Francisco")
+                                            .line2("Apt 4B")
+                                            .state("CA")
+                                            .build()
+                                    )
+                                    .birthDate(LocalDate.parse("1978-06-15"))
+                                    .firstName("Jane")
+                                    .identifier("123-45-6789")
+                                    .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
+                                    .lastName("Smith")
+                                    .nationality("US")
+                                    .countryOfIssuance("US")
+                                    .email("jane.smith@acmecorp.com")
+                                    .middleName("Marie")
+                                    .phoneNumber("+14155550192")
+                                    .build()
+                            )
+                            .addRole(BeneficialOwner.Role.UBO)
+                            .addRole(BeneficialOwner.Role.DIRECTOR)
+                            .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                            .build()
+                    )
+                    .businessInfo(
+                        BusinessCustomer.BusinessInfo.builder()
+                            .legalName("Acme Corporation, Inc.")
+                            .businessType(
+                                BusinessCustomer.BusinessInfo.BusinessType
+                                    .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                            )
+                            .addCountriesOfOperation("US")
+                            .country("US")
+                            .doingBusinessAs("Acme")
+                            .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                            .addExpectedCounterpartyCountry("US")
+                            .expectedMonthlyTransactionCount(
+                                BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                                    .COUNT_100_TO_500
+                            )
+                            .expectedMonthlyTransactionVolume(
+                                BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                    .VOLUME_100_K_TO_1_M
+                            )
+                            .addExpectedRecipientJurisdiction("US")
+                            .incorporatedOn(LocalDate.parse("2018-03-14"))
+                            .naicsCode("541511")
+                            .primaryContactFirstName("Jane")
+                            .primaryContactLastName("Smith")
+                            .purposeOfAccount(
+                                BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                            )
+                            .purposeOfAccountOtherDescription("Escrow for equipment leases")
+                            .registrationNumber("5523041")
+                            .sourceOfFunds(
+                                "Funds derived from customer payments for software services"
+                            )
+                            .addSourceOfFundsCategory(
+                                BusinessCustomer.BusinessInfo.SourceOfFundsCategory
+                                    .OPERATING_REVENUE
+                            )
+                            .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                            .taxId("47-1234567")
+                            .build()
+                    )
+                    .kybStatus(BusinessCustomer.KybStatus.APPROVED)
+                    .build()
             )
 
         val roundtrippedCustomerUpdateResponse =
@@ -203,7 +475,8 @@ internal class CustomerUpdateResponseTest {
         val customerUpdateResponse =
             CustomerUpdateResponse.ofWalletOperationProcessing(walletOperationProcessing)
 
-        assertThat(customerUpdateResponse.oneOf()).isNull()
+        assertThat(customerUpdateResponse.individualCustomer()).isNull()
+        assertThat(customerUpdateResponse.businessCustomer()).isNull()
         assertThat(customerUpdateResponse.walletOperationProcessing())
             .isEqualTo(walletOperationProcessing)
     }

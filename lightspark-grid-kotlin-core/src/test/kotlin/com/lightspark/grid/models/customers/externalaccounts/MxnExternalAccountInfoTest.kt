@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.MxnAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,9 +14,61 @@ internal class MxnExternalAccountInfoTest {
     fun create() {
         val mxnExternalAccountInfo =
             MxnExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("MXN_ACCOUNT"))
-                .putAdditionalProperty("clabeNumber", JsonValue.from("123456789012345678"))
+                .accountType(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+                .clabeNumber("123456789012345678")
+                .addPaymentRail(MxnAccountInfo.PaymentRail.SPEI)
+                .beneficiary(
+                    MxnBeneficiary.builder()
+                        .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
+
+        assertThat(mxnExternalAccountInfo.accountType())
+            .isEqualTo(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+        assertThat(mxnExternalAccountInfo.clabeNumber()).isEqualTo("123456789012345678")
+        assertThat(mxnExternalAccountInfo.paymentRails())
+            .containsExactly(MxnAccountInfo.PaymentRail.SPEI)
+        assertThat(mxnExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                MxnExternalAccountInfo.Beneficiary.ofIndividual(
+                    MxnBeneficiary.builder()
+                        .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -24,8 +76,30 @@ internal class MxnExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val mxnExternalAccountInfo =
             MxnExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("MXN_ACCOUNT"))
-                .putAdditionalProperty("clabeNumber", JsonValue.from("123456789012345678"))
+                .accountType(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+                .clabeNumber("123456789012345678")
+                .addPaymentRail(MxnAccountInfo.PaymentRail.SPEI)
+                .beneficiary(
+                    MxnBeneficiary.builder()
+                        .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
 
         val roundtrippedMxnExternalAccountInfo =
