@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.10.0...v2.0.0) (2026-10-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **types:** restore typed union variants for accounts, quotes and transactions
+
+### Bug Fixes
+
+* **types:** restore typed union variants for accounts, quotes and transactions ([4b3829f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4b3829faf7ebc11ca477d1ba42eb39e2ca7899a2))
+
 ## [1.10.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.9.0...v1.10.0) (2026-10-06)
 
 
