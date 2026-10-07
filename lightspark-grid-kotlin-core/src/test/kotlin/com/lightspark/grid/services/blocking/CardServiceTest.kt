@@ -51,7 +51,7 @@ internal class CardServiceTest {
                             .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(10000L)
                             .maxTransactionsPerDay(20)
-                            .reason("Cardholder reported the card stolen.")
+                            .reason("Unrecognised charges reported by the cardholder.")
                             .status(CardUpdateRequest.Status.FROZEN)
                             .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
                             .threeDSecurePassword("AbCd1234EfGh5678")

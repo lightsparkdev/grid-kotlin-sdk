@@ -23,17 +23,9 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an individual
- * customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear as top-level
- * optional fields on the customer resource itself; there is no separate EDD resource. The specific
- * set required for a given customer is driven by the KYC provider's per-jurisdiction / per-flow /
- * per-volume-tier rules (surfaced through `MISSING_FIELD` errors on `POST /verifications`).
- */
 class IndividualCustomer
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val customerType: JsonValue,
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
@@ -47,6 +39,7 @@ private constructor(
     private val phoneNumber: JsonField<String>,
     private val region: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val customerType: JsonField<CustomerType>,
     private val address: JsonField<Address>,
     private val annualIncomeRange: JsonField<AnnualIncomeRange>,
     private val birthDate: JsonField<LocalDate>,
@@ -71,7 +64,6 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("customerType") @ExcludeMissing customerType: JsonValue = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -103,6 +95,9 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("customerType")
+        @ExcludeMissing
+        customerType: JsonField<CustomerType> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("annualIncomeRange")
         @ExcludeMissing
@@ -157,7 +152,6 @@ private constructor(
         @ExcludeMissing
         sourceOfWealthOtherDescription: JsonField<String> = JsonMissing.of(),
     ) : this(
-        customerType,
         platformCustomerId,
         umaAddress,
         id,
@@ -171,6 +165,7 @@ private constructor(
         phoneNumber,
         region,
         updatedAt,
+        customerType,
         address,
         annualIncomeRange,
         birthDate,
@@ -195,7 +190,6 @@ private constructor(
 
     fun toCustomer(): Customer =
         Customer.builder()
-            .customerType(customerType)
             .platformCustomerId(platformCustomerId)
             .umaAddress(umaAddress)
             .id(id)
@@ -210,14 +204,6 @@ private constructor(
             .region(region)
             .updatedAt(updatedAt)
             .build()
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = individualCustomer.customerType().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("customerType") @ExcludeMissing fun _customerType(): JsonValue = customerType
 
     /**
      * Platform-specific customer identifier
@@ -255,8 +241,17 @@ private constructor(
         agreementConsents.getNullable("agreementConsents")
 
     /**
-     * Email and phone verification state. **Only present when the customer's payment provider
-     * requires it** (e.g. EU customers); omitted otherwise.
+     * Email and/or phone verification state for the customer. This object is **only present when
+     * the customer's regulatory jurisdiction requires contact verification** (e.g. EU customers).
+     * For customers who have no such requirement, this object is omitted entirely — no action is
+     * needed.
+     *
+     * Each channel is reported independently: only the channels the customer's provider actually
+     * requires are present. A provider may require both email and phone, just one of them, or —
+     * when the object is absent — neither. Every channel that **is** present must reach `VERIFIED`
+     * before the customer can begin KYC. Drive each present channel with `POST
+     * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone` (and
+     * their `/confirm` sub-routes).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -289,8 +284,9 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-     * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+     * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+     * separately. Reported only for a customer whose acceptance predates that field, and always as
+     * the `LIGHTSPARK_END_USER_TERMS` agreement.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -331,6 +327,12 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime? = updatedAt.getNullable("updatedAt")
+
+    /**
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerType(): CustomerType = customerType.getRequired("customerType")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -612,6 +614,15 @@ private constructor(
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
     /**
+     * Returns the raw JSON value of [customerType].
+     *
+     * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerType")
+    @ExcludeMissing
+    fun _customerType(): JsonField<CustomerType> = customerType
+
+    /**
      * Returns the raw JSON value of [address].
      *
      * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
@@ -798,9 +809,9 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
+         * .customerType()
          * ```
          */
         fun builder() = Builder()
@@ -809,7 +820,6 @@ private constructor(
     /** A builder for [IndividualCustomer]. */
     class Builder internal constructor() {
 
-        private var customerType: JsonValue? = null
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
@@ -823,6 +833,7 @@ private constructor(
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var region: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var customerType: JsonField<CustomerType>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var annualIncomeRange: JsonField<AnnualIncomeRange> = JsonMissing.of()
         private var birthDate: JsonField<LocalDate> = JsonMissing.of()
@@ -847,7 +858,6 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(individualCustomer: IndividualCustomer) = apply {
-            customerType = individualCustomer.customerType
             platformCustomerId = individualCustomer.platformCustomerId
             umaAddress = individualCustomer.umaAddress
             id = individualCustomer.id
@@ -861,6 +871,7 @@ private constructor(
             phoneNumber = individualCustomer.phoneNumber
             region = individualCustomer.region
             updatedAt = individualCustomer.updatedAt
+            customerType = individualCustomer.customerType
             address = individualCustomer.address
             annualIncomeRange = individualCustomer.annualIncomeRange
             birthDate = individualCustomer.birthDate
@@ -884,8 +895,6 @@ private constructor(
             sourceOfWealthOtherDescription = individualCustomer.sourceOfWealthOtherDescription
             additionalProperties = individualCustomer.additionalProperties.toMutableMap()
         }
-
-        fun customerType(customerType: JsonValue) = apply { this.customerType = customerType }
 
         /** Platform-specific customer identifier */
         fun platformCustomerId(platformCustomerId: String) =
@@ -960,8 +969,17 @@ private constructor(
         }
 
         /**
-         * Email and phone verification state. **Only present when the customer's payment provider
-         * requires it** (e.g. EU customers); omitted otherwise.
+         * Email and/or phone verification state for the customer. This object is **only present
+         * when the customer's regulatory jurisdiction requires contact verification** (e.g. EU
+         * customers). For customers who have no such requirement, this object is omitted entirely —
+         * no action is needed.
+         *
+         * Each channel is reported independently: only the channels the customer's provider
+         * actually requires are present. A provider may require both email and phone, just one of
+         * them, or — when the object is absent — neither. Every channel that **is** present must
+         * reach `VERIFIED` before the customer can begin KYC. Drive each present channel with `POST
+         * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone`
+         * (and their `/confirm` sub-routes).
          */
         fun contactVerification(contactVerification: Customer.ContactVerification) =
             contactVerification(JsonField.of(contactVerification))
@@ -1028,8 +1046,9 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
-         * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-         * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+         * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+         * separately. Reported only for a customer whose acceptance predates that field, and always
+         * as the `LIGHTSPARK_END_USER_TERMS` agreement.
          */
         @Deprecated("deprecated")
         fun endUserTermsConsent(endUserTermsConsent: Customer.EndUserTermsConsent) =
@@ -1097,6 +1116,19 @@ private constructor(
          * supported value.
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+
+        fun customerType(customerType: CustomerType) = customerType(JsonField.of(customerType))
+
+        /**
+         * Sets [Builder.customerType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerType] with a well-typed [CustomerType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun customerType(customerType: JsonField<CustomerType>) = apply {
+            this.customerType = customerType
+        }
 
         fun address(address: Address) = address(JsonField.of(address))
 
@@ -1443,16 +1475,15 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
+         * .customerType()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): IndividualCustomer =
             IndividualCustomer(
-                checkRequired("customerType", customerType),
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
@@ -1466,6 +1497,7 @@ private constructor(
                 phoneNumber,
                 region,
                 updatedAt,
+                checkRequired("customerType", customerType),
                 address,
                 annualIncomeRange,
                 birthDate,
@@ -1517,6 +1549,7 @@ private constructor(
         phoneNumber()
         region()
         updatedAt()
+        customerType().validate()
         address()?.validate()
         annualIncomeRange()?.validate()
         birthDate()
@@ -1566,6 +1599,7 @@ private constructor(
             (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (region.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
+            (customerType.asKnown()?.validity() ?: 0) +
             (address.asKnown()?.validity() ?: 0) +
             (annualIncomeRange.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
@@ -3436,7 +3470,6 @@ private constructor(
         }
 
         return other is IndividualCustomer &&
-            customerType == other.customerType &&
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
@@ -3450,6 +3483,7 @@ private constructor(
             phoneNumber == other.phoneNumber &&
             region == other.region &&
             updatedAt == other.updatedAt &&
+            customerType == other.customerType &&
             address == other.address &&
             annualIncomeRange == other.annualIncomeRange &&
             birthDate == other.birthDate &&
@@ -3474,7 +3508,6 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            customerType,
             platformCustomerId,
             umaAddress,
             id,
@@ -3488,6 +3521,7 @@ private constructor(
             phoneNumber,
             region,
             updatedAt,
+            customerType,
             address,
             annualIncomeRange,
             birthDate,
@@ -3514,5 +3548,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, additionalProperties=$additionalProperties}"
+        "IndividualCustomer{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, additionalProperties=$additionalProperties}"
 }

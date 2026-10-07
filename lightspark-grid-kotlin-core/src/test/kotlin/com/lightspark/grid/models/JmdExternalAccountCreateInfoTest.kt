@@ -14,7 +14,7 @@ internal class JmdExternalAccountCreateInfoTest {
     fun create() {
         val jmdExternalAccountCreateInfo =
             JmdExternalAccountCreateInfo.builder()
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .accountType(JmdExternalAccountCreateInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .bankName("National Commercial Bank Ja Ltd")
@@ -39,10 +39,10 @@ internal class JmdExternalAccountCreateInfoTest {
                         .nationality("nationality")
                         .build()
                 )
-                .branchCode("11111")
+                .branchCode("21029")
                 .build()
 
-        assertThat(jmdExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(jmdExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(jmdExternalAccountCreateInfo.accountType())
             .isEqualTo(JmdExternalAccountCreateInfo.AccountType.JMD_ACCOUNT)
         assertThat(jmdExternalAccountCreateInfo.bankAccountType())
@@ -73,7 +73,7 @@ internal class JmdExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(jmdExternalAccountCreateInfo.branchCode()).isEqualTo("11111")
+        assertThat(jmdExternalAccountCreateInfo.branchCode()).isEqualTo("21029")
     }
 
     @Test
@@ -81,7 +81,7 @@ internal class JmdExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val jmdExternalAccountCreateInfo =
             JmdExternalAccountCreateInfo.builder()
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .accountType(JmdExternalAccountCreateInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .bankName("National Commercial Bank Ja Ltd")
@@ -106,7 +106,7 @@ internal class JmdExternalAccountCreateInfoTest {
                         .nationality("nationality")
                         .build()
                 )
-                .branchCode("11111")
+                .branchCode("21029")
                 .build()
 
         val roundtrippedJmdExternalAccountCreateInfo =

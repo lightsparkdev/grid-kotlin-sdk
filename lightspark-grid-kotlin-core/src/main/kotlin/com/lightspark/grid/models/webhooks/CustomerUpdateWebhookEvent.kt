@@ -49,13 +49,6 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -161,14 +154,6 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
         fun data(data: CustomerOneOf) = data(JsonField.of(data))
 
         /**
@@ -180,15 +165,11 @@ private constructor(
          */
         fun data(data: JsonField<CustomerOneOf>) = apply { this.data = data }
 
-        /**
-         * Alias for calling [data] with `CustomerOneOf.ofIndividualCustomer(individualCustomer)`.
-         */
-        fun data(individualCustomer: IndividualCustomer) =
-            data(CustomerOneOf.ofIndividualCustomer(individualCustomer))
+        /** Alias for calling [data] with `CustomerOneOf.ofIndividual(individual)`. */
+        fun data(individual: IndividualCustomer) = data(CustomerOneOf.ofIndividual(individual))
 
-        /** Alias for calling [data] with `CustomerOneOf.ofBusinessCustomer(businessCustomer)`. */
-        fun data(businessCustomer: BusinessCustomer) =
-            data(CustomerOneOf.ofBusinessCustomer(businessCustomer))
+        /** Alias for calling [data] with `CustomerOneOf.ofBusiness(business)`. */
+        fun data(business: BusinessCustomer) = data(CustomerOneOf.ofBusiness(business))
 
         /** ISO 8601 timestamp of when the webhook was sent */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))

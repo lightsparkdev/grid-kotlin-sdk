@@ -6,10 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.receiver.ExternalAccountLookupResponse
 import com.lightspark.grid.models.receiver.ReceiverLookupExternalAccountParams
+import com.lightspark.grid.models.receiver.ReceiverLookupExternalAccountResponse
 import com.lightspark.grid.models.receiver.ReceiverLookupUmaParams
-import com.lightspark.grid.models.receiver.UmaLookupResponse
+import com.lightspark.grid.models.receiver.ReceiverLookupUmaResponse
 
 /**
  * Endpoints for creating and confirming quotes for transfers, both same-currency and cross-currency
@@ -38,20 +38,20 @@ interface ReceiverService {
         accountId: String,
         params: ReceiverLookupExternalAccountParams = ReceiverLookupExternalAccountParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccountLookupResponse =
+    ): ReceiverLookupExternalAccountResponse =
         lookupExternalAccount(params.toBuilder().accountId(accountId).build(), requestOptions)
 
     /** @see lookupExternalAccount */
     fun lookupExternalAccount(
         params: ReceiverLookupExternalAccountParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccountLookupResponse
+    ): ReceiverLookupExternalAccountResponse
 
     /** @see lookupExternalAccount */
     fun lookupExternalAccount(
         accountId: String,
         requestOptions: RequestOptions,
-    ): ExternalAccountLookupResponse =
+    ): ReceiverLookupExternalAccountResponse =
         lookupExternalAccount(accountId, ReceiverLookupExternalAccountParams.none(), requestOptions)
 
     /**
@@ -62,17 +62,20 @@ interface ReceiverService {
         receiverUmaAddress: String,
         params: ReceiverLookupUmaParams = ReceiverLookupUmaParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): UmaLookupResponse =
+    ): ReceiverLookupUmaResponse =
         lookupUma(params.toBuilder().receiverUmaAddress(receiverUmaAddress).build(), requestOptions)
 
     /** @see lookupUma */
     fun lookupUma(
         params: ReceiverLookupUmaParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): UmaLookupResponse
+    ): ReceiverLookupUmaResponse
 
     /** @see lookupUma */
-    fun lookupUma(receiverUmaAddress: String, requestOptions: RequestOptions): UmaLookupResponse =
+    fun lookupUma(
+        receiverUmaAddress: String,
+        requestOptions: RequestOptions,
+    ): ReceiverLookupUmaResponse =
         lookupUma(receiverUmaAddress, ReceiverLookupUmaParams.none(), requestOptions)
 
     /** A view of [ReceiverService] that provides access to raw HTTP responses for each method. */
@@ -95,7 +98,7 @@ interface ReceiverService {
             params: ReceiverLookupExternalAccountParams =
                 ReceiverLookupExternalAccountParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccountLookupResponse> =
+        ): HttpResponseFor<ReceiverLookupExternalAccountResponse> =
             lookupExternalAccount(params.toBuilder().accountId(accountId).build(), requestOptions)
 
         /** @see lookupExternalAccount */
@@ -103,14 +106,14 @@ interface ReceiverService {
         fun lookupExternalAccount(
             params: ReceiverLookupExternalAccountParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccountLookupResponse>
+        ): HttpResponseFor<ReceiverLookupExternalAccountResponse>
 
         /** @see lookupExternalAccount */
         @MustBeClosed
         fun lookupExternalAccount(
             accountId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccountLookupResponse> =
+        ): HttpResponseFor<ReceiverLookupExternalAccountResponse> =
             lookupExternalAccount(
                 accountId,
                 ReceiverLookupExternalAccountParams.none(),
@@ -126,7 +129,7 @@ interface ReceiverService {
             receiverUmaAddress: String,
             params: ReceiverLookupUmaParams = ReceiverLookupUmaParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<UmaLookupResponse> =
+        ): HttpResponseFor<ReceiverLookupUmaResponse> =
             lookupUma(
                 params.toBuilder().receiverUmaAddress(receiverUmaAddress).build(),
                 requestOptions,
@@ -137,14 +140,14 @@ interface ReceiverService {
         fun lookupUma(
             params: ReceiverLookupUmaParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<UmaLookupResponse>
+        ): HttpResponseFor<ReceiverLookupUmaResponse>
 
         /** @see lookupUma */
         @MustBeClosed
         fun lookupUma(
             receiverUmaAddress: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<UmaLookupResponse> =
+        ): HttpResponseFor<ReceiverLookupUmaResponse> =
             lookupUma(receiverUmaAddress, ReceiverLookupUmaParams.none(), requestOptions)
     }
 }

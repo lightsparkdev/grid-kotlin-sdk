@@ -3,21 +3,27 @@
 package com.lightspark.grid.models.receiver
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.quotes.Currency
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class ExternalAccountLookupResponseTest {
+internal class ReceiverLookupExternalAccountResponseTest {
 
     @Test
     fun create() {
-        val externalAccountLookupResponse =
-            ExternalAccountLookupResponse.builder()
+        val receiverLookupExternalAccountResponse =
+            ReceiverLookupExternalAccountResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
+                .sendingCurrency(
+                    Currency.builder()
+                        .code("USD")
+                        .decimals(2L)
+                        .name("United States Dollar")
+                        .symbol("\$")
+                        .build()
+                )
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -45,11 +51,18 @@ internal class ExternalAccountLookupResponseTest {
                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .build()
 
-        assertThat(externalAccountLookupResponse.lookupId())
+        assertThat(receiverLookupExternalAccountResponse.lookupId())
             .isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-        assertThat(externalAccountLookupResponse._sendingCurrency())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
-        assertThat(externalAccountLookupResponse.supportedCurrencies())
+        assertThat(receiverLookupExternalAccountResponse.sendingCurrency())
+            .isEqualTo(
+                Currency.builder()
+                    .code("USD")
+                    .decimals(2L)
+                    .name("United States Dollar")
+                    .symbol("\$")
+                    .build()
+            )
+        assertThat(receiverLookupExternalAccountResponse.supportedCurrencies())
             .containsExactly(
                 LookupResponse.SupportedCurrency.builder()
                     .currency(
@@ -68,24 +81,31 @@ internal class ExternalAccountLookupResponseTest {
                     .minSendingAmount(100L)
                     .build()
             )
-        assertThat(externalAccountLookupResponse.requiredPayerDataFields())
+        assertThat(receiverLookupExternalAccountResponse.requiredPayerDataFields())
             .containsExactly(
                 CounterpartyFieldDefinition.builder()
                     .mandatory(true)
                     .name(CustomerInfoFieldName.FULL_NAME)
                     .build()
             )
-        assertThat(externalAccountLookupResponse.accountId())
+        assertThat(receiverLookupExternalAccountResponse.accountId())
             .isEqualTo("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val externalAccountLookupResponse =
-            ExternalAccountLookupResponse.builder()
+        val receiverLookupExternalAccountResponse =
+            ReceiverLookupExternalAccountResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
+                .sendingCurrency(
+                    Currency.builder()
+                        .code("USD")
+                        .decimals(2L)
+                        .name("United States Dollar")
+                        .symbol("\$")
+                        .build()
+                )
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -113,13 +133,13 @@ internal class ExternalAccountLookupResponseTest {
                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .build()
 
-        val roundtrippedExternalAccountLookupResponse =
+        val roundtrippedReceiverLookupExternalAccountResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(externalAccountLookupResponse),
-                jacksonTypeRef<ExternalAccountLookupResponse>(),
+                jsonMapper.writeValueAsString(receiverLookupExternalAccountResponse),
+                jacksonTypeRef<ReceiverLookupExternalAccountResponse>(),
             )
 
-        assertThat(roundtrippedExternalAccountLookupResponse)
-            .isEqualTo(externalAccountLookupResponse)
+        assertThat(roundtrippedReceiverLookupExternalAccountResponse)
+            .isEqualTo(receiverLookupExternalAccountResponse)
     }
 }

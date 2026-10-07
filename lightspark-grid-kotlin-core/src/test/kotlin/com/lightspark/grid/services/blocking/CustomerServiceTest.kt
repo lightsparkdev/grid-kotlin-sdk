@@ -68,7 +68,7 @@ internal class CustomerServiceTest {
                     .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
-                    .email("john.doe@example.com")
+                    .email("jane.smith@example.com")
                     .endUserTermsConsent(
                         IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
                             .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
@@ -85,7 +85,7 @@ internal class CustomerServiceTest {
                         IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
                             .VOLUME_100_K_TO_1_M
                     )
-                    .fullName("John Michael Doe")
+                    .fullName("Jane Smith")
                     .identifier("123-45-6789")
                     .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
@@ -93,7 +93,7 @@ internal class CustomerServiceTest {
                     .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
                     .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
                     .phoneNumber("+14155551234")
-                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .platformCustomerId("ind-9f84e0c2")
                     .purposeOfAccount(
                         IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
                     )
@@ -160,11 +160,11 @@ internal class CustomerServiceTest {
                             .address(
                                 Address.builder()
                                     .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
+                                    .line1("456 Market St")
+                                    .postalCode("98101")
+                                    .city("Seattle")
                                     .line2("Apt 4B")
-                                    .state("CA")
+                                    .state("WA")
                                     .build()
                             )
                             .addAgreementConsent(
@@ -179,7 +179,7 @@ internal class CustomerServiceTest {
                             .annualIncomeRange(
                                 IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                             )
-                            .birthDate(LocalDate.parse("1990-01-15"))
+                            .birthDate(LocalDate.parse("1985-06-15"))
                             .countryOfIssuance("US")
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
@@ -199,7 +199,7 @@ internal class CustomerServiceTest {
                                 IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
                                     .VOLUME_100_K_TO_1_M
                             )
-                            .fullName("John Michael Doe")
+                            .fullName("John Smith")
                             .identifier("123-45-6789")
                             .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                             .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)

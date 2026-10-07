@@ -3,21 +3,27 @@
 package com.lightspark.grid.models.receiver
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.quotes.Currency
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class UmaLookupResponseTest {
+internal class ReceiverLookupUmaResponseTest {
 
     @Test
     fun create() {
-        val umaLookupResponse =
-            UmaLookupResponse.builder()
+        val receiverLookupUmaResponse =
+            ReceiverLookupUmaResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
+                .sendingCurrency(
+                    Currency.builder()
+                        .code("USD")
+                        .decimals(2L)
+                        .name("United States Dollar")
+                        .symbol("\$")
+                        .build()
+                )
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -45,11 +51,18 @@ internal class UmaLookupResponseTest {
                 .receiverUmaAddress("\$receiver@uma.domain")
                 .build()
 
-        assertThat(umaLookupResponse.lookupId())
+        assertThat(receiverLookupUmaResponse.lookupId())
             .isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-        assertThat(umaLookupResponse._sendingCurrency())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
-        assertThat(umaLookupResponse.supportedCurrencies())
+        assertThat(receiverLookupUmaResponse.sendingCurrency())
+            .isEqualTo(
+                Currency.builder()
+                    .code("USD")
+                    .decimals(2L)
+                    .name("United States Dollar")
+                    .symbol("\$")
+                    .build()
+            )
+        assertThat(receiverLookupUmaResponse.supportedCurrencies())
             .containsExactly(
                 LookupResponse.SupportedCurrency.builder()
                     .currency(
@@ -68,23 +81,31 @@ internal class UmaLookupResponseTest {
                     .minSendingAmount(100L)
                     .build()
             )
-        assertThat(umaLookupResponse.requiredPayerDataFields())
+        assertThat(receiverLookupUmaResponse.requiredPayerDataFields())
             .containsExactly(
                 CounterpartyFieldDefinition.builder()
                     .mandatory(true)
                     .name(CustomerInfoFieldName.FULL_NAME)
                     .build()
             )
-        assertThat(umaLookupResponse.receiverUmaAddress()).isEqualTo("\$receiver@uma.domain")
+        assertThat(receiverLookupUmaResponse.receiverUmaAddress())
+            .isEqualTo("\$receiver@uma.domain")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val umaLookupResponse =
-            UmaLookupResponse.builder()
+        val receiverLookupUmaResponse =
+            ReceiverLookupUmaResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
+                .sendingCurrency(
+                    Currency.builder()
+                        .code("USD")
+                        .decimals(2L)
+                        .name("United States Dollar")
+                        .symbol("\$")
+                        .build()
+                )
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -112,12 +133,12 @@ internal class UmaLookupResponseTest {
                 .receiverUmaAddress("\$receiver@uma.domain")
                 .build()
 
-        val roundtrippedUmaLookupResponse =
+        val roundtrippedReceiverLookupUmaResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(umaLookupResponse),
-                jacksonTypeRef<UmaLookupResponse>(),
+                jsonMapper.writeValueAsString(receiverLookupUmaResponse),
+                jacksonTypeRef<ReceiverLookupUmaResponse>(),
             )
 
-        assertThat(roundtrippedUmaLookupResponse).isEqualTo(umaLookupResponse)
+        assertThat(roundtrippedReceiverLookupUmaResponse).isEqualTo(receiverLookupUmaResponse)
     }
 }

@@ -6,13 +6,13 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
-import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
@@ -40,7 +40,17 @@ internal class AgentActionTest {
                     Quote.builder()
                         .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                        .destination(QuoteDestinationOneOf.builder().build())
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
+                                )
+                                .paymentRail(
+                                    QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH
+                                )
+                                .build()
+                        )
                         .exchangeRate(1.0)
                         .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                         .feesIncluded(10L)
@@ -60,7 +70,13 @@ internal class AgentActionTest {
                                 .symbol("\$")
                                 .build()
                         )
-                        .source(QuoteSourceOneOf.builder().build())
+                        .source(
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .build()
+                        )
                         .status(Quote.Status.PENDING)
                         .totalReceivingAmount(1000L)
                         .totalSendingAmount(123010L)
@@ -82,25 +98,19 @@ internal class AgentActionTest {
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                        .accountHolderName("Acme Exports Pte Ltd")
-                                        .bankName("Chase Bank")
-                                        .country("NG")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
-                                        )
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
-                                        )
-                                        .swiftCode("DEUTDEFF")
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("1234567890")
-                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                        .iban("GB29NWBK60161331926819")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
+                                        .routingNumber("021000021")
+                                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                                        .bankName("Chase Bank")
+                                        .fiToFiInformation("/BNF/Invoice 4471")
+                                        .intermediaryBankName("JPMorgan Chase Bank")
+                                        .intermediaryRoutingNumber("021000021")
                                         .reference("UMA-Q12345-REF")
+                                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                                         .build()
                                 )
                                 .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -110,20 +120,14 @@ internal class AgentActionTest {
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                        .accountHolderName("Acme Exports Pte Ltd")
-                                        .bankName("Deutsche Bank")
-                                        .country("NG")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
+                                    PaymentInstructions.AccountOrWalletInfo.SparkWallet.builder()
+                                        .address(
+                                            "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                         )
-                                        .swiftCode("DEUTDEFF")
-                                        .accountNumber("1234567890")
-                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                        .iban("GB29NWBK60161331926819")
-                                        .reference("UMA-Q12345-REF")
+                                        .assetType("BTC")
+                                        .invoice(
+                                            "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                        )
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -140,7 +144,7 @@ internal class AgentActionTest {
                                 .counterpartyMultiplier(1.08)
                                 .gridApiFixedFee(10L)
                                 .gridApiMultiplier(0.925)
-                                .gridApiVariableFeeAmount(30L)
+                                .gridApiVariableFeeAmount(30.0)
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
@@ -166,7 +170,32 @@ internal class AgentActionTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(
+                            IncomingTransaction.Destination.AccountTransaction.builder()
+                                .currency("EUR")
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    IncomingTransaction.Destination.AccountTransaction
+                                        .DestinationType
+                                        .ACCOUNT
+                                )
+                                .onChainTransaction(
+                                    IncomingTransaction.Destination.AccountTransaction
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            IncomingTransaction.Destination.AccountTransaction
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
@@ -211,11 +240,11 @@ internal class AgentActionTest {
                                 .build()
                         )
                         .refund(
-                            Refund.builder()
+                            IncomingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(Refund.Status.COMPLETED)
-                                .reason(Refund.Reason.TRANSACTION_FAILED)
+                                .status(IncomingTransaction.Refund.Status.COMPLETED)
+                                .reason(IncomingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -234,7 +263,31 @@ internal class AgentActionTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(TransactionSourceOneOf.builder().build())
+                        .source(
+                            TransactionSourceOneOf.AccountTransactionSource.builder()
+                                .currency("USD")
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(
+                                    TransactionSourceOneOf.AccountTransactionSource.SourceType
+                                        .ACCOUNT
+                                )
+                                .onChainTransaction(
+                                    TransactionSourceOneOf.AccountTransactionSource
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            TransactionSourceOneOf.AccountTransactionSource
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -254,7 +307,15 @@ internal class AgentActionTest {
                 Quote.builder()
                     .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                    .destination(QuoteDestinationOneOf.builder().build())
+                    .destination(
+                        QuoteDestinationOneOf.AccountDestination.builder()
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
+                            )
+                            .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                            .build()
+                    )
                     .exchangeRate(1.0)
                     .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                     .feesIncluded(10L)
@@ -274,7 +335,13 @@ internal class AgentActionTest {
                             .symbol("\$")
                             .build()
                     )
-                    .source(QuoteSourceOneOf.builder().build())
+                    .source(
+                        QuoteSourceOneOf.AccountQuoteSource.builder()
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .build()
+                    )
                     .status(Quote.Status.PENDING)
                     .totalReceivingAmount(1000L)
                     .totalSendingAmount(123010L)
@@ -296,25 +363,19 @@ internal class AgentActionTest {
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                    .accountHolderName("Acme Exports Pte Ltd")
-                                    .bankName("Chase Bank")
-                                    .country("NG")
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                            .PaymentRail
-                                            .SWIFT
-                                    )
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                            .PaymentRail
-                                            .SWIFT
-                                    )
-                                    .swiftCode("DEUTDEFF")
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                     .accountNumber("1234567890")
-                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                    .iban("GB29NWBK60161331926819")
+                                    .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                    .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                    .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
+                                    .routingNumber("021000021")
+                                    .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                                    .bankName("Chase Bank")
+                                    .fiToFiInformation("/BNF/Invoice 4471")
+                                    .intermediaryBankName("JPMorgan Chase Bank")
+                                    .intermediaryRoutingNumber("021000021")
                                     .reference("UMA-Q12345-REF")
+                                    .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                                     .build()
                             )
                             .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -324,20 +385,14 @@ internal class AgentActionTest {
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                    .accountHolderName("Acme Exports Pte Ltd")
-                                    .bankName("Deutsche Bank")
-                                    .country("NG")
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                            .PaymentRail
-                                            .SWIFT
+                                PaymentInstructions.AccountOrWalletInfo.SparkWallet.builder()
+                                    .address(
+                                        "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                     )
-                                    .swiftCode("DEUTDEFF")
-                                    .accountNumber("1234567890")
-                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                    .iban("GB29NWBK60161331926819")
-                                    .reference("UMA-Q12345-REF")
+                                    .assetType("BTC")
+                                    .invoice(
+                                        "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                    )
                                     .build()
                             )
                             .instructionsNotes(
@@ -354,7 +409,7 @@ internal class AgentActionTest {
                             .counterpartyMultiplier(1.08)
                             .gridApiFixedFee(10L)
                             .gridApiMultiplier(0.925)
-                            .gridApiVariableFeeAmount(30L)
+                            .gridApiVariableFeeAmount(30.0)
                             .gridApiVariableFeeRate(0.003)
                             .build()
                     )
@@ -383,7 +438,32 @@ internal class AgentActionTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(
+                            IncomingTransaction.Destination.AccountTransaction.builder()
+                                .currency("EUR")
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    IncomingTransaction.Destination.AccountTransaction
+                                        .DestinationType
+                                        .ACCOUNT
+                                )
+                                .onChainTransaction(
+                                    IncomingTransaction.Destination.AccountTransaction
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            IncomingTransaction.Destination.AccountTransaction
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
@@ -428,11 +508,11 @@ internal class AgentActionTest {
                                 .build()
                         )
                         .refund(
-                            Refund.builder()
+                            IncomingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(Refund.Status.COMPLETED)
-                                .reason(Refund.Reason.TRANSACTION_FAILED)
+                                .status(IncomingTransaction.Refund.Status.COMPLETED)
+                                .reason(IncomingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -451,7 +531,31 @@ internal class AgentActionTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(TransactionSourceOneOf.builder().build())
+                        .source(
+                            TransactionSourceOneOf.AccountTransactionSource.builder()
+                                .currency("USD")
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(
+                                    TransactionSourceOneOf.AccountTransactionSource.SourceType
+                                        .ACCOUNT
+                                )
+                                .onChainTransaction(
+                                    TransactionSourceOneOf.AccountTransactionSource
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            TransactionSourceOneOf.AccountTransactionSource
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -475,7 +579,17 @@ internal class AgentActionTest {
                     Quote.builder()
                         .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                        .destination(QuoteDestinationOneOf.builder().build())
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
+                                )
+                                .paymentRail(
+                                    QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH
+                                )
+                                .build()
+                        )
                         .exchangeRate(1.0)
                         .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                         .feesIncluded(10L)
@@ -495,7 +609,13 @@ internal class AgentActionTest {
                                 .symbol("\$")
                                 .build()
                         )
-                        .source(QuoteSourceOneOf.builder().build())
+                        .source(
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .build()
+                        )
                         .status(Quote.Status.PENDING)
                         .totalReceivingAmount(1000L)
                         .totalSendingAmount(123010L)
@@ -517,25 +637,19 @@ internal class AgentActionTest {
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                        .accountHolderName("Acme Exports Pte Ltd")
-                                        .bankName("Chase Bank")
-                                        .country("NG")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
-                                        )
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
-                                        )
-                                        .swiftCode("DEUTDEFF")
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("1234567890")
-                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                        .iban("GB29NWBK60161331926819")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
+                                        .routingNumber("021000021")
+                                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                                        .bankName("Chase Bank")
+                                        .fiToFiInformation("/BNF/Invoice 4471")
+                                        .intermediaryBankName("JPMorgan Chase Bank")
+                                        .intermediaryRoutingNumber("021000021")
                                         .reference("UMA-Q12345-REF")
+                                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                                         .build()
                                 )
                                 .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -545,20 +659,14 @@ internal class AgentActionTest {
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                        .accountHolderName("Acme Exports Pte Ltd")
-                                        .bankName("Deutsche Bank")
-                                        .country("NG")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
+                                    PaymentInstructions.AccountOrWalletInfo.SparkWallet.builder()
+                                        .address(
+                                            "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                         )
-                                        .swiftCode("DEUTDEFF")
-                                        .accountNumber("1234567890")
-                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                        .iban("GB29NWBK60161331926819")
-                                        .reference("UMA-Q12345-REF")
+                                        .assetType("BTC")
+                                        .invoice(
+                                            "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                        )
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -575,7 +683,7 @@ internal class AgentActionTest {
                                 .counterpartyMultiplier(1.08)
                                 .gridApiFixedFee(10L)
                                 .gridApiMultiplier(0.925)
-                                .gridApiVariableFeeAmount(30L)
+                                .gridApiVariableFeeAmount(30.0)
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
@@ -601,7 +709,32 @@ internal class AgentActionTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(
+                            IncomingTransaction.Destination.AccountTransaction.builder()
+                                .currency("EUR")
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    IncomingTransaction.Destination.AccountTransaction
+                                        .DestinationType
+                                        .ACCOUNT
+                                )
+                                .onChainTransaction(
+                                    IncomingTransaction.Destination.AccountTransaction
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            IncomingTransaction.Destination.AccountTransaction
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
@@ -646,11 +779,11 @@ internal class AgentActionTest {
                                 .build()
                         )
                         .refund(
-                            Refund.builder()
+                            IncomingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(Refund.Status.COMPLETED)
-                                .reason(Refund.Reason.TRANSACTION_FAILED)
+                                .status(IncomingTransaction.Refund.Status.COMPLETED)
+                                .reason(IncomingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -669,7 +802,31 @@ internal class AgentActionTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(TransactionSourceOneOf.builder().build())
+                        .source(
+                            TransactionSourceOneOf.AccountTransactionSource.builder()
+                                .currency("USD")
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(
+                                    TransactionSourceOneOf.AccountTransactionSource.SourceType
+                                        .ACCOUNT
+                                )
+                                .onChainTransaction(
+                                    TransactionSourceOneOf.AccountTransactionSource
+                                        .OnChainTransaction
+                                        .builder()
+                                        .network(
+                                            TransactionSourceOneOf.AccountTransactionSource
+                                                .OnChainTransaction
+                                                .Network
+                                                .SOLANA
+                                        )
+                                        .transactionHash(
+                                            "h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmUNJAEqN76R7PwPfHt3oWb8R6cKvhgyxQdDn53jFrK6wFx"
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )

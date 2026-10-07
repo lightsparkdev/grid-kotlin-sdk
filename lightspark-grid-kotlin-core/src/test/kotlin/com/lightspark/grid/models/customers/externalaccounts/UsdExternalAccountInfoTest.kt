@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,18 +14,74 @@ internal class UsdExternalAccountInfoTest {
     fun create() {
         val usdExternalAccountInfo =
             UsdExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("USD_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("routingNumber", JsonValue.from("021000021"))
-                .putAdditionalProperty("bankName", JsonValue.from("Chase Bank"))
-                .putAdditionalProperty(
-                    "intermediaryBankName",
-                    JsonValue.from("JPMorgan Chase Bank"),
+                .accountNumber("x")
+                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                .routingNumber("021000021")
+                .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                .bankName("Chase Bank")
+                .fiToFiInformation("/BNF/Invoice 4471")
+                .intermediaryBankName("JPMorgan Chase Bank")
+                .intermediaryRoutingNumber("021000021")
+                .beneficiary(
+                    UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
                 )
-                .putAdditionalProperty("intermediaryRoutingNumber", JsonValue.from("021000021"))
-                .putAdditionalProperty("fiToFiInformation", JsonValue.from("/BNF/Invoice 4471"))
-                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .build()
+
+        assertThat(usdExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(usdExternalAccountInfo.accountType())
+            .isEqualTo(UsdAccountInfo.AccountType.USD_ACCOUNT)
+        assertThat(usdExternalAccountInfo.paymentRails())
+            .containsExactly(UsdAccountInfo.PaymentRail.ACH)
+        assertThat(usdExternalAccountInfo.routingNumber()).isEqualTo("021000021")
+        assertThat(usdExternalAccountInfo.bankAccountType())
+            .isEqualTo(UsdAccountInfo.BankAccountType.CHECKING)
+        assertThat(usdExternalAccountInfo.bankName()).isEqualTo("Chase Bank")
+        assertThat(usdExternalAccountInfo.fiToFiInformation()).isEqualTo("/BNF/Invoice 4471")
+        assertThat(usdExternalAccountInfo.intermediaryBankName()).isEqualTo("JPMorgan Chase Bank")
+        assertThat(usdExternalAccountInfo.intermediaryRoutingNumber()).isEqualTo("021000021")
+        assertThat(usdExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                UsdExternalAccountInfo.Beneficiary.ofIndividual(
+                    UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -33,17 +89,36 @@ internal class UsdExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val usdExternalAccountInfo =
             UsdExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("USD_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("routingNumber", JsonValue.from("021000021"))
-                .putAdditionalProperty("bankName", JsonValue.from("Chase Bank"))
-                .putAdditionalProperty(
-                    "intermediaryBankName",
-                    JsonValue.from("JPMorgan Chase Bank"),
+                .accountNumber("x")
+                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                .routingNumber("021000021")
+                .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                .bankName("Chase Bank")
+                .fiToFiInformation("/BNF/Invoice 4471")
+                .intermediaryBankName("JPMorgan Chase Bank")
+                .intermediaryRoutingNumber("021000021")
+                .beneficiary(
+                    UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
                 )
-                .putAdditionalProperty("intermediaryRoutingNumber", JsonValue.from("021000021"))
-                .putAdditionalProperty("fiToFiInformation", JsonValue.from("/BNF/Invoice 4471"))
-                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .build()
 
         val roundtrippedUsdExternalAccountInfo =

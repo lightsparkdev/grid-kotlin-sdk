@@ -16,14 +16,14 @@ internal class KesAccountInfoTest {
                 .accountType(KesAccountInfo.AccountType.KES_ACCOUNT)
                 .addPaymentRail(KesAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+254712345678")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(kesAccountInfo.accountType()).isEqualTo(KesAccountInfo.AccountType.KES_ACCOUNT)
         assertThat(kesAccountInfo.paymentRails())
             .containsExactly(KesAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(kesAccountInfo.phoneNumber()).isEqualTo("+254712345678")
-        assertThat(kesAccountInfo.provider()).isEqualTo("Example Provider")
+        assertThat(kesAccountInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class KesAccountInfoTest {
                 .accountType(KesAccountInfo.AccountType.KES_ACCOUNT)
                 .addPaymentRail(KesAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+254712345678")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedKesAccountInfo =

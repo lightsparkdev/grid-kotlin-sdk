@@ -25,11 +25,11 @@ internal class CustomerUpdateParamsTest {
                     .address(
                         Address.builder()
                             .country("US")
-                            .line1("123 Main Street")
-                            .postalCode("94105")
-                            .city("San Francisco")
+                            .line1("456 Market St")
+                            .postalCode("98101")
+                            .city("Seattle")
                             .line2("Apt 4B")
-                            .state("CA")
+                            .state("WA")
                             .build()
                     )
                     .addAgreementConsent(
@@ -44,7 +44,7 @@ internal class CustomerUpdateParamsTest {
                     .annualIncomeRange(
                         IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
-                    .birthDate(LocalDate.parse("1990-01-15"))
+                    .birthDate(LocalDate.parse("1985-06-15"))
                     .countryOfIssuance("US")
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
@@ -64,7 +64,7 @@ internal class CustomerUpdateParamsTest {
                         IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
                             .VOLUME_100_K_TO_1_M
                     )
-                    .fullName("John Michael Doe")
+                    .fullName("John Smith")
                     .identifier("123-45-6789")
                     .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
@@ -125,11 +125,11 @@ internal class CustomerUpdateParamsTest {
                         .address(
                             Address.builder()
                                 .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
+                                .line1("456 Market St")
+                                .postalCode("98101")
+                                .city("Seattle")
                                 .line2("Apt 4B")
-                                .state("CA")
+                                .state("WA")
                                 .build()
                         )
                         .addAgreementConsent(
@@ -144,7 +144,7 @@ internal class CustomerUpdateParamsTest {
                         .annualIncomeRange(
                             IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                         )
-                        .birthDate(LocalDate.parse("1990-01-15"))
+                        .birthDate(LocalDate.parse("1985-06-15"))
                         .countryOfIssuance("US")
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
@@ -164,7 +164,7 @@ internal class CustomerUpdateParamsTest {
                             IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
                                 .VOLUME_100_K_TO_1_M
                         )
-                        .fullName("John Michael Doe")
+                        .fullName("John Smith")
                         .identifier("123-45-6789")
                         .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                         .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
@@ -240,11 +240,11 @@ internal class CustomerUpdateParamsTest {
                         .address(
                             Address.builder()
                                 .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
+                                .line1("456 Market St")
+                                .postalCode("98101")
+                                .city("Seattle")
                                 .line2("Apt 4B")
-                                .state("CA")
+                                .state("WA")
                                 .build()
                         )
                         .addAgreementConsent(
@@ -259,7 +259,7 @@ internal class CustomerUpdateParamsTest {
                         .annualIncomeRange(
                             IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                         )
-                        .birthDate(LocalDate.parse("1990-01-15"))
+                        .birthDate(LocalDate.parse("1985-06-15"))
                         .countryOfIssuance("US")
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
@@ -279,7 +279,7 @@ internal class CustomerUpdateParamsTest {
                             IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
                                 .VOLUME_100_K_TO_1_M
                         )
-                        .fullName("John Michael Doe")
+                        .fullName("John Smith")
                         .identifier("123-45-6789")
                         .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                         .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
@@ -319,11 +319,11 @@ internal class CustomerUpdateParamsTest {
                         .address(
                             Address.builder()
                                 .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
+                                .line1("456 Market St")
+                                .postalCode("98101")
+                                .city("Seattle")
                                 .line2("Apt 4B")
-                                .state("CA")
+                                .state("WA")
                                 .build()
                         )
                         .addAgreementConsent(
@@ -338,7 +338,7 @@ internal class CustomerUpdateParamsTest {
                         .annualIncomeRange(
                             IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                         )
-                        .birthDate(LocalDate.parse("1990-01-15"))
+                        .birthDate(LocalDate.parse("1985-06-15"))
                         .countryOfIssuance("US")
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
@@ -358,7 +358,7 @@ internal class CustomerUpdateParamsTest {
                             IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
                                 .VOLUME_100_K_TO_1_M
                         )
-                        .fullName("John Michael Doe")
+                        .fullName("John Smith")
                         .identifier("123-45-6789")
                         .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                         .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)

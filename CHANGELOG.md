@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.11.0 (2026-10-07)
+
+This release is for integrations on Grid Kotlin SDK 1.4.0 that need the restored typed union variants without the 2.0.0 renames. It is generated with the previous spec normalizer and keeps the 1.4.0 names for quote, transaction, and customer unions. New integrations should use 2.0.0.
+
+1.11.0 is not source compatible with 1.10.0. Code written against 1.10.0 may need changes: `QuoteRequest` is removed (set fields on `QuoteCreateParams` directly), `CustomerOneOf.individualCustomer()` is `individual()`, and the receiver lookup responses are `ReceiverLookupExternalAccountResponse` and `ReceiverLookupUmaResponse`.
+
+### Bug Fixes
+
+* **types:** restore typed union variants for external accounts, payment instructions, quotes, transactions, and auth credentials, with the 1.4.0 variant names
+
 ## [1.10.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.9.0...v1.10.0) (2026-10-06)
 
 

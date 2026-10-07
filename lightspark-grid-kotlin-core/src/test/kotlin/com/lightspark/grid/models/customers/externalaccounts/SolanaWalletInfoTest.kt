@@ -11,13 +11,53 @@ internal class SolanaWalletInfoTest {
 
     @Test
     fun create() {
-        val solanaWalletInfo = SolanaWalletInfo.builder().build()
+        val solanaWalletInfo =
+            SolanaWalletInfo.builder()
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+                .address("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
+                .build()
+
+        assertThat(solanaWalletInfo.beneficiary())
+            .isEqualTo(
+                WalletBeneficiaryOneOf.ofIndividual(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+            )
+        assertThat(solanaWalletInfo.vaspName()).isEqualTo("Kraken")
+        assertThat(solanaWalletInfo.accountType())
+            .isEqualTo(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+        assertThat(solanaWalletInfo.address())
+            .isEqualTo("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val solanaWalletInfo = SolanaWalletInfo.builder().build()
+        val solanaWalletInfo =
+            SolanaWalletInfo.builder()
+                .beneficiary(
+                    WalletIndividualBeneficiary.builder()
+                        .beneficiaryType(WalletIndividualBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("US")
+                        .fullName("John Michael Doe")
+                        .build()
+                )
+                .vaspName("Kraken")
+                .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
+                .address("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
+                .build()
 
         val roundtrippedSolanaWalletInfo =
             jsonMapper.readValue(

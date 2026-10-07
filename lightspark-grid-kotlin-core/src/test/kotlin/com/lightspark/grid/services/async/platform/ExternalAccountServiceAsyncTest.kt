@@ -3,12 +3,12 @@
 package com.lightspark.grid.services.async.platform
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.AedBeneficiary
-import com.lightspark.grid.models.AedExternalAccountCreateInfo
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.OwnershipChallengeRequest
 import com.lightspark.grid.models.customers.externalaccounts.OwnershipVerificationMethod
 import com.lightspark.grid.models.customers.externalaccounts.OwnershipVerifyRequest
+import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountChallengeParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountVerifyParams
 import com.lightspark.grid.models.platform.externalaccounts.PlatformExternalAccountCreateRequest
@@ -33,10 +33,14 @@ internal class ExternalAccountServiceAsyncTest {
             externalAccountServiceAsync.create(
                 PlatformExternalAccountCreateRequest.builder()
                     .accountInfo(
-                        AedExternalAccountCreateInfo.builder()
-                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                        UsdExternalAccountCreateInfo.builder()
+                            .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                            .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                             .beneficiary(
-                                AedBeneficiary.builder()
+                                UsdBeneficiary.builder()
+                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("John Doe")
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -47,17 +51,18 @@ internal class ExternalAccountServiceAsyncTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("fullName")
-                                    .birthDate("birthDate")
+                                    .birthDate("1990-01-15")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("nationality")
+                                    .nationality("US")
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .iban("AE070331234567890123456")
-                            .swiftCode("EBILAEAD")
+                            .routingNumber("123456789")
+                            .bankName("Chase Bank")
+                            .fiToFiInformation("/BNF/Invoice 4471")
+                            .intermediaryBankName("JPMorgan Chase Bank")
+                            .intermediaryRoutingNumber("021000021")
                             .build()
                     )
                     .currency("USD")

@@ -3,7 +3,6 @@
 package com.lightspark.grid.models.receiver
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.quotes.Currency
@@ -17,7 +16,14 @@ internal class LookupResponseTest {
         val lookupResponse =
             LookupResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
+                .sendingCurrency(
+                    Currency.builder()
+                        .code("USD")
+                        .decimals(2L)
+                        .name("United States Dollar")
+                        .symbol("\$")
+                        .build()
+                )
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -46,8 +52,15 @@ internal class LookupResponseTest {
 
         assertThat(lookupResponse.lookupId())
             .isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-        assertThat(lookupResponse._sendingCurrency())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(lookupResponse.sendingCurrency())
+            .isEqualTo(
+                Currency.builder()
+                    .code("USD")
+                    .decimals(2L)
+                    .name("United States Dollar")
+                    .symbol("\$")
+                    .build()
+            )
         assertThat(lookupResponse.supportedCurrencies())
             .containsExactly(
                 LookupResponse.SupportedCurrency.builder()
@@ -82,7 +95,14 @@ internal class LookupResponseTest {
         val lookupResponse =
             LookupResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
+                .sendingCurrency(
+                    Currency.builder()
+                        .code("USD")
+                        .decimals(2L)
+                        .name("United States Dollar")
+                        .symbol("\$")
+                        .build()
+                )
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(

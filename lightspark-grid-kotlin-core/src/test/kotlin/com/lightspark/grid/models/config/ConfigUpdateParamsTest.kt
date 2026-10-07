@@ -62,9 +62,17 @@ internal class ConfigUpdateParamsTest {
                             .build()
                     )
                     .addFeeConfig(
-                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransactionFeeConfig
+                            .builder()
+                            .feeType(
+                                PlatformConfigUpdateRequest.FeeConfig
+                                    .CrossCurrencyTransactionFeeConfig
+                                    .FeeType
+                                    .CROSS_CURRENCY_TRANSACTION
+                            )
                             .fixedFee(
-                                PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
+                                PlatformConfigUpdateRequest.FeeConfig
+                                    .CrossCurrencyTransactionFeeConfig
                                     .FixedFee
                                     .builder()
                                     .amount(100L)
@@ -90,11 +98,11 @@ internal class ConfigUpdateParamsTest {
                                         .build(),
                                     CounterpartyFieldDefinition.builder()
                                         .mandatory(true)
-                                        .name(CustomerInfoFieldName.BIRTH_DATE)
+                                        .name(CustomerInfoFieldName.NATIONALITY)
                                         .build(),
                                     CounterpartyFieldDefinition.builder()
                                         .mandatory(true)
-                                        .name(CustomerInfoFieldName.NATIONALITY)
+                                        .name(CustomerInfoFieldName.BIRTH_DATE)
                                         .build(),
                                 )
                             )
@@ -170,9 +178,17 @@ internal class ConfigUpdateParamsTest {
                                 .build()
                         )
                         .addFeeConfig(
-                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransactionFeeConfig
+                                .builder()
+                                .feeType(
+                                    PlatformConfigUpdateRequest.FeeConfig
+                                        .CrossCurrencyTransactionFeeConfig
+                                        .FeeType
+                                        .CROSS_CURRENCY_TRANSACTION
+                                )
                                 .fixedFee(
-                                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
+                                    PlatformConfigUpdateRequest.FeeConfig
+                                        .CrossCurrencyTransactionFeeConfig
                                         .FixedFee
                                         .builder()
                                         .amount(100L)
@@ -198,11 +214,11 @@ internal class ConfigUpdateParamsTest {
                                             .build(),
                                         CounterpartyFieldDefinition.builder()
                                             .mandatory(true)
-                                            .name(CustomerInfoFieldName.BIRTH_DATE)
+                                            .name(CustomerInfoFieldName.NATIONALITY)
                                             .build(),
                                         CounterpartyFieldDefinition.builder()
                                             .mandatory(true)
-                                            .name(CustomerInfoFieldName.NATIONALITY)
+                                            .name(CustomerInfoFieldName.BIRTH_DATE)
                                             .build(),
                                     )
                                 )
@@ -275,9 +291,17 @@ internal class ConfigUpdateParamsTest {
                             .build()
                     )
                     .addFeeConfig(
-                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransactionFeeConfig
+                            .builder()
+                            .feeType(
+                                PlatformConfigUpdateRequest.FeeConfig
+                                    .CrossCurrencyTransactionFeeConfig
+                                    .FeeType
+                                    .CROSS_CURRENCY_TRANSACTION
+                            )
                             .fixedFee(
-                                PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
+                                PlatformConfigUpdateRequest.FeeConfig
+                                    .CrossCurrencyTransactionFeeConfig
                                     .FixedFee
                                     .builder()
                                     .amount(100L)
@@ -303,11 +327,11 @@ internal class ConfigUpdateParamsTest {
                                         .build(),
                                     CounterpartyFieldDefinition.builder()
                                         .mandatory(true)
-                                        .name(CustomerInfoFieldName.BIRTH_DATE)
+                                        .name(CustomerInfoFieldName.NATIONALITY)
                                         .build(),
                                     CounterpartyFieldDefinition.builder()
                                         .mandatory(true)
-                                        .name(CustomerInfoFieldName.NATIONALITY)
+                                        .name(CustomerInfoFieldName.BIRTH_DATE)
                                         .build(),
                                 )
                             )

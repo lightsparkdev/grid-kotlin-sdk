@@ -26,7 +26,6 @@ import java.util.Objects
 class BusinessCustomer
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val customerType: JsonValue,
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
@@ -40,6 +39,7 @@ private constructor(
     private val phoneNumber: JsonField<String>,
     private val region: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val customerType: JsonField<CustomerType>,
     private val address: JsonField<Address>,
     private val beneficialOwners: JsonField<List<BeneficialOwner>>,
     private val businessInfo: JsonField<BusinessInfo>,
@@ -49,7 +49,6 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("customerType") @ExcludeMissing customerType: JsonValue = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -81,6 +80,9 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("customerType")
+        @ExcludeMissing
+        customerType: JsonField<CustomerType> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("beneficialOwners")
         @ExcludeMissing
@@ -92,7 +94,6 @@ private constructor(
         @ExcludeMissing
         kybStatus: JsonField<KybStatus> = JsonMissing.of(),
     ) : this(
-        customerType,
         platformCustomerId,
         umaAddress,
         id,
@@ -106,6 +107,7 @@ private constructor(
         phoneNumber,
         region,
         updatedAt,
+        customerType,
         address,
         beneficialOwners,
         businessInfo,
@@ -115,7 +117,6 @@ private constructor(
 
     fun toCustomer(): Customer =
         Customer.builder()
-            .customerType(customerType)
             .platformCustomerId(platformCustomerId)
             .umaAddress(umaAddress)
             .id(id)
@@ -130,14 +131,6 @@ private constructor(
             .region(region)
             .updatedAt(updatedAt)
             .build()
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = businessCustomer.customerType().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("customerType") @ExcludeMissing fun _customerType(): JsonValue = customerType
 
     /**
      * Platform-specific customer identifier
@@ -175,8 +168,17 @@ private constructor(
         agreementConsents.getNullable("agreementConsents")
 
     /**
-     * Email and phone verification state. **Only present when the customer's payment provider
-     * requires it** (e.g. EU customers); omitted otherwise.
+     * Email and/or phone verification state for the customer. This object is **only present when
+     * the customer's regulatory jurisdiction requires contact verification** (e.g. EU customers).
+     * For customers who have no such requirement, this object is omitted entirely — no action is
+     * needed.
+     *
+     * Each channel is reported independently: only the channels the customer's provider actually
+     * requires are present. A provider may require both email and phone, just one of them, or —
+     * when the object is absent — neither. Every channel that **is** present must reach `VERIFIED`
+     * before the customer can begin KYC. Drive each present channel with `POST
+     * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone` (and
+     * their `/confirm` sub-routes).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -209,8 +211,9 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-     * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+     * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+     * separately. Reported only for a customer whose acceptance predates that field, and always as
+     * the `LIGHTSPARK_END_USER_TERMS` agreement.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -253,6 +256,12 @@ private constructor(
     fun updatedAt(): OffsetDateTime? = updatedAt.getNullable("updatedAt")
 
     /**
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerType(): CustomerType = customerType.getRequired("customerType")
+
+    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
@@ -266,10 +275,6 @@ private constructor(
         beneficialOwners.getNullable("beneficialOwners")
 
     /**
-     * Business information returned on a customer. `taxId` and `incorporatedOn` are required on
-     * creation but may be absent on legacy customers that pre-date the requirement, so both are
-     * optional in responses.
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
@@ -395,6 +400,15 @@ private constructor(
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
     /**
+     * Returns the raw JSON value of [customerType].
+     *
+     * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerType")
+    @ExcludeMissing
+    fun _customerType(): JsonField<CustomerType> = customerType
+
+    /**
      * Returns the raw JSON value of [address].
      *
      * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
@@ -446,9 +460,9 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
+         * .customerType()
          * ```
          */
         fun builder() = Builder()
@@ -457,7 +471,6 @@ private constructor(
     /** A builder for [BusinessCustomer]. */
     class Builder internal constructor() {
 
-        private var customerType: JsonValue? = null
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
@@ -471,6 +484,7 @@ private constructor(
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var region: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var customerType: JsonField<CustomerType>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var beneficialOwners: JsonField<MutableList<BeneficialOwner>>? = null
         private var businessInfo: JsonField<BusinessInfo> = JsonMissing.of()
@@ -478,7 +492,6 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(businessCustomer: BusinessCustomer) = apply {
-            customerType = businessCustomer.customerType
             platformCustomerId = businessCustomer.platformCustomerId
             umaAddress = businessCustomer.umaAddress
             id = businessCustomer.id
@@ -492,14 +505,13 @@ private constructor(
             phoneNumber = businessCustomer.phoneNumber
             region = businessCustomer.region
             updatedAt = businessCustomer.updatedAt
+            customerType = businessCustomer.customerType
             address = businessCustomer.address
             beneficialOwners = businessCustomer.beneficialOwners.map { it.toMutableList() }
             businessInfo = businessCustomer.businessInfo
             kybStatus = businessCustomer.kybStatus
             additionalProperties = businessCustomer.additionalProperties.toMutableMap()
         }
-
-        fun customerType(customerType: JsonValue) = apply { this.customerType = customerType }
 
         /** Platform-specific customer identifier */
         fun platformCustomerId(platformCustomerId: String) =
@@ -574,8 +586,17 @@ private constructor(
         }
 
         /**
-         * Email and phone verification state. **Only present when the customer's payment provider
-         * requires it** (e.g. EU customers); omitted otherwise.
+         * Email and/or phone verification state for the customer. This object is **only present
+         * when the customer's regulatory jurisdiction requires contact verification** (e.g. EU
+         * customers). For customers who have no such requirement, this object is omitted entirely —
+         * no action is needed.
+         *
+         * Each channel is reported independently: only the channels the customer's provider
+         * actually requires are present. A provider may require both email and phone, just one of
+         * them, or — when the object is absent — neither. Every channel that **is** present must
+         * reach `VERIFIED` before the customer can begin KYC. Drive each present channel with `POST
+         * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone`
+         * (and their `/confirm` sub-routes).
          */
         fun contactVerification(contactVerification: Customer.ContactVerification) =
             contactVerification(JsonField.of(contactVerification))
@@ -642,8 +663,9 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
-         * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-         * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+         * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+         * separately. Reported only for a customer whose acceptance predates that field, and always
+         * as the `LIGHTSPARK_END_USER_TERMS` agreement.
          */
         @Deprecated("deprecated")
         fun endUserTermsConsent(endUserTermsConsent: Customer.EndUserTermsConsent) =
@@ -712,6 +734,19 @@ private constructor(
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
+        fun customerType(customerType: CustomerType) = customerType(JsonField.of(customerType))
+
+        /**
+         * Sets [Builder.customerType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerType] with a well-typed [CustomerType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun customerType(customerType: JsonField<CustomerType>) = apply {
+            this.customerType = customerType
+        }
+
         fun address(address: Address) = address(JsonField.of(address))
 
         /**
@@ -748,11 +783,6 @@ private constructor(
                 }
         }
 
-        /**
-         * Business information returned on a customer. `taxId` and `incorporatedOn` are required on
-         * creation but may be absent on legacy customers that pre-date the requirement, so both are
-         * optional in responses.
-         */
         fun businessInfo(businessInfo: BusinessInfo) = businessInfo(JsonField.of(businessInfo))
 
         /**
@@ -807,16 +837,15 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
+         * .customerType()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): BusinessCustomer =
             BusinessCustomer(
-                checkRequired("customerType", customerType),
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
@@ -830,6 +859,7 @@ private constructor(
                 phoneNumber,
                 region,
                 updatedAt,
+                checkRequired("customerType", customerType),
                 address,
                 (beneficialOwners ?: JsonMissing.of()).map { it.toImmutable() },
                 businessInfo,
@@ -866,6 +896,7 @@ private constructor(
         phoneNumber()
         region()
         updatedAt()
+        customerType().validate()
         address()?.validate()
         beneficialOwners()?.forEach { it.validate() }
         businessInfo()?.validate()
@@ -900,6 +931,7 @@ private constructor(
             (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (region.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
+            (customerType.asKnown()?.validity() ?: 0) +
             (address.asKnown()?.validity() ?: 0) +
             (beneficialOwners.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (businessInfo.asKnown()?.validity() ?: 0) +
@@ -1036,11 +1068,6 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /**
-     * Business information returned on a customer. `taxId` and `incorporatedOn` are required on
-     * creation but may be absent on legacy customers that pre-date the requirement, so both are
-     * optional in responses.
-     */
     class BusinessInfo
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -1062,7 +1089,7 @@ private constructor(
         private val purposeOfAccountOtherDescription: JsonField<String>,
         private val registrationNumber: JsonField<String>,
         private val sourceOfFunds: JsonField<String>,
-        private val sourceOfFundsCategories: JsonField<List<JsonValue>>,
+        private val sourceOfFundsCategories: JsonField<List<SourceOfFundsCategory>>,
         private val sourceOfFundsOtherDescription: JsonField<String>,
         private val taxId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1126,7 +1153,7 @@ private constructor(
             sourceOfFunds: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sourceOfFundsCategories")
             @ExcludeMissing
-            sourceOfFundsCategories: JsonField<List<JsonValue>> = JsonMissing.of(),
+            sourceOfFundsCategories: JsonField<List<SourceOfFundsCategory>> = JsonMissing.of(),
             @JsonProperty("sourceOfFundsOtherDescription")
             @ExcludeMissing
             sourceOfFundsOtherDescription: JsonField<String> = JsonMissing.of(),
@@ -1318,7 +1345,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun sourceOfFundsCategories(): List<JsonValue>? =
+        fun sourceOfFundsCategories(): List<SourceOfFundsCategory>? =
             sourceOfFundsCategories.getNullable("sourceOfFundsCategories")
 
         /**
@@ -1521,7 +1548,8 @@ private constructor(
          */
         @JsonProperty("sourceOfFundsCategories")
         @ExcludeMissing
-        fun _sourceOfFundsCategories(): JsonField<List<JsonValue>> = sourceOfFundsCategories
+        fun _sourceOfFundsCategories(): JsonField<List<SourceOfFundsCategory>> =
+            sourceOfFundsCategories
 
         /**
          * Returns the raw JSON value of [sourceOfFundsOtherDescription].
@@ -1590,7 +1618,8 @@ private constructor(
             private var purposeOfAccountOtherDescription: JsonField<String> = JsonMissing.of()
             private var registrationNumber: JsonField<String> = JsonMissing.of()
             private var sourceOfFunds: JsonField<String> = JsonMissing.of()
-            private var sourceOfFundsCategories: JsonField<MutableList<JsonValue>>? = null
+            private var sourceOfFundsCategories: JsonField<MutableList<SourceOfFundsCategory>>? =
+                null
             private var sourceOfFundsOtherDescription: JsonField<String> = JsonMissing.of()
             private var taxId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1938,28 +1967,28 @@ private constructor(
             }
 
             /** Structured source-of-funds categories for the business */
-            fun sourceOfFundsCategories(sourceOfFundsCategories: List<JsonValue>) =
+            fun sourceOfFundsCategories(sourceOfFundsCategories: List<SourceOfFundsCategory>) =
                 sourceOfFundsCategories(JsonField.of(sourceOfFundsCategories))
 
             /**
              * Sets [Builder.sourceOfFundsCategories] to an arbitrary JSON value.
              *
              * You should usually call [Builder.sourceOfFundsCategories] with a well-typed
-             * `List<JsonValue>` value instead. This method is primarily for setting the field to an
-             * undocumented or not yet supported value.
+             * `List<SourceOfFundsCategory>` value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
-            fun sourceOfFundsCategories(sourceOfFundsCategories: JsonField<List<JsonValue>>) =
-                apply {
-                    this.sourceOfFundsCategories =
-                        sourceOfFundsCategories.map { it.toMutableList() }
-                }
+            fun sourceOfFundsCategories(
+                sourceOfFundsCategories: JsonField<List<SourceOfFundsCategory>>
+            ) = apply {
+                this.sourceOfFundsCategories = sourceOfFundsCategories.map { it.toMutableList() }
+            }
 
             /**
-             * Adds a single [JsonValue] to [sourceOfFundsCategories].
+             * Adds a single [SourceOfFundsCategory] to [sourceOfFundsCategories].
              *
              * @throws IllegalStateException if the field was previously set to a non-list.
              */
-            fun addSourceOfFundsCategory(sourceOfFundsCategory: JsonValue) = apply {
+            fun addSourceOfFundsCategory(sourceOfFundsCategory: SourceOfFundsCategory) = apply {
                 sourceOfFundsCategories =
                     (sourceOfFundsCategories ?: JsonField.of(mutableListOf())).also {
                         checkKnown("sourceOfFundsCategories", it).add(sourceOfFundsCategory)
@@ -2086,7 +2115,7 @@ private constructor(
             purposeOfAccountOtherDescription()
             registrationNumber()
             sourceOfFunds()
-            sourceOfFundsCategories()
+            sourceOfFundsCategories()?.forEach { it.validate() }
             sourceOfFundsOtherDescription()
             taxId()
             validated = true
@@ -2125,7 +2154,7 @@ private constructor(
                 (if (purposeOfAccountOtherDescription.asKnown() == null) 0 else 1) +
                 (if (registrationNumber.asKnown() == null) 0 else 1) +
                 (if (sourceOfFunds.asKnown() == null) 0 else 1) +
-                (sourceOfFundsCategories.asKnown()?.size ?: 0) +
+                (sourceOfFundsCategories.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (sourceOfFundsOtherDescription.asKnown() == null) 0 else 1) +
                 (if (taxId.asKnown() == null) 0 else 1)
 
@@ -3130,6 +3159,183 @@ private constructor(
             override fun toString() = value.toString()
         }
 
+        /** A structured source-of-funds category for the business */
+        class SourceOfFundsCategory
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val OPERATING_REVENUE = of("OPERATING_REVENUE")
+
+                val INVESTMENT_INCOME = of("INVESTMENT_INCOME")
+
+                val LOANS = of("LOANS")
+
+                val VENTURE_CAPITAL = of("VENTURE_CAPITAL")
+
+                val PERSONAL_SAVINGS = of("PERSONAL_SAVINGS")
+
+                val DONATIONS = of("DONATIONS")
+
+                val OTHER = of("OTHER")
+
+                fun of(value: String) = SourceOfFundsCategory(JsonField.of(value))
+            }
+
+            /** An enum containing [SourceOfFundsCategory]'s known values. */
+            enum class Known {
+                OPERATING_REVENUE,
+                INVESTMENT_INCOME,
+                LOANS,
+                VENTURE_CAPITAL,
+                PERSONAL_SAVINGS,
+                DONATIONS,
+                OTHER,
+            }
+
+            /**
+             * An enum containing [SourceOfFundsCategory]'s known values, as well as an [_UNKNOWN]
+             * member.
+             *
+             * An instance of [SourceOfFundsCategory] can contain an unknown value in a couple of
+             * cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                OPERATING_REVENUE,
+                INVESTMENT_INCOME,
+                LOANS,
+                VENTURE_CAPITAL,
+                PERSONAL_SAVINGS,
+                DONATIONS,
+                OTHER,
+                /**
+                 * An enum member indicating that [SourceOfFundsCategory] was instantiated with an
+                 * unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    OPERATING_REVENUE -> Value.OPERATING_REVENUE
+                    INVESTMENT_INCOME -> Value.INVESTMENT_INCOME
+                    LOANS -> Value.LOANS
+                    VENTURE_CAPITAL -> Value.VENTURE_CAPITAL
+                    PERSONAL_SAVINGS -> Value.PERSONAL_SAVINGS
+                    DONATIONS -> Value.DONATIONS
+                    OTHER -> Value.OTHER
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    OPERATING_REVENUE -> Known.OPERATING_REVENUE
+                    INVESTMENT_INCOME -> Known.INVESTMENT_INCOME
+                    LOANS -> Known.LOANS
+                    VENTURE_CAPITAL -> Known.VENTURE_CAPITAL
+                    PERSONAL_SAVINGS -> Known.PERSONAL_SAVINGS
+                    DONATIONS -> Known.DONATIONS
+                    OTHER -> Known.OTHER
+                    else ->
+                        throw LightsparkGridInvalidDataException(
+                            "Unknown SourceOfFundsCategory: $value"
+                        )
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): SourceOfFundsCategory = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is SourceOfFundsCategory && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -3357,7 +3563,6 @@ private constructor(
         }
 
         return other is BusinessCustomer &&
-            customerType == other.customerType &&
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
@@ -3371,6 +3576,7 @@ private constructor(
             phoneNumber == other.phoneNumber &&
             region == other.region &&
             updatedAt == other.updatedAt &&
+            customerType == other.customerType &&
             address == other.address &&
             beneficialOwners == other.beneficialOwners &&
             businessInfo == other.businessInfo &&
@@ -3380,7 +3586,6 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            customerType,
             platformCustomerId,
             umaAddress,
             id,
@@ -3394,6 +3599,7 @@ private constructor(
             phoneNumber,
             region,
             updatedAt,
+            customerType,
             address,
             beneficialOwners,
             businessInfo,
@@ -3405,5 +3611,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BusinessCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+        "BusinessCustomer{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
 }

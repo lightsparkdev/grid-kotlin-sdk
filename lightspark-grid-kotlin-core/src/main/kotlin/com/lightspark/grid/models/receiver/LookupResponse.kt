@@ -22,7 +22,7 @@ class LookupResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val lookupId: JsonField<String>,
-    private val sendingCurrency: JsonValue,
+    private val sendingCurrency: JsonField<Currency>,
     private val supportedCurrencies: JsonField<List<SupportedCurrency>>,
     private val requiredPayerDataFields: JsonField<List<CounterpartyFieldDefinition>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -33,7 +33,7 @@ private constructor(
         @JsonProperty("lookupId") @ExcludeMissing lookupId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sendingCurrency")
         @ExcludeMissing
-        sendingCurrency: JsonValue = JsonMissing.of(),
+        sendingCurrency: JsonField<Currency> = JsonMissing.of(),
         @JsonProperty("supportedCurrencies")
         @ExcludeMissing
         supportedCurrencies: JsonField<List<SupportedCurrency>> = JsonMissing.of(),
@@ -62,14 +62,10 @@ private constructor(
      * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated in
      * its smallest unit.
      *
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = lookupResponse.sendingCurrency().convert(MyClass::class.java)
-     * ```
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("sendingCurrency")
-    @ExcludeMissing
-    fun _sendingCurrency(): JsonValue = sendingCurrency
+    fun sendingCurrency(): Currency = sendingCurrency.getRequired("sendingCurrency")
 
     /**
      * List of currencies supported by the receiving account
@@ -95,6 +91,15 @@ private constructor(
      * Unlike [lookupId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("lookupId") @ExcludeMissing fun _lookupId(): JsonField<String> = lookupId
+
+    /**
+     * Returns the raw JSON value of [sendingCurrency].
+     *
+     * Unlike [sendingCurrency], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("sendingCurrency")
+    @ExcludeMissing
+    fun _sendingCurrency(): JsonField<Currency> = sendingCurrency
 
     /**
      * Returns the raw JSON value of [supportedCurrencies].
@@ -148,7 +153,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var lookupId: JsonField<String>? = null
-        private var sendingCurrency: JsonValue? = null
+        private var sendingCurrency: JsonField<Currency>? = null
         private var supportedCurrencies: JsonField<MutableList<SupportedCurrency>>? = null
         private var requiredPayerDataFields: JsonField<MutableList<CounterpartyFieldDefinition>>? =
             null
@@ -180,7 +185,17 @@ private constructor(
          * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated
          * in its smallest unit.
          */
-        fun sendingCurrency(sendingCurrency: JsonValue) = apply {
+        fun sendingCurrency(sendingCurrency: Currency) =
+            sendingCurrency(JsonField.of(sendingCurrency))
+
+        /**
+         * Sets [Builder.sendingCurrency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sendingCurrency] with a well-typed [Currency] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun sendingCurrency(sendingCurrency: JsonField<Currency>) = apply {
             this.sendingCurrency = sendingCurrency
         }
 
@@ -302,6 +317,7 @@ private constructor(
         }
 
         lookupId()
+        sendingCurrency().validate()
         supportedCurrencies().forEach { it.validate() }
         requiredPayerDataFields()?.forEach { it.validate() }
         validated = true
@@ -322,6 +338,7 @@ private constructor(
      */
     internal fun validity(): Int =
         (if (lookupId.asKnown() == null) 0 else 1) +
+            (sendingCurrency.asKnown()?.validity() ?: 0) +
             (supportedCurrencies.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (requiredPayerDataFields.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
 

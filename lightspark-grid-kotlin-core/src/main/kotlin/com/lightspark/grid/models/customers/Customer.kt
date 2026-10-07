@@ -22,7 +22,6 @@ import java.util.Objects
 class Customer
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val customerType: JsonValue,
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
@@ -41,7 +40,6 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("customerType") @ExcludeMissing customerType: JsonValue = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -74,7 +72,6 @@ private constructor(
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
     ) : this(
-        customerType,
         platformCustomerId,
         umaAddress,
         id,
@@ -90,14 +87,6 @@ private constructor(
         updatedAt,
         mutableMapOf(),
     )
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = customer.customerType().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("customerType") @ExcludeMissing fun _customerType(): JsonValue = customerType
 
     /**
      * Platform-specific customer identifier
@@ -135,8 +124,17 @@ private constructor(
         agreementConsents.getNullable("agreementConsents")
 
     /**
-     * Email and phone verification state. **Only present when the customer's payment provider
-     * requires it** (e.g. EU customers); omitted otherwise.
+     * Email and/or phone verification state for the customer. This object is **only present when
+     * the customer's regulatory jurisdiction requires contact verification** (e.g. EU customers).
+     * For customers who have no such requirement, this object is omitted entirely — no action is
+     * needed.
+     *
+     * Each channel is reported independently: only the channels the customer's provider actually
+     * requires are present. A provider may require both email and phone, just one of them, or —
+     * when the object is absent — neither. Every channel that **is** present must reach `VERIFIED`
+     * before the customer can begin KYC. Drive each present channel with `POST
+     * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone` (and
+     * their `/confirm` sub-routes).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -169,8 +167,9 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-     * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+     * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+     * separately. Reported only for a customer whose acceptance predates that field, and always as
+     * the `LIGHTSPARK_END_USER_TERMS` agreement.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -341,7 +340,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
          * ```
@@ -352,7 +350,6 @@ private constructor(
     /** A builder for [Customer]. */
     class Builder internal constructor() {
 
-        private var customerType: JsonValue? = null
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
@@ -369,7 +366,6 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(customer: Customer) = apply {
-            customerType = customer.customerType
             platformCustomerId = customer.platformCustomerId
             umaAddress = customer.umaAddress
             id = customer.id
@@ -385,8 +381,6 @@ private constructor(
             updatedAt = customer.updatedAt
             additionalProperties = customer.additionalProperties.toMutableMap()
         }
-
-        fun customerType(customerType: JsonValue) = apply { this.customerType = customerType }
 
         /** Platform-specific customer identifier */
         fun platformCustomerId(platformCustomerId: String) =
@@ -461,8 +455,17 @@ private constructor(
         }
 
         /**
-         * Email and phone verification state. **Only present when the customer's payment provider
-         * requires it** (e.g. EU customers); omitted otherwise.
+         * Email and/or phone verification state for the customer. This object is **only present
+         * when the customer's regulatory jurisdiction requires contact verification** (e.g. EU
+         * customers). For customers who have no such requirement, this object is omitted entirely —
+         * no action is needed.
+         *
+         * Each channel is reported independently: only the channels the customer's provider
+         * actually requires are present. A provider may require both email and phone, just one of
+         * them, or — when the object is absent — neither. Every channel that **is** present must
+         * reach `VERIFIED` before the customer can begin KYC. Drive each present channel with `POST
+         * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone`
+         * (and their `/confirm` sub-routes).
          */
         fun contactVerification(contactVerification: ContactVerification) =
             contactVerification(JsonField.of(contactVerification))
@@ -528,8 +531,9 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
-         * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-         * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+         * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+         * separately. Reported only for a customer whose acceptance predates that field, and always
+         * as the `LIGHTSPARK_END_USER_TERMS` agreement.
          */
         @Deprecated("deprecated")
         fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsent) =
@@ -623,7 +627,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
          * ```
@@ -632,7 +635,6 @@ private constructor(
          */
         fun build(): Customer =
             Customer(
-                checkRequired("customerType", customerType),
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
@@ -710,8 +712,17 @@ private constructor(
             (if (updatedAt.asKnown() == null) 0 else 1)
 
     /**
-     * Email and phone verification state. **Only present when the customer's payment provider
-     * requires it** (e.g. EU customers); omitted otherwise.
+     * Email and/or phone verification state for the customer. This object is **only present when
+     * the customer's regulatory jurisdiction requires contact verification** (e.g. EU customers).
+     * For customers who have no such requirement, this object is omitted entirely — no action is
+     * needed.
+     *
+     * Each channel is reported independently: only the channels the customer's provider actually
+     * requires are present. A provider may require both email and phone, just one of them, or —
+     * when the object is absent — neither. Every channel that **is** present must reach `VERIFIED`
+     * before the customer can begin KYC. Drive each present channel with `POST
+     * /customers/{customerId}/verify-email` and/or `POST /customers/{customerId}/verify-phone` (and
+     * their `/confirm` sub-routes).
      */
     class ContactVerification
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -1190,8 +1201,9 @@ private constructor(
     }
 
     /**
-     * Deprecated; read `agreementConsents` instead. Mirrors the customer's
-     * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
+     * Deprecated; use `agreementConsents` instead, which records acceptance of each agreement
+     * separately. Reported only for a customer whose acceptance predates that field, and always as
+     * the `LIGHTSPARK_END_USER_TERMS` agreement.
      */
     @Deprecated("deprecated")
     class EndUserTermsConsent
@@ -1511,7 +1523,6 @@ private constructor(
         }
 
         return other is Customer &&
-            customerType == other.customerType &&
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
@@ -1530,7 +1541,6 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            customerType,
             platformCustomerId,
             umaAddress,
             id,
@@ -1551,5 +1561,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Customer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "Customer{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

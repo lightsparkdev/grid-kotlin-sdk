@@ -65,9 +65,14 @@ internal class PlatformConfigTest {
                         .build()
                 )
                 .addFeeConfig(
-                    PlatformConfig.FeeConfig.CrossCurrencyTransaction.builder()
+                    PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.builder()
+                        .feeType(
+                            PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.FeeType
+                                .CROSS_CURRENCY_TRANSACTION
+                        )
                         .fixedFee(
-                            PlatformConfig.FeeConfig.CrossCurrencyTransaction.FixedFee.builder()
+                            PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.FixedFee
+                                .builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()
@@ -172,9 +177,14 @@ internal class PlatformConfigTest {
         assertThat(platformConfig.feeConfigs())
             .containsExactly(
                 PlatformConfig.FeeConfig.ofCrossCurrencyTransaction(
-                    PlatformConfig.FeeConfig.CrossCurrencyTransaction.builder()
+                    PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.builder()
+                        .feeType(
+                            PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.FeeType
+                                .CROSS_CURRENCY_TRANSACTION
+                        )
                         .fixedFee(
-                            PlatformConfig.FeeConfig.CrossCurrencyTransaction.FixedFee.builder()
+                            PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.FixedFee
+                                .builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()
@@ -279,9 +289,14 @@ internal class PlatformConfigTest {
                         .build()
                 )
                 .addFeeConfig(
-                    PlatformConfig.FeeConfig.CrossCurrencyTransaction.builder()
+                    PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.builder()
+                        .feeType(
+                            PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.FeeType
+                                .CROSS_CURRENCY_TRANSACTION
+                        )
                         .fixedFee(
-                            PlatformConfig.FeeConfig.CrossCurrencyTransaction.FixedFee.builder()
+                            PlatformConfig.FeeConfig.CrossCurrencyTransactionFeeConfig.FixedFee
+                                .builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()

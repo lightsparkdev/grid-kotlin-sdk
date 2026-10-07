@@ -5,6 +5,7 @@ package com.lightspark.grid.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
@@ -39,20 +40,18 @@ internal class InternalAccountStatusWebhookEventTest {
                         .addFundingPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                        .accountHolderName("Acme Exports Pte Ltd")
-                                        .bankName("Deutsche Bank")
-                                        .country("NG")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
-                                        )
-                                        .swiftCode("DEUTDEFF")
-                                        .accountNumber("1234567890")
-                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                        .iban("GB29NWBK60161331926819")
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                        .accountNumber("x")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                        .routingNumber("021000021")
+                                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                                        .bankName("Chase Bank")
+                                        .fiToFiInformation("/BNF/Invoice 4471")
+                                        .intermediaryBankName("JPMorgan Chase Bank")
+                                        .intermediaryRoutingNumber("021000021")
                                         .reference("UMA-Q12345-REF")
+                                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -176,20 +175,18 @@ internal class InternalAccountStatusWebhookEventTest {
                     .addFundingPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                    .accountHolderName("Acme Exports Pte Ltd")
-                                    .bankName("Deutsche Bank")
-                                    .country("NG")
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                            .PaymentRail
-                                            .SWIFT
-                                    )
-                                    .swiftCode("DEUTDEFF")
-                                    .accountNumber("1234567890")
-                                    .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                    .iban("GB29NWBK60161331926819")
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                    .accountNumber("x")
+                                    .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                    .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                    .routingNumber("021000021")
+                                    .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                                    .bankName("Chase Bank")
+                                    .fiToFiInformation("/BNF/Invoice 4471")
+                                    .intermediaryBankName("JPMorgan Chase Bank")
+                                    .intermediaryRoutingNumber("021000021")
                                     .reference("UMA-Q12345-REF")
+                                    .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                                     .build()
                             )
                             .instructionsNotes(
@@ -318,20 +315,18 @@ internal class InternalAccountStatusWebhookEventTest {
                         .addFundingPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.SwiftAccount.builder()
-                                        .accountHolderName("Acme Exports Pte Ltd")
-                                        .bankName("Deutsche Bank")
-                                        .country("NG")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.SwiftAccount
-                                                .PaymentRail
-                                                .SWIFT
-                                        )
-                                        .swiftCode("DEUTDEFF")
-                                        .accountNumber("1234567890")
-                                        .bankAddress("12 Marina Boulevard, Singapore 018982")
-                                        .iban("GB29NWBK60161331926819")
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                        .accountNumber("x")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                        .routingNumber("021000021")
+                                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
+                                        .bankName("Chase Bank")
+                                        .fiToFiInformation("/BNF/Invoice 4471")
+                                        .intermediaryBankName("JPMorgan Chase Bank")
+                                        .intermediaryRoutingNumber("021000021")
                                         .reference("UMA-Q12345-REF")
+                                        .bankAddress("885 Teaneck Road, Teaneck, NJ 07666")
                                         .build()
                                 )
                                 .instructionsNotes(

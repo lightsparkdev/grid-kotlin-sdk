@@ -22,7 +22,7 @@ internal class ReceiverServiceTest {
                 .build()
         val receiverService = client.receiver()
 
-        val externalAccountLookupResponse =
+        val response =
             receiverService.lookupExternalAccount(
                 ReceiverLookupExternalAccountParams.builder()
                     .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
@@ -32,7 +32,7 @@ internal class ReceiverServiceTest {
                     .build()
             )
 
-        externalAccountLookupResponse.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -47,7 +47,7 @@ internal class ReceiverServiceTest {
                 .build()
         val receiverService = client.receiver()
 
-        val umaLookupResponse =
+        val response =
             receiverService.lookupUma(
                 ReceiverLookupUmaParams.builder()
                     .receiverUmaAddress("receiverUmaAddress")
@@ -57,6 +57,6 @@ internal class ReceiverServiceTest {
                     .build()
             )
 
-        umaLookupResponse.validate()
+        response.validate()
     }
 }

@@ -22,10 +22,9 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class CustomerOneOfTest {
 
     @Test
-    fun ofIndividualCustomer() {
-        val individualCustomer =
+    fun ofIndividual() {
+        val individual =
             IndividualCustomer.builder()
-                .customerType(JsonValue.from("INDIVIDUAL"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -60,6 +59,7 @@ internal class CustomerOneOfTest {
                 .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
                 .address(
                     Address.builder()
                         .country("US")
@@ -95,19 +95,18 @@ internal class CustomerOneOfTest {
                 .sourceOfWealthOtherDescription("Royalty income from published works")
                 .build()
 
-        val customerOneOf = CustomerOneOf.ofIndividualCustomer(individualCustomer)
+        val customerOneOf = CustomerOneOf.ofIndividual(individual)
 
-        assertThat(customerOneOf.individualCustomer()).isEqualTo(individualCustomer)
-        assertThat(customerOneOf.businessCustomer()).isNull()
+        assertThat(customerOneOf.individual()).isEqualTo(individual)
+        assertThat(customerOneOf.business()).isNull()
     }
 
     @Test
-    fun ofIndividualCustomerRoundtrip() {
+    fun ofIndividualRoundtrip() {
         val jsonMapper = jsonMapper()
         val customerOneOf =
-            CustomerOneOf.ofIndividualCustomer(
+            CustomerOneOf.ofIndividual(
                 IndividualCustomer.builder()
-                    .customerType(JsonValue.from("INDIVIDUAL"))
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -142,6 +141,7 @@ internal class CustomerOneOfTest {
                     .phoneNumber("+14155551234")
                     .region("US")
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -190,10 +190,9 @@ internal class CustomerOneOfTest {
     }
 
     @Test
-    fun ofBusinessCustomer() {
-        val businessCustomer =
+    fun ofBusiness() {
+        val business =
             BusinessCustomer.builder()
-                .customerType(JsonValue.from("BUSINESS"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -228,6 +227,7 @@ internal class CustomerOneOfTest {
                 .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(BusinessCustomer.CustomerType.BUSINESS)
                 .address(
                     Address.builder()
                         .country("US")
@@ -305,7 +305,9 @@ internal class CustomerOneOfTest {
                         .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
-                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .addSourceOfFundsCategory(
+                            BusinessCustomer.BusinessInfo.SourceOfFundsCategory.OPERATING_REVENUE
+                        )
                         .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
@@ -313,19 +315,18 @@ internal class CustomerOneOfTest {
                 .kybStatus(BusinessCustomer.KybStatus.APPROVED)
                 .build()
 
-        val customerOneOf = CustomerOneOf.ofBusinessCustomer(businessCustomer)
+        val customerOneOf = CustomerOneOf.ofBusiness(business)
 
-        assertThat(customerOneOf.individualCustomer()).isNull()
-        assertThat(customerOneOf.businessCustomer()).isEqualTo(businessCustomer)
+        assertThat(customerOneOf.individual()).isNull()
+        assertThat(customerOneOf.business()).isEqualTo(business)
     }
 
     @Test
-    fun ofBusinessCustomerRoundtrip() {
+    fun ofBusinessRoundtrip() {
         val jsonMapper = jsonMapper()
         val customerOneOf =
-            CustomerOneOf.ofBusinessCustomer(
+            CustomerOneOf.ofBusiness(
                 BusinessCustomer.builder()
-                    .customerType(JsonValue.from("BUSINESS"))
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -360,6 +361,7 @@ internal class CustomerOneOfTest {
                     .phoneNumber("+14155551234")
                     .region("US")
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .customerType(BusinessCustomer.CustomerType.BUSINESS)
                     .address(
                         Address.builder()
                             .country("US")
@@ -439,7 +441,10 @@ internal class CustomerOneOfTest {
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
-                            .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                            .addSourceOfFundsCategory(
+                                BusinessCustomer.BusinessInfo.SourceOfFundsCategory
+                                    .OPERATING_REVENUE
+                            )
                             .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                             .taxId("47-1234567")
                             .build()

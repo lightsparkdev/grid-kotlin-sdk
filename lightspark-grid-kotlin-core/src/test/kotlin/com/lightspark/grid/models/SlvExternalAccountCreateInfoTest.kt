@@ -36,9 +36,9 @@ internal class SlvExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .accountNumber("0123456789")
+                .accountNumber("x")
                 .bankAccountType(SlvExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("Banco Cuscatlan")
+                .bankName("x")
                 .phoneNumber("+50312345678")
                 .build()
 
@@ -68,10 +68,10 @@ internal class SlvExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(slvExternalAccountCreateInfo.accountNumber()).isEqualTo("0123456789")
+        assertThat(slvExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(slvExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(SlvExternalAccountCreateInfo.BankAccountType.CHECKING)
-        assertThat(slvExternalAccountCreateInfo.bankName()).isEqualTo("Banco Cuscatlan")
+        assertThat(slvExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(slvExternalAccountCreateInfo.phoneNumber()).isEqualTo("+50312345678")
     }
 
@@ -102,9 +102,9 @@ internal class SlvExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .accountNumber("0123456789")
+                .accountNumber("x")
                 .bankAccountType(SlvExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("Banco Cuscatlan")
+                .bankName("x")
                 .phoneNumber("+50312345678")
                 .build()
 

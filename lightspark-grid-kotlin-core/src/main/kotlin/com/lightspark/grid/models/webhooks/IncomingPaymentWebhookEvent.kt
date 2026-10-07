@@ -17,7 +17,6 @@ import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
-import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
@@ -282,7 +281,7 @@ private constructor(
     private constructor(
         private val id: JsonField<String>,
         private val customerId: JsonField<String>,
-        private val destination: JsonValue,
+        private val destination: JsonField<IncomingTransaction.Destination>,
         private val direction: JsonField<IncomingTransaction.Direction>,
         private val platformCustomerId: JsonField<String>,
         private val status: JsonField<TransactionStatus>,
@@ -299,7 +298,7 @@ private constructor(
         private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
-        private val refund: JsonField<Refund>,
+        private val refund: JsonField<IncomingTransaction.Refund>,
         private val ruleBasedAccountId: JsonField<String>,
         private val sentAmount: JsonField<CurrencyAmount>,
         private val settledAt: JsonField<OffsetDateTime>,
@@ -316,7 +315,9 @@ private constructor(
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
+            @JsonProperty("destination")
+            @ExcludeMissing
+            destination: JsonField<IncomingTransaction.Destination> = JsonMissing.of(),
             @JsonProperty("direction")
             @ExcludeMissing
             direction: JsonField<IncomingTransaction.Direction> = JsonMissing.of(),
@@ -360,7 +361,9 @@ private constructor(
             @JsonProperty("reconciliationInstructions")
             @ExcludeMissing
             reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
-            @JsonProperty("refund") @ExcludeMissing refund: JsonField<Refund> = JsonMissing.of(),
+            @JsonProperty("refund")
+            @ExcludeMissing
+            refund: JsonField<IncomingTransaction.Refund> = JsonMissing.of(),
             @JsonProperty("ruleBasedAccountId")
             @ExcludeMissing
             ruleBasedAccountId: JsonField<String> = JsonMissing.of(),
@@ -456,12 +459,12 @@ private constructor(
         fun customerId(): String = customerId.getRequired("customerId")
 
         /**
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```kotlin
-         * val myObject: MyClass = data.destination().convert(MyClass::class.java)
-         * ```
+         * Destination account details
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
+        fun destination(): IncomingTransaction.Destination = destination.getRequired("destination")
 
         /**
          * Whether this transaction credits or debits the customer's account.
@@ -500,8 +503,6 @@ private constructor(
         fun status(): TransactionStatus = status.getRequired("status")
 
         /**
-         * Type of transaction
-         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -619,7 +620,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun refund(): Refund? = refund.getNullable("refund")
+        fun refund(): IncomingTransaction.Refund? = refund.getNullable("refund")
 
         /**
          * The `RULE_BASED` internal account whose deposit this transaction sweeps. Present only on
@@ -648,6 +649,8 @@ private constructor(
         fun settledAt(): OffsetDateTime? = settledAt.getNullable("settledAt")
 
         /**
+         * Source account details
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
@@ -687,6 +690,15 @@ private constructor(
         @JsonProperty("customerId")
         @ExcludeMissing
         fun _customerId(): JsonField<String> = customerId
+
+        /**
+         * Returns the raw JSON value of [destination].
+         *
+         * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("destination")
+        @ExcludeMissing
+        fun _destination(): JsonField<IncomingTransaction.Destination> = destination
 
         /**
          * Returns the raw JSON value of [direction].
@@ -839,7 +851,9 @@ private constructor(
          *
          * Unlike [refund], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("refund") @ExcludeMissing fun _refund(): JsonField<Refund> = refund
+        @JsonProperty("refund")
+        @ExcludeMissing
+        fun _refund(): JsonField<IncomingTransaction.Refund> = refund
 
         /**
          * Returns the raw JSON value of [ruleBasedAccountId].
@@ -934,7 +948,7 @@ private constructor(
 
             private var id: JsonField<String>? = null
             private var customerId: JsonField<String>? = null
-            private var destination: JsonValue? = null
+            private var destination: JsonField<IncomingTransaction.Destination>? = null
             private var direction: JsonField<IncomingTransaction.Direction>? = null
             private var platformCustomerId: JsonField<String>? = null
             private var status: JsonField<TransactionStatus>? = null
@@ -956,7 +970,7 @@ private constructor(
             private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
             private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
                 JsonMissing.of()
-            private var refund: JsonField<Refund> = JsonMissing.of()
+            private var refund: JsonField<IncomingTransaction.Refund> = JsonMissing.of()
             private var ruleBasedAccountId: JsonField<String> = JsonMissing.of()
             private var sentAmount: JsonField<CurrencyAmount> = JsonMissing.of()
             private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -1022,7 +1036,82 @@ private constructor(
              */
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-            fun destination(destination: JsonValue) = apply { this.destination = destination }
+            /** Destination account details */
+            fun destination(destination: IncomingTransaction.Destination) =
+                destination(JsonField.of(destination))
+
+            /**
+             * Sets [Builder.destination] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.destination] with a well-typed
+             * [IncomingTransaction.Destination] value instead. This method is primarily for setting
+             * the field to an undocumented or not yet supported value.
+             */
+            fun destination(destination: JsonField<IncomingTransaction.Destination>) = apply {
+                this.destination = destination
+            }
+
+            /**
+             * Alias for calling [destination] with
+             * `IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)`.
+             */
+            fun destination(
+                accountTransaction: IncomingTransaction.Destination.AccountTransaction
+            ) =
+                destination(
+                    IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)
+                )
+
+            /**
+             * Alias for calling [destination] with the following:
+             * ```kotlin
+             * IncomingTransaction.Destination.AccountTransaction.builder()
+             *     .destinationType(IncomingTransaction.Destination.AccountTransaction.DestinationType.ACCOUNT)
+             *     .accountId(accountId)
+             *     .build()
+             * ```
+             */
+            fun accountTransactionDestination(accountId: String) =
+                destination(
+                    IncomingTransaction.Destination.AccountTransaction.builder()
+                        .destinationType(
+                            IncomingTransaction.Destination.AccountTransaction.DestinationType
+                                .ACCOUNT
+                        )
+                        .accountId(accountId)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [destination] with
+             * `IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)`.
+             */
+            fun destination(
+                umaAddressTransaction: IncomingTransaction.Destination.UmaAddressTransaction
+            ) =
+                destination(
+                    IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)
+                )
+
+            /**
+             * Alias for calling [destination] with the following:
+             * ```kotlin
+             * IncomingTransaction.Destination.UmaAddressTransaction.builder()
+             *     .destinationType(IncomingTransaction.Destination.UmaAddressTransaction.DestinationType.UMA_ADDRESS)
+             *     .umaAddress(umaAddress)
+             *     .build()
+             * ```
+             */
+            fun umaAddressTransactionDestination(umaAddress: String) =
+                destination(
+                    IncomingTransaction.Destination.UmaAddressTransaction.builder()
+                        .destinationType(
+                            IncomingTransaction.Destination.UmaAddressTransaction.DestinationType
+                                .UMA_ADDRESS
+                        )
+                        .umaAddress(umaAddress)
+                        .build()
+                )
 
             /** Whether this transaction credits or debits the customer's account. */
             fun direction(direction: IncomingTransaction.Direction) =
@@ -1080,7 +1169,6 @@ private constructor(
              */
             fun status(status: JsonField<TransactionStatus>) = apply { this.status = status }
 
-            /** Type of transaction */
             fun type(type: IncomingTransaction.Type) = type(JsonField.of(type))
 
             /**
@@ -1283,16 +1371,18 @@ private constructor(
             ) = apply { this.reconciliationInstructions = reconciliationInstructions }
 
             /** The refund if transaction was refunded. */
-            fun refund(refund: Refund) = refund(JsonField.of(refund))
+            fun refund(refund: IncomingTransaction.Refund) = refund(JsonField.of(refund))
 
             /**
              * Sets [Builder.refund] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.refund] with a well-typed [Refund] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.refund] with a well-typed
+             * [IncomingTransaction.Refund] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
-            fun refund(refund: JsonField<Refund>) = apply { this.refund = refund }
+            fun refund(refund: JsonField<IncomingTransaction.Refund>) = apply {
+                this.refund = refund
+            }
 
             /**
              * The `RULE_BASED` internal account whose deposit this transaction sweeps. Present only
@@ -1341,6 +1431,7 @@ private constructor(
                 this.settledAt = settledAt
             }
 
+            /** Source account details */
             fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
             /**
@@ -1351,6 +1442,99 @@ private constructor(
              * not yet supported value.
              */
             fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
+
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
+             */
+            fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
+                source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
+
+            /**
+             * Alias for calling [source] with the following:
+             * ```kotlin
+             * TransactionSourceOneOf.AccountTransactionSource.builder()
+             *     .sourceType(TransactionSourceOneOf.AccountTransactionSource.SourceType.ACCOUNT)
+             *     .accountId(accountId)
+             *     .build()
+             * ```
+             */
+            fun accountTransactionSourceSource(accountId: String) =
+                source(
+                    TransactionSourceOneOf.AccountTransactionSource.builder()
+                        .sourceType(
+                            TransactionSourceOneOf.AccountTransactionSource.SourceType.ACCOUNT
+                        )
+                        .accountId(accountId)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
+             */
+            fun source(
+                umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
+            ) =
+                source(
+                    TransactionSourceOneOf.ofUmaAddressTransactionSource(
+                        umaAddressTransactionSource
+                    )
+                )
+
+            /**
+             * Alias for calling [source] with the following:
+             * ```kotlin
+             * TransactionSourceOneOf.UmaAddressTransactionSource.builder()
+             *     .sourceType(TransactionSourceOneOf.UmaAddressTransactionSource.SourceType.UMA_ADDRESS)
+             *     .umaAddress(umaAddress)
+             *     .build()
+             * ```
+             */
+            fun umaAddressTransactionSourceSource(umaAddress: String) =
+                source(
+                    TransactionSourceOneOf.UmaAddressTransactionSource.builder()
+                        .sourceType(
+                            TransactionSourceOneOf.UmaAddressTransactionSource.SourceType
+                                .UMA_ADDRESS
+                        )
+                        .umaAddress(umaAddress)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
+             */
+            fun source(
+                realtimeFundingTransactionSource:
+                    TransactionSourceOneOf.RealtimeFundingTransactionSource
+            ) =
+                source(
+                    TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
+                        realtimeFundingTransactionSource
+                    )
+                )
+
+            /**
+             * Alias for calling [source] with the following:
+             * ```kotlin
+             * TransactionSourceOneOf.RealtimeFundingTransactionSource.builder()
+             *     .sourceType(TransactionSourceOneOf.RealtimeFundingTransactionSource.SourceType.REALTIME_FUNDING)
+             *     .currency(currency)
+             *     .build()
+             * ```
+             */
+            fun realtimeFundingTransactionSourceSource(currency: String) =
+                source(
+                    TransactionSourceOneOf.RealtimeFundingTransactionSource.builder()
+                        .sourceType(
+                            TransactionSourceOneOf.RealtimeFundingTransactionSource.SourceType
+                                .REALTIME_FUNDING
+                        )
+                        .currency(currency)
+                        .build()
+                )
 
             /** When the transaction was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -1496,6 +1680,7 @@ private constructor(
 
             id()
             customerId()
+            destination().validate()
             direction().validate()
             platformCustomerId()
             status().validate()
@@ -1516,6 +1701,7 @@ private constructor(
             ruleBasedAccountId()
             sentAmount()?.validate()
             settledAt()
+            source()?.validate()
             updatedAt()
             requestedReceiverCustomerInfoFields()?.forEach { it.validate() }
             validated = true
@@ -1538,6 +1724,7 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown() == null) 0 else 1) +
                 (if (customerId.asKnown() == null) 0 else 1) +
+                (destination.asKnown()?.validity() ?: 0) +
                 (direction.asKnown()?.validity() ?: 0) +
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
                 (status.asKnown()?.validity() ?: 0) +
@@ -1558,6 +1745,7 @@ private constructor(
                 (if (ruleBasedAccountId.asKnown() == null) 0 else 1) +
                 (sentAmount.asKnown()?.validity() ?: 0) +
                 (if (settledAt.asKnown() == null) 0 else 1) +
+                (source.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (requestedReceiverCustomerInfoFields.asKnown()?.sumOf { it.validity().toInt() }
                     ?: 0)

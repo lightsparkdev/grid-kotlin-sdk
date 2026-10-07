@@ -7,7 +7,6 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
-import com.lightspark.grid.models.sandbox.SendRequest
 import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.services.blocking.sandbox.CardService
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
@@ -49,13 +48,6 @@ interface SandboxService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Transaction
 
-    /** @see sendFunds */
-    fun sendFunds(
-        sendRequest: SendRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Transaction =
-        sendFunds(SandboxSendFundsParams.builder().sendRequest(sendRequest).build(), requestOptions)
-
     /** A view of [SandboxService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -86,16 +78,5 @@ interface SandboxService {
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Transaction>
-
-        /** @see sendFunds */
-        @MustBeClosed
-        fun sendFunds(
-            sendRequest: SendRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Transaction> =
-            sendFunds(
-                SandboxSendFundsParams.builder().sendRequest(sendRequest).build(),
-                requestOptions,
-            )
     }
 }

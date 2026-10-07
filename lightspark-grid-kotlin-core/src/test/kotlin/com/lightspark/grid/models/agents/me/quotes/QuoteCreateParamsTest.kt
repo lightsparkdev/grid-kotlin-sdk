@@ -5,7 +5,6 @@ package com.lightspark.grid.models.agents.me.quotes
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -16,42 +15,52 @@ internal class QuoteCreateParamsTest {
     fun create() {
         QuoteCreateParams.builder()
             .idempotencyKey("<uuid>")
-            .quoteRequest(
-                QuoteRequest.builder()
-                    .destination(QuoteDestinationOneOf.builder().build())
-                    .lockedCurrencyAmount(1000L)
-                    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(QuoteSourceOneOf.builder().build())
-                    .description("Invoice #1234 payment")
-                    .documentIds(
-                        listOf(
-                            "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
-                            "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
-                            "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
-                        )
+            .destination(
+                QuoteDestinationOneOf.AccountDestination.builder()
+                    .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .destinationType(
+                        QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
                     )
-                    .immediatelyExecute(false)
-                    .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                    .platformFeeOverride(
-                        QuoteRequest.PlatformFeeOverride.builder()
-                            .platformFixedFee(
-                                QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
-                                    .amount(50L)
-                                    .currency("USD")
-                                    .build()
-                            )
-                            .platformVariableFeeBps(30L)
+                    .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                    .build()
+            )
+            .lockedCurrencyAmount(1000L)
+            .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+            .source(
+                QuoteSourceOneOf.AccountQuoteSource.builder()
+                    .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .build()
+            )
+            .description("Invoice #1234 payment")
+            .documentIds(
+                listOf(
+                    "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                    "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                    "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                )
+            )
+            .immediatelyExecute(false)
+            .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+            .platformFeeOverride(
+                QuoteCreateParams.PlatformFeeOverride.builder()
+                    .platformFixedFee(
+                        QuoteCreateParams.PlatformFeeOverride.PlatformFixedFee.builder()
+                            .amount(50L)
+                            .currency("USD")
                             .build()
                     )
-                    .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
-                    .remittanceInformation("12345")
-                    .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
-                    .senderCustomerInfo(
-                        QuoteRequest.SenderCustomerInfo.builder()
-                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                            .build()
-                    )
+                    .platformVariableFeeBps(30L)
+                    .build()
+            )
+            .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
+            .remittanceInformation("12345")
+            .scaFactor(QuoteCreateParams.ScaFactor.SMS_OTP)
+            .senderCustomerInfo(
+                QuoteCreateParams.SenderCustomerInfo.builder()
+                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                     .build()
             )
             .build()
@@ -62,42 +71,52 @@ internal class QuoteCreateParamsTest {
         val params =
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
-                .quoteRequest(
-                    QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
-                        .lockedCurrencyAmount(1000L)
-                        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
-                        .description("Invoice #1234 payment")
-                        .documentIds(
-                            listOf(
-                                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
-                                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
-                                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
-                            )
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
                         )
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .platformFeeOverride(
-                            QuoteRequest.PlatformFeeOverride.builder()
-                                .platformFixedFee(
-                                    QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
-                                        .amount(50L)
-                                        .currency("USD")
-                                        .build()
-                                )
-                                .platformVariableFeeBps(30L)
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        .build()
+                )
+                .lockedCurrencyAmount(1000L)
+                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
+                .description("Invoice #1234 payment")
+                .documentIds(
+                    listOf(
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                    )
+                )
+                .immediatelyExecute(false)
+                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .platformFeeOverride(
+                    QuoteCreateParams.PlatformFeeOverride.builder()
+                        .platformFixedFee(
+                            QuoteCreateParams.PlatformFeeOverride.PlatformFixedFee.builder()
+                                .amount(50L)
+                                .currency("USD")
                                 .build()
                         )
-                        .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
-                        .remittanceInformation("12345")
-                        .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
-                        .senderCustomerInfo(
-                            QuoteRequest.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
+                        .platformVariableFeeBps(30L)
+                        .build()
+                )
+                .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
+                .scaFactor(QuoteCreateParams.ScaFactor.SMS_OTP)
+                .senderCustomerInfo(
+                    QuoteCreateParams.SenderCustomerInfo.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                         .build()
                 )
                 .build()
@@ -111,14 +130,12 @@ internal class QuoteCreateParamsTest {
     fun headersWithoutOptionalFields() {
         val params =
             QuoteCreateParams.builder()
-                .quoteRequest(
-                    QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
-                        .lockedCurrencyAmount(1000L)
-                        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
-                        .build()
+                .accountDestinationDestination(
+                    "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                 )
+                .lockedCurrencyAmount(1000L)
+                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                .accountQuoteSourceSource("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .build()
 
         val headers = params._headers()
@@ -131,85 +148,112 @@ internal class QuoteCreateParamsTest {
         val params =
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
-                .quoteRequest(
-                    QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
-                        .lockedCurrencyAmount(1000L)
-                        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
-                        .description("Invoice #1234 payment")
-                        .documentIds(
-                            listOf(
-                                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
-                                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
-                                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
-                            )
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
                         )
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .platformFeeOverride(
-                            QuoteRequest.PlatformFeeOverride.builder()
-                                .platformFixedFee(
-                                    QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
-                                        .amount(50L)
-                                        .currency("USD")
-                                        .build()
-                                )
-                                .platformVariableFeeBps(30L)
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        .build()
+                )
+                .lockedCurrencyAmount(1000L)
+                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
+                .description("Invoice #1234 payment")
+                .documentIds(
+                    listOf(
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                        "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                    )
+                )
+                .immediatelyExecute(false)
+                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .platformFeeOverride(
+                    QuoteCreateParams.PlatformFeeOverride.builder()
+                        .platformFixedFee(
+                            QuoteCreateParams.PlatformFeeOverride.PlatformFixedFee.builder()
+                                .amount(50L)
+                                .currency("USD")
                                 .build()
                         )
-                        .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
-                        .remittanceInformation("12345")
-                        .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
-                        .senderCustomerInfo(
-                            QuoteRequest.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
+                        .platformVariableFeeBps(30L)
+                        .build()
+                )
+                .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
+                .scaFactor(QuoteCreateParams.ScaFactor.SMS_OTP)
+                .senderCustomerInfo(
+                    QuoteCreateParams.SenderCustomerInfo.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                         .build()
                 )
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
+        assertThat(body.destination())
             .isEqualTo(
-                QuoteRequest.builder()
-                    .destination(QuoteDestinationOneOf.builder().build())
-                    .lockedCurrencyAmount(1000L)
-                    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(QuoteSourceOneOf.builder().build())
-                    .description("Invoice #1234 payment")
-                    .documentIds(
-                        listOf(
-                            "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
-                            "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
-                            "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+                QuoteDestinationOneOf.ofAccountDestination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
                         )
-                    )
-                    .immediatelyExecute(false)
-                    .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                    .platformFeeOverride(
-                        QuoteRequest.PlatformFeeOverride.builder()
-                            .platformFixedFee(
-                                QuoteRequest.PlatformFeeOverride.PlatformFixedFee.builder()
-                                    .amount(50L)
-                                    .currency("USD")
-                                    .build()
-                            )
-                            .platformVariableFeeBps(30L)
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        .build()
+                )
+            )
+        assertThat(body.lockedCurrencyAmount()).isEqualTo(1000L)
+        assertThat(body.lockedCurrencySide())
+            .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
+        assertThat(body.source())
+            .isEqualTo(
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
+            )
+        assertThat(body.description()).isEqualTo("Invoice #1234 payment")
+        assertThat(body.documentIds())
+            .containsExactly(
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000001",
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000002",
+                "PaymentDocument:019542f5-b3e7-1d02-0000-000000000003",
+            )
+        assertThat(body.immediatelyExecute()).isEqualTo(false)
+        assertThat(body.lookupId()).isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+        assertThat(body.platformFeeOverride())
+            .isEqualTo(
+                QuoteCreateParams.PlatformFeeOverride.builder()
+                    .platformFixedFee(
+                        QuoteCreateParams.PlatformFeeOverride.PlatformFixedFee.builder()
+                            .amount(50L)
+                            .currency("USD")
                             .build()
                     )
-                    .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
-                    .remittanceInformation("12345")
-                    .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
-                    .senderCustomerInfo(
-                        QuoteRequest.SenderCustomerInfo.builder()
-                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                            .build()
-                    )
+                    .platformVariableFeeBps(30L)
+                    .build()
+            )
+        assertThat(body.purposeOfPayment()).isEqualTo(QuoteCreateParams.PurposeOfPayment.GIFT)
+        assertThat(body.remittanceInformation()).isEqualTo("12345")
+        assertThat(body.scaFactor()).isEqualTo(QuoteCreateParams.ScaFactor.SMS_OTP)
+        assertThat(body.senderCustomerInfo())
+            .isEqualTo(
+                QuoteCreateParams.SenderCustomerInfo.builder()
+                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                     .build()
             )
     }
@@ -218,26 +262,38 @@ internal class QuoteCreateParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             QuoteCreateParams.builder()
-                .quoteRequest(
-                    QuoteRequest.builder()
-                        .destination(QuoteDestinationOneOf.builder().build())
-                        .lockedCurrencyAmount(1000L)
-                        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                        .source(QuoteSourceOneOf.builder().build())
-                        .build()
+                .accountDestinationDestination(
+                    "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                 )
+                .lockedCurrencyAmount(1000L)
+                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                .accountQuoteSourceSource("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
+        assertThat(body.destination())
             .isEqualTo(
-                QuoteRequest.builder()
-                    .destination(QuoteDestinationOneOf.builder().build())
-                    .lockedCurrencyAmount(1000L)
-                    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
-                    .source(QuoteSourceOneOf.builder().build())
-                    .build()
+                QuoteDestinationOneOf.ofAccountDestination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(
+                            QuoteDestinationOneOf.AccountDestination.DestinationType.ACCOUNT
+                        )
+                        .build()
+                )
+            )
+        assertThat(body.lockedCurrencyAmount()).isEqualTo(1000L)
+        assertThat(body.lockedCurrencySide())
+            .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
+        assertThat(body.source())
+            .isEqualTo(
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(QuoteSourceOneOf.AccountQuoteSource.SourceType.ACCOUNT)
+                        .build()
+                )
             )
     }
 }

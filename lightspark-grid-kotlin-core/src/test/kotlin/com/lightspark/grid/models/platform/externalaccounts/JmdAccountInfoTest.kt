@@ -13,20 +13,20 @@ internal class JmdAccountInfoTest {
     fun create() {
         val jmdAccountInfo =
             JmdAccountInfo.builder()
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .accountType(JmdAccountInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdAccountInfo.BankAccountType.CHECKING)
                 .bankName("National Commercial Bank Ja Ltd")
-                .branchCode("11111")
+                .branchCode("21029")
                 .addPaymentRail(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
-        assertThat(jmdAccountInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(jmdAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(jmdAccountInfo.accountType()).isEqualTo(JmdAccountInfo.AccountType.JMD_ACCOUNT)
         assertThat(jmdAccountInfo.bankAccountType())
             .isEqualTo(JmdAccountInfo.BankAccountType.CHECKING)
         assertThat(jmdAccountInfo.bankName()).isEqualTo("National Commercial Bank Ja Ltd")
-        assertThat(jmdAccountInfo.branchCode()).isEqualTo("11111")
+        assertThat(jmdAccountInfo.branchCode()).isEqualTo("21029")
         assertThat(jmdAccountInfo.paymentRails())
             .containsExactly(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -36,11 +36,11 @@ internal class JmdAccountInfoTest {
         val jsonMapper = jsonMapper()
         val jmdAccountInfo =
             JmdAccountInfo.builder()
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .accountType(JmdAccountInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdAccountInfo.BankAccountType.CHECKING)
                 .bankName("National Commercial Bank Ja Ltd")
-                .branchCode("11111")
+                .branchCode("21029")
                 .addPaymentRail(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

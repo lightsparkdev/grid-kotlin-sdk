@@ -3,7 +3,6 @@
 package com.lightspark.grid.models
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
 import com.lightspark.grid.models.customers.AgreementConsent
@@ -21,7 +20,6 @@ internal class IndividualCustomerTest {
     fun create() {
         val individualCustomer =
             IndividualCustomer.builder()
-                .customerType(JsonValue.from("INDIVIDUAL"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -56,6 +54,7 @@ internal class IndividualCustomerTest {
                 .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
                 .address(
                     Address.builder()
                         .country("US")
@@ -91,7 +90,6 @@ internal class IndividualCustomerTest {
                 .sourceOfWealthOtherDescription("Royalty income from published works")
                 .build()
 
-        assertThat(individualCustomer._customerType()).isEqualTo(JsonValue.from("INDIVIDUAL"))
         assertThat(individualCustomer.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
         assertThat(individualCustomer.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
         assertThat(individualCustomer.id())
@@ -131,6 +129,8 @@ internal class IndividualCustomerTest {
         assertThat(individualCustomer.region()).isEqualTo("US")
         assertThat(individualCustomer.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+        assertThat(individualCustomer.customerType())
+            .isEqualTo(IndividualCustomer.CustomerType.INDIVIDUAL)
         assertThat(individualCustomer.address())
             .isEqualTo(
                 Address.builder()
@@ -179,7 +179,6 @@ internal class IndividualCustomerTest {
         val jsonMapper = jsonMapper()
         val individualCustomer =
             IndividualCustomer.builder()
-                .customerType(JsonValue.from("INDIVIDUAL"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -214,6 +213,7 @@ internal class IndividualCustomerTest {
                 .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
                 .address(
                     Address.builder()
                         .country("US")

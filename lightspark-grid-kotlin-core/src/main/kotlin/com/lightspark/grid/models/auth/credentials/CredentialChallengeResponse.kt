@@ -38,22 +38,38 @@ import java.util.Objects
 @JsonSerialize(using = CredentialChallengeResponse.Serializer::class)
 class CredentialChallengeResponse
 private constructor(
-    private val authCredentialResponseOneOf: AuthCredentialResponseOneOf? = null,
+    private val authMethod: AuthMethodResponse? = null,
+    private val passkeyAuthChallenge: PasskeyAuthChallenge? = null,
     private val walletOperationProcessing: WalletOperationProcessing? = null,
     private val _json: JsonValue? = null,
 ) {
 
     /**
-     * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
-     * `EMAIL_OTP` and `SMS_OTP` credentials the body is a plain `AuthMethod` (wrapped as
-     * `AuthMethodResponse` to disambiguate the oneOf). For `PASSKEY` credentials the body is a
-     * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`,
-     * Grid-issued `challenge`, `requestId`, and `expiresAt` that drive the subsequent assertion.
-     * OAuth credentials do not use the challenge endpoint. Registration responses from `POST
-     * /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all credential
-     * types.
+     * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
+     * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` / `SMS_OTP`
+     * branches of `POST /auth/credentials/{id}/challenge`. The only difference from `AuthMethod` is
+     * `unevaluatedProperties: false`, which disambiguates the oneOf against `PasskeyAuthChallenge`
+     * — without the strictness, an `AuthMethod` with extra fields would ambiguously match both
+     * branches.
+     *
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+     * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in
+     * the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code ever
+     * transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call
+     * `POST /auth/credentials/{id}/challenge` if it is absent.
      */
-    fun authCredentialResponseOneOf(): AuthCredentialResponseOneOf? = authCredentialResponseOneOf
+    fun authMethod(): AuthMethodResponse? = authMethod
+
+    /**
+     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+     * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
+     * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+     * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+     * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+     * this string as the WebAuthn challenge and signs it with the passkey to produce the assertion
+     * submitted to `POST /auth/credentials/{id}/verify`.
+     */
+    fun passkeyAuthChallenge(): PasskeyAuthChallenge? = passkeyAuthChallenge
 
     /**
      * `200` response returned by an Embedded Wallet operation that the wallet provider has accepted
@@ -65,22 +81,39 @@ private constructor(
      */
     fun walletOperationProcessing(): WalletOperationProcessing? = walletOperationProcessing
 
-    fun isAuthCredentialResponseOneOf(): Boolean = authCredentialResponseOneOf != null
+    fun isAuthMethod(): Boolean = authMethod != null
+
+    fun isPasskeyAuthChallenge(): Boolean = passkeyAuthChallenge != null
 
     fun isWalletOperationProcessing(): Boolean = walletOperationProcessing != null
 
     /**
-     * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
-     * `EMAIL_OTP` and `SMS_OTP` credentials the body is a plain `AuthMethod` (wrapped as
-     * `AuthMethodResponse` to disambiguate the oneOf). For `PASSKEY` credentials the body is a
-     * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`,
-     * Grid-issued `challenge`, `requestId`, and `expiresAt` that drive the subsequent assertion.
-     * OAuth credentials do not use the challenge endpoint. Registration responses from `POST
-     * /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all credential
-     * types.
+     * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
+     * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` / `SMS_OTP`
+     * branches of `POST /auth/credentials/{id}/challenge`. The only difference from `AuthMethod` is
+     * `unevaluatedProperties: false`, which disambiguates the oneOf against `PasskeyAuthChallenge`
+     * — without the strictness, an `AuthMethod` with extra fields would ambiguously match both
+     * branches.
+     *
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+     * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in
+     * the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code ever
+     * transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call
+     * `POST /auth/credentials/{id}/challenge` if it is absent.
      */
-    fun asAuthCredentialResponseOneOf(): AuthCredentialResponseOneOf =
-        authCredentialResponseOneOf.getOrThrow("authCredentialResponseOneOf")
+    fun asAuthMethod(): AuthMethodResponse = authMethod.getOrThrow("authMethod")
+
+    /**
+     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+     * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
+     * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+     * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+     * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+     * this string as the WebAuthn challenge and signs it with the passkey to produce the assertion
+     * submitted to `POST /auth/credentials/{id}/verify`.
+     */
+    fun asPasskeyAuthChallenge(): PasskeyAuthChallenge =
+        passkeyAuthChallenge.getOrThrow("passkeyAuthChallenge")
 
     /**
      * `200` response returned by an Embedded Wallet operation that the wallet provider has accepted
@@ -105,7 +138,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = credentialChallengeResponse.accept(object : CredentialChallengeResponse.Visitor<String?> {
-     *     override fun visitAuthCredentialResponseOneOf(authCredentialResponseOneOf: AuthCredentialResponseOneOf): String? = authCredentialResponseOneOf.toString()
+     *     override fun visitAuthMethod(authMethod: AuthMethodResponse): String? = authMethod.toString()
      *
      *     // ...
      *
@@ -121,8 +154,8 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            authCredentialResponseOneOf != null ->
-                visitor.visitAuthCredentialResponseOneOf(authCredentialResponseOneOf)
+            authMethod != null -> visitor.visitAuthMethod(authMethod)
+            passkeyAuthChallenge != null -> visitor.visitPasskeyAuthChallenge(passkeyAuthChallenge)
             walletOperationProcessing != null ->
                 visitor.visitWalletOperationProcessing(walletOperationProcessing)
             else -> visitor.unknown(_json)
@@ -145,10 +178,12 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitAuthCredentialResponseOneOf(
-                    authCredentialResponseOneOf: AuthCredentialResponseOneOf
-                ) {
-                    authCredentialResponseOneOf.validate()
+                override fun visitAuthMethod(authMethod: AuthMethodResponse) {
+                    authMethod.validate()
+                }
+
+                override fun visitPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge) {
+                    passkeyAuthChallenge.validate()
                 }
 
                 override fun visitWalletOperationProcessing(
@@ -177,9 +212,10 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitAuthCredentialResponseOneOf(
-                    authCredentialResponseOneOf: AuthCredentialResponseOneOf
-                ) = authCredentialResponseOneOf.validity()
+                override fun visitAuthMethod(authMethod: AuthMethodResponse) = authMethod.validity()
+
+                override fun visitPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge) =
+                    passkeyAuthChallenge.validity()
 
                 override fun visitWalletOperationProcessing(
                     walletOperationProcessing: WalletOperationProcessing
@@ -195,17 +231,19 @@ private constructor(
         }
 
         return other is CredentialChallengeResponse &&
-            authCredentialResponseOneOf == other.authCredentialResponseOneOf &&
+            authMethod == other.authMethod &&
+            passkeyAuthChallenge == other.passkeyAuthChallenge &&
             walletOperationProcessing == other.walletOperationProcessing
     }
 
     override fun hashCode(): Int =
-        Objects.hash(authCredentialResponseOneOf, walletOperationProcessing)
+        Objects.hash(authMethod, passkeyAuthChallenge, walletOperationProcessing)
 
     override fun toString(): String =
         when {
-            authCredentialResponseOneOf != null ->
-                "CredentialChallengeResponse{authCredentialResponseOneOf=$authCredentialResponseOneOf}"
+            authMethod != null -> "CredentialChallengeResponse{authMethod=$authMethod}"
+            passkeyAuthChallenge != null ->
+                "CredentialChallengeResponse{passkeyAuthChallenge=$passkeyAuthChallenge}"
             walletOperationProcessing != null ->
                 "CredentialChallengeResponse{walletOperationProcessing=$walletOperationProcessing}"
             _json != null -> "CredentialChallengeResponse{_unknown=$_json}"
@@ -215,18 +253,33 @@ private constructor(
     companion object {
 
         /**
-         * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
-         * `EMAIL_OTP` and `SMS_OTP` credentials the body is a plain `AuthMethod` (wrapped as
-         * `AuthMethodResponse` to disambiguate the oneOf). For `PASSKEY` credentials the body is a
-         * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`,
-         * Grid-issued `challenge`, `requestId`, and `expiresAt` that drive the subsequent
-         * assertion. OAuth credentials do not use the challenge endpoint. Registration responses
-         * from `POST /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all
-         * credential types.
+         * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
+         * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` /
+         * `SMS_OTP` branches of `POST /auth/credentials/{id}/challenge`. The only difference from
+         * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
+         * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
+         * ambiguously match both branches.
+         *
+         * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+         * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code
+         * in the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code
+         * ever transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit
+         * it; call `POST /auth/credentials/{id}/challenge` if it is absent.
          */
-        fun ofAuthCredentialResponseOneOf(
-            authCredentialResponseOneOf: AuthCredentialResponseOneOf
-        ) = CredentialChallengeResponse(authCredentialResponseOneOf = authCredentialResponseOneOf)
+        fun ofAuthMethod(authMethod: AuthMethodResponse) =
+            CredentialChallengeResponse(authMethod = authMethod)
+
+        /**
+         * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+         * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
+         * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+         * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+         * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+         * this string as the WebAuthn challenge and signs it with the passkey to produce the
+         * assertion submitted to `POST /auth/credentials/{id}/verify`.
+         */
+        fun ofPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge) =
+            CredentialChallengeResponse(passkeyAuthChallenge = passkeyAuthChallenge)
 
         /**
          * `200` response returned by an Embedded Wallet operation that the wallet provider has
@@ -247,18 +300,31 @@ private constructor(
     interface Visitor<out T> {
 
         /**
-         * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
-         * `EMAIL_OTP` and `SMS_OTP` credentials the body is a plain `AuthMethod` (wrapped as
-         * `AuthMethodResponse` to disambiguate the oneOf). For `PASSKEY` credentials the body is a
-         * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`,
-         * Grid-issued `challenge`, `requestId`, and `expiresAt` that drive the subsequent
-         * assertion. OAuth credentials do not use the challenge endpoint. Registration responses
-         * from `POST /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all
-         * credential types.
+         * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
+         * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` /
+         * `SMS_OTP` branches of `POST /auth/credentials/{id}/challenge`. The only difference from
+         * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
+         * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
+         * ambiguously match both branches.
+         *
+         * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP
+         * challenge carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code
+         * in the subsequent `POST /auth/credentials/{id}/verify` call without the plaintext code
+         * ever transiting the server. First-time EMAIL_OTP wallet bootstrap registration can omit
+         * it; call `POST /auth/credentials/{id}/challenge` if it is absent.
          */
-        fun visitAuthCredentialResponseOneOf(
-            authCredentialResponseOneOf: AuthCredentialResponseOneOf
-        ): T
+        fun visitAuthMethod(authMethod: AuthMethodResponse): T
+
+        /**
+         * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+         * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
+         * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+         * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+         * canonical session-creation request body, not a base64url string. The client UTF-8 encodes
+         * this string as the WebAuthn challenge and signs it with the passkey to produce the
+         * assertion submitted to `POST /auth/credentials/{id}/verify`.
+         */
+        fun visitPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge): T
 
         /**
          * `200` response returned by an Embedded Wallet operation that the wallet provider has
@@ -293,11 +359,11 @@ private constructor(
 
             val bestMatches =
                 sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<AuthCredentialResponseOneOf>())?.let {
-                            CredentialChallengeResponse(
-                                authCredentialResponseOneOf = it,
-                                _json = json,
-                            )
+                        tryDeserialize(node, jacksonTypeRef<AuthMethodResponse>())?.let {
+                            CredentialChallengeResponse(authMethod = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<PasskeyAuthChallenge>())?.let {
+                            CredentialChallengeResponse(passkeyAuthChallenge = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<WalletOperationProcessing>())?.let {
                             CredentialChallengeResponse(
@@ -330,8 +396,9 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.authCredentialResponseOneOf != null ->
-                    generator.writeObject(value.authCredentialResponseOneOf)
+                value.authMethod != null -> generator.writeObject(value.authMethod)
+                value.passkeyAuthChallenge != null ->
+                    generator.writeObject(value.passkeyAuthChallenge)
                 value.walletOperationProcessing != null ->
                     generator.writeObject(value.walletOperationProcessing)
                 value._json != null -> generator.writeObject(value._json)

@@ -37,7 +37,7 @@ internal class KesExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+254712345678")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(kesExternalAccountCreateInfo.accountType())
@@ -67,7 +67,7 @@ internal class KesExternalAccountCreateInfoTest {
                 )
             )
         assertThat(kesExternalAccountCreateInfo.phoneNumber()).isEqualTo("+254712345678")
-        assertThat(kesExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
+        assertThat(kesExternalAccountCreateInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -98,7 +98,7 @@ internal class KesExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+254712345678")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedKesExternalAccountCreateInfo =

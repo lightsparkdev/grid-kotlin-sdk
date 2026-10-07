@@ -16,13 +16,6 @@ import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Objects
 
-/**
- * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an individual
- * customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear as top-level
- * optional fields on the customer resource itself; there is no separate EDD resource. The specific
- * set required for a given customer is driven by the KYC provider's per-jurisdiction / per-flow /
- * per-volume-tier rules (surfaced through `MISSING_FIELD` errors on `POST /verifications`).
- */
 @JsonDeserialize(using = CustomerUpdateRequestOneOf.Deserializer::class)
 @JsonSerialize(using = CustomerUpdateRequestOneOf.Serializer::class)
 class CustomerUpdateRequestOneOf
@@ -32,48 +25,16 @@ private constructor(
     private val _json: JsonValue? = null,
 ) {
 
-    /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     */
     fun individual(): IndividualCustomerUpdateRequest? = individual
 
-    /**
-     * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
-     * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
-     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
-     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
-     * and `phoneNumber` in separate PATCH calls.
-     */
     fun business(): BusinessCustomerUpdateRequest? = business
 
     fun isIndividual(): Boolean = individual != null
 
     fun isBusiness(): Boolean = business != null
 
-    /**
-     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
-     * as top-level optional fields on the customer resource itself; there is no separate EDD
-     * resource. The specific set required for a given customer is driven by the KYC provider's
-     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
-     * on `POST /verifications`).
-     */
     fun asIndividual(): IndividualCustomerUpdateRequest = individual.getOrThrow("individual")
 
-    /**
-     * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
-     * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
-     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
-     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
-     * and `phoneNumber` in separate PATCH calls.
-     */
     fun asBusiness(): BusinessCustomerUpdateRequest = business.getOrThrow("business")
 
     fun _json(): JsonValue? = _json
@@ -186,25 +147,9 @@ private constructor(
 
     companion object {
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
         fun ofIndividual(individual: IndividualCustomerUpdateRequest) =
             CustomerUpdateRequestOneOf(individual = individual)
 
-        /**
-         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
-         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
-         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
-         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
-         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
-         */
         fun ofBusiness(business: BusinessCustomerUpdateRequest) =
             CustomerUpdateRequestOneOf(business = business)
     }
@@ -215,24 +160,8 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        /**
-         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
-         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
-         * appear as top-level optional fields on the customer resource itself; there is no separate
-         * EDD resource. The specific set required for a given customer is driven by the KYC
-         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
-         * `MISSING_FIELD` errors on `POST /verifications`).
-         */
         fun visitIndividual(individual: IndividualCustomerUpdateRequest): T
 
-        /**
-         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
-         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
-         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
-         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
-         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
-         */
         fun visitBusiness(business: BusinessCustomerUpdateRequest): T
 
         /**

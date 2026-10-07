@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.DkkAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,10 +14,63 @@ internal class DkkExternalAccountInfoTest {
     fun create() {
         val dkkExternalAccountInfo =
             DkkExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("DKK_ACCOUNT"))
-                .putAdditionalProperty("iban", JsonValue.from("DK5000400040116243"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("DABADKKK"))
+                .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+                .iban("DK5000400040116243")
+                .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
+                .swiftCode("DABADKKK")
+                .beneficiary(
+                    DkkBeneficiary.builder()
+                        .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
+
+        assertThat(dkkExternalAccountInfo.accountType())
+            .isEqualTo(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+        assertThat(dkkExternalAccountInfo.iban()).isEqualTo("DK5000400040116243")
+        assertThat(dkkExternalAccountInfo.paymentRails())
+            .containsExactly(DkkAccountInfo.PaymentRail.SEPA)
+        assertThat(dkkExternalAccountInfo.swiftCode()).isEqualTo("DABADKKK")
+        assertThat(dkkExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                DkkExternalAccountInfo.Beneficiary.ofIndividual(
+                    DkkBeneficiary.builder()
+                        .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -25,9 +78,31 @@ internal class DkkExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val dkkExternalAccountInfo =
             DkkExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("DKK_ACCOUNT"))
-                .putAdditionalProperty("iban", JsonValue.from("DK5000400040116243"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("DABADKKK"))
+                .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+                .iban("DK5000400040116243")
+                .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
+                .swiftCode("DABADKKK")
+                .beneficiary(
+                    DkkBeneficiary.builder()
+                        .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
 
         val roundtrippedDkkExternalAccountInfo =
