@@ -3358,18 +3358,12 @@ private constructor(
 
             val OUTGOING = of("OUTGOING")
 
-            val INCOMING = of("INCOMING")
-
-            val CARD = of("CARD")
-
             fun of(value: String) = Type(JsonField.of(value))
         }
 
         /** An enum containing [Type]'s known values. */
         enum class Known {
-            OUTGOING,
-            INCOMING,
-            CARD,
+            OUTGOING
         }
 
         /**
@@ -3383,8 +3377,6 @@ private constructor(
          */
         enum class Value {
             OUTGOING,
-            INCOMING,
-            CARD,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -3399,8 +3391,6 @@ private constructor(
         fun value(): Value =
             when (this) {
                 OUTGOING -> Value.OUTGOING
-                INCOMING -> Value.INCOMING
-                CARD -> Value.CARD
                 else -> Value._UNKNOWN
             }
 
@@ -3416,8 +3406,6 @@ private constructor(
         fun known(): Known =
             when (this) {
                 OUTGOING -> Known.OUTGOING
-                INCOMING -> Known.INCOMING
-                CARD -> Known.CARD
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
