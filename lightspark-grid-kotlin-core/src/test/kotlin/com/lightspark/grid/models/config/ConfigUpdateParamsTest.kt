@@ -62,17 +62,9 @@ internal class ConfigUpdateParamsTest {
                             .build()
                     )
                     .addFeeConfig(
-                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransactionFeeConfig
-                            .builder()
-                            .feeType(
-                                PlatformConfigUpdateRequest.FeeConfig
-                                    .CrossCurrencyTransactionFeeConfig
-                                    .FeeType
-                                    .CROSS_CURRENCY_TRANSACTION
-                            )
+                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
                             .fixedFee(
-                                PlatformConfigUpdateRequest.FeeConfig
-                                    .CrossCurrencyTransactionFeeConfig
+                                PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
                                     .FixedFee
                                     .builder()
                                     .amount(100L)
@@ -178,17 +170,9 @@ internal class ConfigUpdateParamsTest {
                                 .build()
                         )
                         .addFeeConfig(
-                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransactionFeeConfig
-                                .builder()
-                                .feeType(
-                                    PlatformConfigUpdateRequest.FeeConfig
-                                        .CrossCurrencyTransactionFeeConfig
-                                        .FeeType
-                                        .CROSS_CURRENCY_TRANSACTION
-                                )
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
                                 .fixedFee(
-                                    PlatformConfigUpdateRequest.FeeConfig
-                                        .CrossCurrencyTransactionFeeConfig
+                                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
                                         .FixedFee
                                         .builder()
                                         .amount(100L)
@@ -291,17 +275,9 @@ internal class ConfigUpdateParamsTest {
                             .build()
                     )
                     .addFeeConfig(
-                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransactionFeeConfig
-                            .builder()
-                            .feeType(
-                                PlatformConfigUpdateRequest.FeeConfig
-                                    .CrossCurrencyTransactionFeeConfig
-                                    .FeeType
-                                    .CROSS_CURRENCY_TRANSACTION
-                            )
+                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
                             .fixedFee(
-                                PlatformConfigUpdateRequest.FeeConfig
-                                    .CrossCurrencyTransactionFeeConfig
+                                PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
                                     .FixedFee
                                     .builder()
                                     .amount(100L)
