@@ -92,56 +92,48 @@ private constructor(
 
         /**
          * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(emailOtpCredentialCreateRequest)`.
+         * `AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp)`.
          */
-        fun authCredentialCreateRequest(
-            emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest
-        ) =
+        fun authCredentialCreateRequest(emailOtp: EmailOtpCredentialCreateRequest) =
+            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp))
+
+        /**
+         * Alias for calling [authCredentialCreateRequest] with
+         * `AuthCredentialCreateRequestOneOf.ofSmsOtp(smsOtp)`.
+         */
+        fun authCredentialCreateRequest(smsOtp: AuthCredentialCreateRequestOneOf.SmsOtp) =
+            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofSmsOtp(smsOtp))
+
+        /**
+         * Alias for calling [authCredentialCreateRequest] with
+         * `AuthCredentialCreateRequestOneOf.ofOAuth(oauth)`.
+         */
+        fun authCredentialCreateRequest(oauth: OAuthCredentialCreateRequest) =
+            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofOAuth(oauth))
+
+        /**
+         * Alias for calling [authCredentialCreateRequest] with the following:
+         * ```kotlin
+         * OAuthCredentialCreateRequest.builder()
+         *     .type(OAuthCredentialCreateRequest.Type.OAUTH)
+         *     .oidcToken(oidcToken)
+         *     .build()
+         * ```
+         */
+        fun oauthAuthCredentialCreateRequest(oidcToken: String) =
             authCredentialCreateRequest(
-                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
-                    emailOtpCredentialCreateRequest
-                )
+                OAuthCredentialCreateRequest.builder()
+                    .type(OAuthCredentialCreateRequest.Type.OAUTH)
+                    .oidcToken(oidcToken)
+                    .build()
             )
 
         /**
          * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(smsOtpCredentialCreateRequest)`.
+         * `AuthCredentialCreateRequestOneOf.ofPasskey(passkey)`.
          */
-        fun authCredentialCreateRequest(
-            smsOtpCredentialCreateRequest:
-                AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest
-        ) =
-            authCredentialCreateRequest(
-                AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
-                    smsOtpCredentialCreateRequest
-                )
-            )
-
-        /**
-         * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(oauthCredentialCreateRequest)`.
-         */
-        fun authCredentialCreateRequest(
-            oauthCredentialCreateRequest: OAuthCredentialCreateRequest
-        ) =
-            authCredentialCreateRequest(
-                AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
-                    oauthCredentialCreateRequest
-                )
-            )
-
-        /**
-         * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(passkeyCredentialCreateRequest)`.
-         */
-        fun authCredentialCreateRequest(
-            passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest
-        ) =
-            authCredentialCreateRequest(
-                AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
-                    passkeyCredentialCreateRequest
-                )
-            )
+        fun authCredentialCreateRequest(passkey: PasskeyCredentialCreateRequest) =
+            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofPasskey(passkey))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()

@@ -3,79 +3,39 @@
 package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
-import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import java.util.Collections
 import java.util.Objects
 
 class BaseDestination
-@JsonCreator(mode = JsonCreator.Mode.DISABLED)
+@JsonCreator
 private constructor(
-    private val destinationType: JsonValue,
-    private val additionalProperties: MutableMap<String, JsonValue>,
+    @com.fasterxml.jackson.annotation.JsonValue
+    private val additionalProperties: Map<String, JsonValue>
 ) {
-
-    @JsonCreator
-    private constructor(
-        @JsonProperty("destinationType")
-        @ExcludeMissing
-        destinationType: JsonValue = JsonMissing.of()
-    ) : this(destinationType, mutableMapOf())
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = baseDestination.destinationType().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("destinationType")
-    @ExcludeMissing
-    fun _destinationType(): JsonValue = destinationType
-
-    @JsonAnySetter
-    private fun putAdditionalProperty(key: String, value: JsonValue) {
-        additionalProperties.put(key, value)
-    }
 
     @JsonAnyGetter
     @ExcludeMissing
-    fun _additionalProperties(): Map<String, JsonValue> =
-        Collections.unmodifiableMap(additionalProperties)
+    fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
 
     fun toBuilder() = Builder().from(this)
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [BaseDestination].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .destinationType()
-         * ```
-         */
+        /** Returns a mutable builder for constructing an instance of [BaseDestination]. */
         fun builder() = Builder()
     }
 
     /** A builder for [BaseDestination]. */
     class Builder internal constructor() {
 
-        private var destinationType: JsonValue? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(baseDestination: BaseDestination) = apply {
-            destinationType = baseDestination.destinationType
             additionalProperties = baseDestination.additionalProperties.toMutableMap()
-        }
-
-        fun destinationType(destinationType: JsonValue) = apply {
-            this.destinationType = destinationType
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -101,19 +61,8 @@ private constructor(
          * Returns an immutable instance of [BaseDestination].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .destinationType()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): BaseDestination =
-            BaseDestination(
-                checkRequired("destinationType", destinationType),
-                additionalProperties.toMutableMap(),
-            )
+        fun build(): BaseDestination = BaseDestination(additionalProperties.toImmutable())
     }
 
     private var validated: Boolean = false
@@ -147,22 +96,20 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = 0
+    internal fun validity(): Int =
+        additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is BaseDestination &&
-            destinationType == other.destinationType &&
-            additionalProperties == other.additionalProperties
+        return other is BaseDestination && additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(destinationType, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
-    override fun toString() =
-        "BaseDestination{destinationType=$destinationType, additionalProperties=$additionalProperties}"
+    override fun toString() = "BaseDestination{additionalProperties=$additionalProperties}"
 }

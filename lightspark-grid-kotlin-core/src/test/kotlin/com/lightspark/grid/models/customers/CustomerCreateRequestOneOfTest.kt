@@ -193,9 +193,7 @@ internal class CustomerCreateRequestOneOfTest {
                 .businessInfo(
                     BusinessCustomerCreateRequest.BusinessInfo.builder()
                         .country("US")
-                        .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .taxId("47-1234567")
                         .businessType(
                             BusinessCustomerCreateRequest.BusinessInfo.BusinessType
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
@@ -215,6 +213,7 @@ internal class CustomerCreateRequestOneOfTest {
                                 .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .naicsCode("541511")
                         .primaryContactFirstName("Jane")
                         .primaryContactLastName("Smith")
@@ -227,6 +226,7 @@ internal class CustomerCreateRequestOneOfTest {
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
                         .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                        .taxId("47-1234567")
                         .build()
                 )
                 .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
@@ -282,9 +282,7 @@ internal class CustomerCreateRequestOneOfTest {
                     .businessInfo(
                         BusinessCustomerCreateRequest.BusinessInfo.builder()
                             .country("US")
-                            .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .legalName("Acme Corporation, Inc.")
-                            .taxId("47-1234567")
                             .businessType(
                                 BusinessCustomerCreateRequest.BusinessInfo.BusinessType
                                     .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
@@ -304,6 +302,7 @@ internal class CustomerCreateRequestOneOfTest {
                                     .VOLUME_100_K_TO_1_M
                             )
                             .addExpectedRecipientJurisdiction("US")
+                            .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .naicsCode("541511")
                             .primaryContactFirstName("Jane")
                             .primaryContactLastName("Smith")
@@ -318,6 +317,7 @@ internal class CustomerCreateRequestOneOfTest {
                             )
                             .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
                             .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                            .taxId("47-1234567")
                             .build()
                     )
                     .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)

@@ -3,9 +3,7 @@
 package com.lightspark.grid.services.async.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.auth.credentials.AuthCredentialChallengeRequest
-import com.lightspark.grid.models.auth.credentials.AuthCredentialVerifyRequestOneOf
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
@@ -39,7 +37,7 @@ internal class CredentialServiceAsyncTest {
                     .authCredentialCreateRequest(
                         EmailOtpCredentialCreateRequest.builder()
                             .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                            .type(JsonValue.from("EMAIL_OTP"))
+                            .type(EmailOtpCredentialCreateRequest.Type.EMAIL_OTP)
                             .email("jane.new@example.com")
                             .build()
                     )
@@ -144,13 +142,8 @@ internal class CredentialServiceAsyncTest {
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
                     )
                     .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                    .authCredentialVerifyRequest(
-                        AuthCredentialVerifyRequestOneOf.builder()
-                            .type(JsonValue.from("SMS_OTP"))
-                            .encryptedOtpBundle(
-                                "{\"encappedPublic\":\"044f631a2d890bc6668d997ee184e190650d06adf970987568ec641214a00403b73effe1ef406c60a5cde8508a4484567ddb8056fbd493bee614cd727aef02a838\",\"ciphertext\":\"1fa1023390a56539aa48cbb380aa28f544ed5cc04861566bb806e25ba026f14660eaf4140a05b388dd012eaa899759a6a92576cdca8c1b7d12e147bd96cc26ed9f74886794155d8ac5cf0fdc\"}"
-                            )
-                            .build()
+                    .emailOtpAuthCredentialVerifyRequest(
+                        "{\"encappedPublic\":\"044f631a2d890bc6668d997ee184e190650d06adf970987568ec641214a00403b73effe1ef406c60a5cde8508a4484567ddb8056fbd493bee614cd727aef02a838\",\"ciphertext\":\"1fa1023390a56539aa48cbb380aa28f544ed5cc04861566bb806e25ba026f14660eaf4140a05b388dd012eaa899759a6a92576cdca8c1b7d12e147bd96cc26ed9f74886794155d8ac5cf0fdc\"}"
                     )
                     .build()
             )
